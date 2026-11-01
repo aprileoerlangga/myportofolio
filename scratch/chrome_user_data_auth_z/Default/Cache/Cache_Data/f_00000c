@@ -1,0 +1,1844 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/components/LegoCurtainLoader.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=7f8efa7f"; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+let prevRefreshReg;
+let prevRefreshSig;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  prevRefreshReg = window.$RefreshReg$;
+  prevRefreshSig = window.$RefreshSig$;
+  window.$RefreshReg$ = RefreshRuntime.getRefreshReg("C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx");
+  window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+}
+var _s = $RefreshSig$(), _s2 = $RefreshSig$();
+import __vite__cjsImport3_react from "/node_modules/.vite/deps/react.js?v=7f8efa7f"; const React = __vite__cjsImport3_react.__esModule ? __vite__cjsImport3_react.default : __vite__cjsImport3_react; const useState = __vite__cjsImport3_react["useState"]; const useEffect = __vite__cjsImport3_react["useEffect"];
+import { motion, AnimatePresence } from "/node_modules/.vite/deps/framer-motion.js?v=7f8efa7f";
+function LegoAirplane3D({ isTakeoff = false }) {
+  return /* @__PURE__ */ jsxDEV(
+    "div",
+    {
+      className: "relative w-80 h-44 sm:w-96 sm:h-52 md:w-[28rem] md:h-60 filter drop-shadow-[0_25px_40px_rgba(0,0,0,0.95)] select-none",
+      style: { perspective: 1e3 },
+      children: /* @__PURE__ */ jsxDEV(
+        "svg",
+        {
+          viewBox: "0 0 420 220",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          className: "w-full h-full overflow-visible",
+          children: [
+            /* @__PURE__ */ jsxDEV("defs", { children: [
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pRedTop", x1: "0%", y1: "0%", x2: "100%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FF4D5A" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 45,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "60%", stopColor: "#E3000B" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 46,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#C40008" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 47,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 44,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pRedSide", x1: "0%", y1: "0%", x2: "0%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#E3000B" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 51,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "70%", stopColor: "#B30008" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 52,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#7A0005" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 53,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 50,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pWhiteTop", x1: "0%", y1: "0%", x2: "100%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FFFFFF" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 57,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "65%", stopColor: "#F8FAFC" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 58,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#E2E8F0" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 59,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 56,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pWhiteSide", x1: "0%", y1: "0%", x2: "0%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#E2E8F0" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 63,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#94A3B8" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 64,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 62,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pYellowTop", x1: "0%", y1: "0%", x2: "100%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FFF785" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 69,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "40%", stopColor: "#FFD500" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 70,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#E6B800" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 71,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 68,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pYellowSide", x1: "0%", y1: "0%", x2: "0%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FFD500" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 75,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#B38600" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 76,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 74,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pCanopyBlack3D", x1: "15%", y1: "0%", x2: "85%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#334155" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 81,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "18%", stopColor: "#1E293B" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 82,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "50%", stopColor: "#0F172A" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 83,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "85%", stopColor: "#0B0F19" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 84,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#020617" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 85,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 80,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pCanopyGlare", x1: "0%", y1: "0%", x2: "100%", y2: "80%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FFFFFF", stopOpacity: "0.95" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 90,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "35%", stopColor: "#93C5FD", stopOpacity: "0.65" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 91,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "70%", stopColor: "#38BDF8", stopOpacity: "0.2" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 92,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#0284C7", stopOpacity: "0" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 93,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 89,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pEngineFlame", x1: "100%", y1: "50%", x2: "0%", y2: "50%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FFFFFF", stopOpacity: "1" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 98,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "25%", stopColor: "#FFF066", stopOpacity: "0.95" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 99,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "60%", stopColor: "#FF8A00", stopOpacity: "0.85" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 100,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#E3000B", stopOpacity: "0" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 101,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 97,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pEngineCore", x1: "100%", y1: "50%", x2: "0%", y2: "50%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FFFFFF", stopOpacity: "1" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 105,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "40%", stopColor: "#FFD500", stopOpacity: "0.9" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 106,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#FF5A1F", stopOpacity: "0" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 107,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 104,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("radialGradient", { id: "pPropDisc", cx: "50%", cy: "50%", r: "50%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FFFFFF", stopOpacity: "0.22" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 112,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "40%", stopColor: "#FFFFFF", stopOpacity: "0.1" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 113,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "75%", stopColor: "#FFFFFF", stopOpacity: "0.03" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 114,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "88%", stopColor: "#FFD500", stopOpacity: "0.18" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 115,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "97%", stopColor: "#FFF275", stopOpacity: "0.32" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 116,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#FFD500", stopOpacity: "0" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 117,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 111,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pSpinnerRed", x1: "0%", y1: "0%", x2: "0%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FF4D5A" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 122,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "30%", stopColor: "#E3000B" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 123,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "70%", stopColor: "#B30008" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 124,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#7A0005" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 125,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 121,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pSpinnerWhiteTip", x1: "0%", y1: "0%", x2: "0%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FFFFFF" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 130,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "55%", stopColor: "#F8FAFC" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 131,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#CBD5E1" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 132,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 129,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pBladeSweep", x1: "0%", y1: "0%", x2: "100%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#FFFFFF", stopOpacity: "0.85" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 137,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "30%", stopColor: "#FFF275", stopOpacity: "0.5" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 138,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "70%", stopColor: "#FFD500", stopOpacity: "0.15" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 139,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#FFD500", stopOpacity: "0" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 140,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 136,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pBladeBody", x1: "0%", y1: "0%", x2: "100%", y2: "0%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#475569" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 145,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "40%", stopColor: "#334155" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 146,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#1E293B" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 147,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 144,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pUnderbelly", x1: "0%", y1: "0%", x2: "0%", y2: "100%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#8F0006" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 152,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "40%", stopColor: "#6B0005" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 153,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#4A0003" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 154,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 151,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("linearGradient", { id: "pNacaIntake", x1: "0%", y1: "0%", x2: "100%", y2: "0%", children: [
+                /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#18181B" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 159,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "60%", stopColor: "#27272A" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 160,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#6B0005" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 161,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 158,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("filter", { id: "pThrustGlow", x: "-50%", y: "-50%", width: "200%", height: "200%", children: [
+                /* @__PURE__ */ jsxDEV("feGaussianBlur", { stdDeviation: "4", result: "blur" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 165,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("feComposite", { in: "SourceGraphic", in2: "blur", operator: "over" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 166,
+                  columnNumber: 13
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 164,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("g", { id: "propBladeDef", children: [
+                /* @__PURE__ */ jsxDEV(
+                  "path",
+                  {
+                    d: "M -2.5 -5 \n                 C -3.8 -16, -4 -32, -3 -42 \n                 Q -2.8 -48, 0 -48 \n                 Q 2.8 -48, 3 -42 \n                 C 4 -32, 3.8 -16, 2.5 -5 Z",
+                    fill: "url(#pBladeBody)",
+                    stroke: "#1E293B",
+                    strokeWidth: "0.6",
+                    opacity: "0.88"
+                  },
+                  void 0,
+                  false,
+                  {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 172,
+                    columnNumber: 13
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV(
+                  "path",
+                  {
+                    d: "M -3 -42 \n                 C -2.8 -46, -2 -48, 0 -48 \n                 C 2 -48, 2.8 -46, 3 -42 \n                 Z",
+                    fill: "#FFD500",
+                    stroke: "#C99700",
+                    strokeWidth: "0.5"
+                  },
+                  void 0,
+                  false,
+                  {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 184,
+                    columnNumber: 13
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV(
+                  "path",
+                  {
+                    d: "M 0 -48 A 48 48 0 0 1 34 -34",
+                    fill: "none",
+                    stroke: "url(#pBladeSweep)",
+                    strokeWidth: "2.2",
+                    strokeLinecap: "round",
+                    vectorEffect: "non-scaling-stroke"
+                  },
+                  void 0,
+                  false,
+                  {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 194,
+                    columnNumber: 13
+                  },
+                  this
+                )
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 170,
+                columnNumber: 11
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 42,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ jsxDEV("g", { id: "far-wing", opacity: "0.95", children: [
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 236 72 \n               C 198 50, 160 34, 126 30 \n               L 118 30 \n               Q 106 32, 110 38 \n               L 108 36 \n               Q 104 30, 116 28 \n               L 126 28 \n               C 160 32, 198 48, 236 70 Z",
+                  fill: "url(#pWhiteSide)",
+                  stroke: "#94A3B8",
+                  strokeWidth: "0.7"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 210,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 152 86 \n               C 138 68, 122 52, 110 38 \n               Q 106 32, 118 30 \n               L 126 30 \n               C 160 34, 198 50, 236 72 \n               C 210 78, 180 84, 152 86 \n               Z",
+                  fill: "url(#pWhiteTop)",
+                  stroke: "#CBD5E1",
+                  strokeWidth: "1.1"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 225,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("path", { d: "M 120 42 L 175 66", stroke: "#94A3B8", strokeWidth: "0.7", strokeDasharray: "3 1", opacity: "0.75" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 239,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 110 38 \n               Q 106 32, 118 30 \n               L 126 30 \n               C 122 34, 118 37, 116 40 \n               Z",
+                  fill: "url(#pRedTop)",
+                  stroke: "#B30008",
+                  strokeWidth: "0.8"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 242,
+                  columnNumber: 11
+                },
+                this
+              ),
+              [
+                { x: 130, y: 40, rx: 5, ry: 2.3, h: 2.8 },
+                { x: 152, y: 49, rx: 5.2, ry: 2.4, h: 2.8 },
+                { x: 174, y: 58, rx: 5.4, ry: 2.5, h: 3 },
+                { x: 196, y: 67, rx: 5.5, ry: 2.5, h: 3 }
+              ].map(
+                (st, i) => /* @__PURE__ */ jsxDEV("g", { children: [
+                  /* @__PURE__ */ jsxDEV(
+                    "path",
+                    {
+                      d: `M ${st.x - st.rx} ${st.y} 
+                    L ${st.x - st.rx} ${st.y - st.h} 
+                    A ${st.rx} ${st.ry} 0 0 1 ${st.x + st.rx} ${st.y - st.h} 
+                    L ${st.x + st.rx} ${st.y} 
+                    A ${st.rx} ${st.ry} 0 0 1 ${st.x - st.rx} ${st.y} Z`,
+                      fill: "url(#pYellowSide)",
+                      stroke: "#B38600",
+                      strokeWidth: "0.5"
+                    },
+                    void 0,
+                    false,
+                    {
+                      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                      lineNumber: 261,
+                      columnNumber: 15
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV(
+                    "ellipse",
+                    {
+                      cx: st.x,
+                      cy: st.y - st.h,
+                      rx: st.rx,
+                      ry: st.ry,
+                      fill: "url(#pYellowTop)",
+                      stroke: "#C99700",
+                      strokeWidth: "0.5"
+                    },
+                    void 0,
+                    false,
+                    {
+                      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                      lineNumber: 271,
+                      columnNumber: 15
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV("ellipse", { cx: st.x, cy: st.y - st.h - 0.4, rx: st.rx * 0.7, ry: st.ry * 0.6, fill: "#FFF9A6" }, void 0, false, {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 280,
+                    columnNumber: 15
+                  }, this)
+                ] }, i, true, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 260,
+                  columnNumber: 11
+                }, this)
+              )
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 208,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ jsxDEV("g", { id: "far-horizontal-stabilizer", children: [
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 82 112 \n               C 68 104, 52 97, 36 94 \n               L 38 96 \n               C 54 99, 70 106, 84 114 Z",
+                  fill: "url(#pWhiteSide)",
+                  stroke: "#94A3B8",
+                  strokeWidth: "0.6"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 290,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 82 112 \n               C 68 104, 52 97, 36 94 \n               Q 30 92, 34 96 \n               L 42 98 \n               C 54 104, 68 111, 74 116 Z",
+                  fill: "url(#pWhiteTop)",
+                  stroke: "#CBD5E1",
+                  strokeWidth: "0.8"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 300,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 36 94 \n               Q 30 92, 34 96 \n               L 42 98 \n               C 40 95, 42 93, 44 92 Z",
+                  fill: "url(#pRedTop)",
+                  stroke: "#B30008",
+                  strokeWidth: "0.6"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 311,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("path", { d: "M 40 96 L 68 108", stroke: "#94A3B8", strokeWidth: "0.6", strokeDasharray: "2 1", opacity: "0.75" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 321,
+                columnNumber: 11
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 288,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ jsxDEV("g", { transform: "translate(34, 116)", className: "overflow-visible", children: [
+              /* @__PURE__ */ jsxDEV(
+                motion.ellipse,
+                {
+                  cx: "6",
+                  cy: "10",
+                  rx: isTakeoff ? 44 : 22,
+                  ry: isTakeoff ? 10 : 5.2,
+                  fill: "url(#pEngineFlame)",
+                  animate: {
+                    rx: isTakeoff ? [42, 62, 40] : [18, 28, 20],
+                    opacity: isTakeoff ? [0.95, 1, 0.9] : [0.75, 0.95, 0.75]
+                  },
+                  transition: { repeat: Infinity, duration: 0.12, ease: "easeInOut" }
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 329,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                motion.ellipse,
+                {
+                  cx: "9",
+                  cy: "10",
+                  rx: isTakeoff ? 22 : 11,
+                  ry: isTakeoff ? 5.2 : 2.8,
+                  fill: "url(#pEngineCore)",
+                  animate: {
+                    rx: isTakeoff ? [20, 32, 19] : [9, 15, 10]
+                  },
+                  transition: { repeat: Infinity, duration: 0.08, ease: "easeInOut" }
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 342,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("ellipse", { cx: "14", cy: "10", rx: "5.5", ry: "7.2", fill: "#27272A", stroke: "#475569", strokeWidth: "1.2" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 354,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("ellipse", { cx: "13", cy: "10", rx: "3.5", ry: "4.8", fill: "#FF8A00", opacity: "0.85" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 356,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("ellipse", { cx: "12.5", cy: "10", rx: "2", ry: "3", fill: "#FFF275", opacity: "0.95" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 357,
+                columnNumber: 11
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 327,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ jsxDEV("g", { id: "tail-fin", children: [
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 52 124 \n               C 62 98, 76 66, 86 42 \n               Q 89 36, 95 36 \n               L 97 40 \n               C 85 64, 72 96, 64 126 Z",
+                  fill: "#8F0006"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 365,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 64 126 \n               C 72 96, 85 64, 97 40 \n               Q 102 36, 110 39 \n               L 108 44 \n               C 106 72, 105 102, 104 124 Z",
+                  fill: "url(#pRedSide)",
+                  stroke: "#7A0005",
+                  strokeWidth: "1"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 374,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 86 42 Q 95 35, 102 37 L 110 39 Q 102 44, 97 42 Z",
+                  fill: "url(#pRedTop)",
+                  stroke: "#B30008",
+                  strokeWidth: "0.8"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 385,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("circle", { cx: "98", cy: "36.5", r: "1.5", fill: "#FF4D5A" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 392,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("circle", { cx: "98", cy: "36.5", r: "0.7", fill: "#FFFFFF" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 393,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("line", { x1: "99", y1: "41", x2: "103", y2: "124", stroke: "#7A0005", strokeWidth: "0.7", strokeDasharray: "4 1.5", opacity: "0.75" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 395,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 74 92 C 84 91, 96 91, 105 92 L 103 97 C 95 97, 84 97, 72 98 Z",
+                  fill: "url(#pWhiteTop)",
+                  stroke: "#CBD5E1",
+                  strokeWidth: "0.5"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 397,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 75 90 C 85 89, 96 89, 105 90 L 105 91.5 C 96 90.5, 85 90.5, 74 91.5 Z",
+                  fill: "#FFD500"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 403,
+                  columnNumber: 11
+                },
+                this
+              )
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 363,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ jsxDEV("g", { id: "fuselage-3d", children: [
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 48 126 \n               C 62 133, 85 144, 140 142 \n               C 230 136, 310 115, 324 104.5 \n               L 314 105 \n               C 230 120, 140 135, 66 125 \n               C 56 123, 50 124, 48 126 Z",
+                  fill: "url(#pUnderbelly)",
+                  stroke: "#4A0003",
+                  strokeWidth: "0.8"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 414,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 48 126 \n               C 58 119, 88 110, 175 92 \n               C 275 82, 298 80, 324 90.5 \n               L 324 104.5 \n               C 265 113, 165 127, 62 133 \n               C 54 131, 49 128, 48 126 Z",
+                  fill: "url(#pRedSide)",
+                  stroke: "#8F0006",
+                  strokeWidth: "1.2"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 427,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 148 114 \n               C 168 111, 212 105, 246 100 \n               C 244 107, 230 118, 205 123 \n               C 175 125, 155 120, 148 114 Z",
+                  fill: "url(#pRedSide)",
+                  stroke: "#7A0005",
+                  strokeWidth: "0.8",
+                  opacity: "0.85"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 440,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 58 123.5 \n               C 110 113, 218 99, 306 91 \n               L 324 92.5 \n               L 324 93.8 \n               L 306 92.2 \n               C 218 100.5, 110 114.5, 58 124.8 Z",
+                  fill: "#FFD500"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 452,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 58 122 \n               C 110 111, 218 97, 306 91 \n               L 324 93.8 \n               L 324 97.5 \n               C 304 96.5, 218 103, 56 126 \n               Z",
+                  fill: "url(#pWhiteTop)",
+                  stroke: "#CBD5E1",
+                  strokeWidth: "0.5"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 463,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("path", { d: "M 152 95 L 152 118", stroke: "#7A0005", strokeWidth: "0.6", strokeDasharray: "3 1.5", opacity: "0.65" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 476,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("path", { d: "M 252 78 L 252 102", stroke: "#7A0005", strokeWidth: "0.6", strokeDasharray: "3 1.5", opacity: "0.65" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 477,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 270 94.5 L 284 93 L 283 96.5 L 269 97.5 Z",
+                  fill: "url(#pNacaIntake)",
+                  stroke: "#7A0005",
+                  strokeWidth: "0.6"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 480,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("line", { x1: "271", y1: "95.5", x2: "282.5", y2: "94", stroke: "#CBD5E1", strokeWidth: "0.6", strokeLinecap: "round", opacity: "0.6" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 486,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 108 108 \n               C 148 95, 210 84, 280 80 \n               C 300 78, 314 84, 324 90.5 \n               L 320 94 \n               C 295 86, 210 92, 108 108 Z",
+                  fill: "url(#pRedTop)",
+                  stroke: "#FF4D5A",
+                  strokeWidth: "0.8"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 489,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 104 110 C 124 103, 138 98, 148 95",
+                  stroke: "#FFA4AB",
+                  strokeWidth: "1.2",
+                  strokeLinecap: "round",
+                  fill: "none"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 502,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 252 81 C 280 80, 300 78, 314 84 L 324 90.5",
+                  stroke: "#FFA4AB",
+                  strokeWidth: "1.2",
+                  strokeLinecap: "round",
+                  fill: "none"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 510,
+                  columnNumber: 11
+                },
+                this
+              )
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 412,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ jsxDEV("g", { id: "cockpit-3d", children: [
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 148 95 \n               C 162 66, 182 50, 206 50 \n               C 230 50, 246 63, 252 81 \n               C 215 83.5, 178 89, 148 95 Z",
+                  fill: "url(#pCanopyBlack3D)",
+                  stroke: "#334155",
+                  strokeWidth: "1.0"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 525,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 152 93 C 165 68, 184 53, 206 53 C 228 53, 243 65, 249 79",
+                  fill: "none",
+                  stroke: "#64748B",
+                  strokeWidth: "0.8",
+                  opacity: "0.6"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 536,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 160 66 Q 198 48, 238 58",
+                  stroke: "url(#pCanopyGlare)",
+                  strokeWidth: "2.8",
+                  strokeLinecap: "round"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 545,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 168 72 Q 204 55, 230 64",
+                  stroke: "#FFFFFF",
+                  strokeWidth: "1.1",
+                  strokeLinecap: "round",
+                  opacity: "0.45"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 553,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("circle", { cx: "238", cy: "59", r: "1.4", fill: "#FFFFFF", opacity: "0.9" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 562,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 146 96.5 \n               C 178 90.5, 215 85, 254 82.5 \n               L 252 79.5 \n               C 215 82, 178 87.5, 148 93.5 Z",
+                  fill: "#1E293B",
+                  stroke: "#334155",
+                  strokeWidth: "0.6"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 565,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("circle", { cx: "170", cy: "90", r: "0.75", fill: "#94A3B8" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 576,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("circle", { cx: "200", cy: "85.5", r: "0.75", fill: "#94A3B8" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 577,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV("circle", { cx: "230", cy: "81.5", r: "0.75", fill: "#94A3B8" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 578,
+                columnNumber: 11
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 523,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ jsxDEV("g", { id: "near-wing", children: [
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 150 114 \n               C 142 126, 120 152, 102 172 \n               Q 96 178, 104 184 \n               L 114 182 \n               C 126 160, 150 134, 168 124 \n               Z",
+                  fill: "url(#pWhiteSide)",
+                  stroke: "#94A3B8",
+                  strokeWidth: "0.8"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 586,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 150 114 \n               C 142 126, 120 152, 102 172 \n               Q 96 178, 104 184 \n               L 114 182 \n               C 145 170, 188 152, 222 144 \n               C 238 140, 246 118, 248 100 \n               C 248 100, 200 108, 150 114 \n               Z",
+                  fill: "url(#pWhiteTop)",
+                  stroke: "#CBD5E1",
+                  strokeWidth: "1.2"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 599,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("path", { d: "M 126 168 L 195 146", stroke: "#94A3B8", strokeWidth: "0.7", strokeDasharray: "3 1", opacity: "0.75" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 614,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 102 172 \n               Q 96 178, 104 184 \n               L 118 181 \n               C 114 174, 124 168, 128 166 \n               Z",
+                  fill: "url(#pRedTop)",
+                  stroke: "#B30008",
+                  strokeWidth: "0.8"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 617,
+                  columnNumber: 11
+                },
+                this
+              ),
+              [
+                { x: 128, y: 164, rx: 6, ry: 2.8, h: 3.2 },
+                { x: 150, y: 152, rx: 6.2, ry: 2.9, h: 3.4 },
+                { x: 172, y: 140, rx: 6.4, ry: 3, h: 3.5 },
+                { x: 194, y: 128, rx: 6.5, ry: 3, h: 3.5 }
+              ].map(
+                (st, i) => /* @__PURE__ */ jsxDEV("g", { children: [
+                  /* @__PURE__ */ jsxDEV(
+                    "path",
+                    {
+                      d: `M ${st.x - st.rx} ${st.y} 
+                    L ${st.x - st.rx} ${st.y - st.h} 
+                    A ${st.rx} ${st.ry} 0 0 1 ${st.x + st.rx} ${st.y - st.h} 
+                    L ${st.x + st.rx} ${st.y} 
+                    A ${st.rx} ${st.ry} 0 0 1 ${st.x - st.rx} ${st.y} Z`,
+                      fill: "url(#pYellowSide)",
+                      stroke: "#B38600",
+                      strokeWidth: "0.6"
+                    },
+                    void 0,
+                    false,
+                    {
+                      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                      lineNumber: 636,
+                      columnNumber: 15
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV("ellipse", { cx: st.x, cy: st.y - st.h, rx: st.rx, ry: st.ry, fill: "url(#pYellowTop)", stroke: "#C99700", strokeWidth: "0.5" }, void 0, false, {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 646,
+                    columnNumber: 15
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("ellipse", { cx: st.x, cy: st.y - st.h - 0.4, rx: st.rx * 0.7, ry: st.ry * 0.6, fill: "#FFF9A6" }, void 0, false, {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 647,
+                    columnNumber: 15
+                  }, this)
+                ] }, i, true, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 635,
+                  columnNumber: 11
+                }, this)
+              )
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 584,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ jsxDEV("g", { id: "near-horizontal-stabilizer", children: [
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 80 128 \n               C 64 138, 48 148, 34 154 \n               L 36 156 \n               C 50 150, 66 140, 82 130 Z",
+                  fill: "url(#pWhiteSide)",
+                  stroke: "#94A3B8",
+                  strokeWidth: "0.6"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 657,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 80 128 \n               C 64 138, 48 148, 34 154 \n               Q 28 157, 34 160 \n               L 44 158 \n               C 54 150, 68 142, 74 134 Z",
+                  fill: "url(#pWhiteTop)",
+                  stroke: "#CBD5E1",
+                  strokeWidth: "1.0"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 668,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "path",
+                {
+                  d: "M 34 154 \n               Q 28 157, 34 160 \n               L 44 158 \n               C 41 154, 43 151, 45 149 Z",
+                  fill: "url(#pRedTop)",
+                  stroke: "#B30008",
+                  strokeWidth: "0.7"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 680,
+                  columnNumber: 11
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("path", { d: "M 40 155 L 70 139", stroke: "#94A3B8", strokeWidth: "0.7", strokeDasharray: "3 1", opacity: "0.75" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 691,
+                columnNumber: 11
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 655,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ jsxDEV("g", { id: "nose-and-propeller", children: /* @__PURE__ */ jsxDEV("g", { transform: "translate(324, 97.5) rotate(-4)", children: [
+              /* @__PURE__ */ jsxDEV("ellipse", { cx: "0", cy: "0", rx: "1.8", ry: "7", fill: "#8F0006", stroke: "#4A0003", strokeWidth: "0.8" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 705,
+                columnNumber: 13
+              }, this),
+              /* @__PURE__ */ jsxDEV("ellipse", { cx: "0.4", cy: "0", rx: "1.2", ry: "6.6", fill: "#18181B" }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 706,
+                columnNumber: 13
+              }, this),
+              /* @__PURE__ */ jsxDEV(
+                "ellipse",
+                {
+                  cx: "0",
+                  cy: "0",
+                  rx: isTakeoff ? 8 : 6,
+                  ry: isTakeoff ? 54 : 46,
+                  fill: "url(#pPropDisc)"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 709,
+                  columnNumber: 13
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "ellipse",
+                {
+                  cx: "0",
+                  cy: "0",
+                  rx: isTakeoff ? 4 : 3,
+                  ry: isTakeoff ? 38 : 32,
+                  fill: "#FFFFFF",
+                  opacity: "0.12"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 718,
+                  columnNumber: 13
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "ellipse",
+                {
+                  cx: "0",
+                  cy: "0",
+                  rx: isTakeoff ? 8 : 6,
+                  ry: isTakeoff ? 54 : 46,
+                  fill: "none",
+                  stroke: "#FFD500",
+                  strokeWidth: "1",
+                  opacity: "0.5"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 728,
+                  columnNumber: 13
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV(
+                "ellipse",
+                {
+                  cx: "0",
+                  cy: "0",
+                  rx: isTakeoff ? 7.6 : 5.6,
+                  ry: isTakeoff ? 53 : 45,
+                  fill: "none",
+                  stroke: "#FFFFFF",
+                  strokeWidth: "0.6",
+                  opacity: "0.65"
+                },
+                void 0,
+                false,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 738,
+                  columnNumber: 13
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("g", { transform: `scale(${isTakeoff ? 8 / 54 : 6 / 46}, 1)`, children: /* @__PURE__ */ jsxDEV(
+                motion.g,
+                {
+                  animate: { rotate: [0, 360] },
+                  transition: {
+                    repeat: Infinity,
+                    duration: isTakeoff ? 0.08 : 0.14,
+                    ease: "linear"
+                  },
+                  children: [
+                    /* @__PURE__ */ jsxDEV("use", { href: "#propBladeDef" }, void 0, false, {
+                      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                      lineNumber: 763,
+                      columnNumber: 17
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("use", { href: "#propBladeDef", transform: "rotate(180)" }, void 0, false, {
+                      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                      lineNumber: 765,
+                      columnNumber: 17
+                    }, this)
+                  ]
+                },
+                void 0,
+                true,
+                {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 754,
+                  columnNumber: 15
+                },
+                this
+              ) }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 753,
+                columnNumber: 13
+              }, this),
+              /* @__PURE__ */ jsxDEV("g", { id: "spinner-hub-3d", children: [
+                /* @__PURE__ */ jsxDEV("ellipse", { cx: "0", cy: "0", rx: "0.8", ry: "6.8", fill: "none", stroke: "#FFD500", strokeWidth: "0.8", opacity: "0.85" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 775,
+                  columnNumber: 15
+                }, this),
+                /* @__PURE__ */ jsxDEV(
+                  "path",
+                  {
+                    d: "M 0 -6.5\n                   C 8 -6.5, 17 -3, 23 0\n                   C 17 3, 8 6.5, 0 6.5\n                   C -1 4, -1 -4, 0 -6.5\n                   Z",
+                    fill: "url(#pSpinnerRed)",
+                    stroke: "#8F0006",
+                    strokeWidth: "0.8"
+                  },
+                  void 0,
+                  false,
+                  {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 778,
+                    columnNumber: 15
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV(
+                  "path",
+                  {
+                    d: "M 15 -3.5\n                   C 18 -3.1, 21.2 -1.5, 23.2 0\n                   C 21.2 1.5, 18 3.1, 15 3.5\n                   C 14.1 1.7, 14.1 -1.7, 15 -3.5\n                   Z",
+                    fill: "url(#pSpinnerWhiteTip)",
+                    stroke: "#94A3B8",
+                    strokeWidth: "0.6"
+                  },
+                  void 0,
+                  false,
+                  {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 790,
+                    columnNumber: 15
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV("ellipse", { cx: "15", cy: "0", rx: "0.7", ry: "3.5", fill: "none", stroke: "#FFD500", strokeWidth: "0.7", opacity: "0.9" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 802,
+                  columnNumber: 15
+                }, this),
+                /* @__PURE__ */ jsxDEV(
+                  "path",
+                  {
+                    d: "M 1 -4.5 C 8 -4.2, 15.5 -2.4, 22.2 -0.2",
+                    fill: "none",
+                    stroke: "#FFFFFF",
+                    strokeWidth: "1",
+                    strokeLinecap: "round",
+                    opacity: "0.85"
+                  },
+                  void 0,
+                  false,
+                  {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 805,
+                    columnNumber: 15
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV("ellipse", { cx: "19", cy: "-0.8", rx: "1.6", ry: "0.7", fill: "#FFFFFF", opacity: "0.95" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 815,
+                  columnNumber: 15
+                }, this),
+                /* @__PURE__ */ jsxDEV("circle", { cx: "22.5", cy: "0", r: "0.6", fill: "#FFFFFF", opacity: "0.9" }, void 0, false, {
+                  fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                  lineNumber: 818,
+                  columnNumber: 15
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 773,
+                columnNumber: 13
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 703,
+              columnNumber: 11
+            }, this) }, void 0, false, {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 698,
+              columnNumber: 9
+            }, this)
+          ]
+        },
+        void 0,
+        true,
+        {
+          fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+          lineNumber: 36,
+          columnNumber: 7
+        },
+        this
+      )
+    },
+    void 0,
+    false,
+    {
+      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+      lineNumber: 32,
+      columnNumber: 5
+    },
+    this
+  );
+}
+_c = LegoAirplane3D;
+function LegoProgressBar({ onComplete, startDelay = 350 }) {
+  _s();
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const duration = 1800;
+    let frameId;
+    let startTime;
+    const timeoutId = setTimeout(() => {
+      startTime = performance.now();
+      const updateProgress = (now) => {
+        const elapsed = now - startTime;
+        const linear = Math.min(1, elapsed / duration);
+        const eased = linear < 0.5 ? 2 * linear * linear : 1 - Math.pow(-2 * linear + 2, 2) / 2;
+        const pct = Math.min(100, Math.round(eased * 100));
+        setProgress(pct);
+        if (linear < 1) {
+          frameId = requestAnimationFrame(updateProgress);
+        } else {
+          setTimeout(() => {
+            if (onComplete) onComplete();
+          }, 280);
+        }
+      };
+      frameId = requestAnimationFrame(updateProgress);
+    }, startDelay);
+    return () => {
+      clearTimeout(timeoutId);
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+  }, [onComplete, startDelay]);
+  const totalBars = 18;
+  const activeBars = Math.floor(progress / 100 * totalBars);
+  return /* @__PURE__ */ jsxDEV("div", { className: "w-full max-w-[260px] sm:max-w-[290px] flex flex-col items-center select-none font-mono", children: [
+    /* @__PURE__ */ jsxDEV("div", { className: "mb-2 text-center", children: /* @__PURE__ */ jsxDEV("span", { className: "text-sm sm:text-base font-bold tracking-wider text-[#FFD500] tabular-nums drop-shadow-[0_2px_10px_rgba(255,213,0,0.35)]", children: [
+      progress,
+      "%"
+    ] }, void 0, true, {
+      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+      lineNumber: 881,
+      columnNumber: 9
+    }, this) }, void 0, false, {
+      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+      lineNumber: 880,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: "w-full flex gap-[3px] p-1 bg-[#070a12] rounded-lg border border-[#182032] shadow-[inset_0_2px_4px_rgba(0,0,0,0.85),0_4px_16px_rgba(0,0,0,0.5)]", children: Array.from({ length: totalBars }).map((_, i) => {
+      const isFilled = i < activeBars || i === 0 && progress > 2;
+      return /* @__PURE__ */ jsxDEV(
+        "div",
+        {
+          className: `flex-1 h-3 sm:h-3.5 rounded-[1.5px] transition-all duration-100 ${isFilled ? "bg-gradient-to-t from-[#E6B800] via-[#FFD500] to-[#FFF785] shadow-[0_0_6px_rgba(255,213,0,0.5)]" : "bg-[#121724]"}`
+        },
+        i,
+        false,
+        {
+          fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+          lineNumber: 891,
+          columnNumber: 13
+        },
+        this
+      );
+    }) }, void 0, false, {
+      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+      lineNumber: 887,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+    lineNumber: 878,
+    columnNumber: 5
+  }, this);
+}
+_s(LegoProgressBar, "ZVQpwjU6Dz5R8VBOzPsnxGRmMVo=");
+_c2 = LegoProgressBar;
+export default function LegoCurtainLoader({ onComplete }) {
+  _s2();
+  const [isTakeoff, setIsTakeoff] = useState(false);
+  const handleTakeoffComplete = () => {
+    if (onComplete) {
+      onComplete();
+    }
+  };
+  return /* @__PURE__ */ jsxDEV(
+    motion.div,
+    {
+      initial: false,
+      animate: { opacity: 1 },
+      exit: { opacity: 0 },
+      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+      className: "fixed inset-0 z-[99999] overflow-hidden pointer-events-auto select-none bg-[#090b12]",
+      children: /* @__PURE__ */ jsxDEV("div", { className: "absolute inset-0 w-full h-full", children: [
+        /* @__PURE__ */ jsxDEV(
+          "div",
+          {
+            className: "absolute inset-0 pointer-events-none",
+            style: {
+              background: `
+              radial-gradient(ellipse 90% 60% at 75% 40%, rgba(255, 213, 0, 0.08), transparent 70%),
+              radial-gradient(ellipse 70% 50% at 25% 30%, rgba(0, 85, 191, 0.07), transparent 65%),
+              radial-gradient(circle 800px at 50% 110%, rgba(227, 0, 11, 0.04), transparent 70%),
+              #090b12
+            `
+            }
+          },
+          void 0,
+          false,
+          {
+            fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+            lineNumber: 933,
+            columnNumber: 9
+          },
+          this
+        ),
+        /* @__PURE__ */ jsxDEV("div", { className: "absolute inset-0 flex flex-col items-center justify-center px-4 z-20", children: [
+          /* @__PURE__ */ jsxDEV(
+            "div",
+            {
+              className: "absolute w-[460px] h-[260px] rounded-full pointer-events-none",
+              style: {
+                background: "radial-gradient(ellipse 65% 55% at 50% 50%, rgba(255, 213, 0, 0.09) 0%, rgba(254, 138, 24, 0.03) 45%, transparent 75%)"
+              }
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 951,
+              columnNumber: 11
+            },
+            this
+          ),
+          /* @__PURE__ */ jsxDEV(
+            motion.div,
+            {
+              className: "relative z-20 flex flex-col items-center",
+              initial: { x: "-90vw", opacity: 0 },
+              animate: isTakeoff ? {
+                x: ["0vw", "15vw", "140vw"],
+                opacity: 1
+                // Tetap solid 100%, jangan hilang di tengah jalan!
+              } : {
+                x: "0vw",
+                opacity: 1
+              },
+              transition: isTakeoff ? {
+                duration: 0.85,
+                ease: [0.32, 0, 0.18, 1],
+                // Smooth supersonic climb
+                times: [0, 0.35, 1]
+              } : {
+                duration: 0.85,
+                ease: [0.16, 1, 0.3, 1]
+                // Silky aerodynamic arrival glide from left
+              },
+              onAnimationComplete: () => {
+                if (isTakeoff) {
+                  handleTakeoffComplete();
+                }
+              },
+              children: [
+                /* @__PURE__ */ jsxDEV(
+                  motion.div,
+                  {
+                    className: "relative z-20",
+                    animate: isTakeoff ? {
+                      y: ["0px", "-10px", "-55px"],
+                      rotate: [0, -3.5, -8],
+                      scale: [1, 1.04, 1.12]
+                    } : {
+                      y: [-6, 6, -6],
+                      rotate: [-1.2, 1.4, -1.2],
+                      scale: 1
+                    },
+                    transition: isTakeoff ? {
+                      duration: 0.85,
+                      ease: [0.32, 0, 0.18, 1],
+                      times: [0, 0.35, 1]
+                    } : {
+                      repeat: Infinity,
+                      duration: 3.2,
+                      ease: "easeInOut"
+                    },
+                    children: /* @__PURE__ */ jsxDEV(LegoAirplane3D, { isTakeoff }, void 0, false, {
+                      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                      lineNumber: 1022,
+                      columnNumber: 15
+                    }, this)
+                  },
+                  void 0,
+                  false,
+                  {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 993,
+                    columnNumber: 13
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV(
+                  motion.div,
+                  {
+                    className: "w-56 sm:w-72 md:w-80 h-4 rounded-full bg-black/75 blur-[8px] mt-1 mb-8 pointer-events-none",
+                    animate: isTakeoff ? { scale: [1, 0.4, 0], opacity: [0.6, 0.25, 0] } : { scale: [0.92, 1.05, 0.92], opacity: [0.5, 0.7, 0.5] },
+                    transition: isTakeoff ? { duration: 0.55, ease: "easeOut" } : { repeat: Infinity, duration: 3.2, ease: "easeInOut" }
+                  },
+                  void 0,
+                  false,
+                  {
+                    fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                    lineNumber: 1026,
+                    columnNumber: 13
+                  },
+                  this
+                )
+              ]
+            },
+            void 0,
+            true,
+            {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 960,
+              columnNumber: 11
+            },
+            this
+          ),
+          /* @__PURE__ */ jsxDEV(AnimatePresence, { children: !isTakeoff && /* @__PURE__ */ jsxDEV(
+            motion.div,
+            {
+              initial: { opacity: 0, y: 10 },
+              animate: { opacity: 1, y: 0 },
+              exit: { opacity: 0, y: -8, transition: { duration: 0.25, ease: "easeOut" } },
+              transition: { duration: 0.3, ease: "easeOut" },
+              className: "w-full max-w-xs sm:max-w-sm flex flex-col items-center",
+              children: /* @__PURE__ */ jsxDEV(LegoProgressBar, { onComplete: () => setIsTakeoff(true) }, void 0, false, {
+                fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+                lineNumber: 1053,
+                columnNumber: 17
+              }, this)
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+              lineNumber: 1046,
+              columnNumber: 13
+            },
+            this
+          ) }, void 0, false, {
+            fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+            lineNumber: 1044,
+            columnNumber: 11
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+          lineNumber: 949,
+          columnNumber: 9
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+        lineNumber: 931,
+        columnNumber: 7
+      }, this)
+    },
+    void 0,
+    false,
+    {
+      fileName: "C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx",
+      lineNumber: 919,
+      columnNumber: 5
+    },
+    this
+  );
+}
+_s2(LegoCurtainLoader, "00G7LQ4mMuRCBc858zgaJjyiEDg=");
+_c3 = LegoCurtainLoader;
+var _c, _c2, _c3;
+$RefreshReg$(_c, "LegoAirplane3D");
+$RefreshReg$(_c2, "LegoProgressBar");
+$RefreshReg$(_c3, "LegoCurtainLoader");
+if (import.meta.hot && !inWebWorker) {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+if (import.meta.hot && !inWebWorker) {
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/Users/APRILEOERLANGGA/my-portofolio/src/components/LegoCurtainLoader.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+
+//# sourceMappingURL=data:application/json;base64,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RUE7QUFBQSxVQUtBLHVCQUFDLG1CQUNFLFdBQUNkLGFBQ0E7QUFBQSxZQUFDLE9BQU87QUFBQSxZQUFQO0FBQUEsY0FDQyxTQUFTLEVBQUVVLFNBQVMsR0FBR1AsR0FBRyxHQUFHO0FBQUEsY0FDN0IsU0FBUyxFQUFFTyxTQUFTLEdBQUdQLEdBQUcsRUFBRTtBQUFBLGNBQzVCLE1BQU0sRUFBRU8sU0FBUyxHQUFHUCxHQUFHLElBQUlzRCxZQUFZLEVBQUU1QyxVQUFVLE1BQU1DLE1BQU0sVUFBVSxFQUFFO0FBQUEsY0FDM0UsWUFBWSxFQUFFRCxVQUFVLEtBQUtDLE1BQU0sVUFBVTtBQUFBLGNBQzdDLFdBQVU7QUFBQSxjQUVWLGlDQUFDLG1CQUFnQixZQUFZLE1BQU1zQyxhQUFhLElBQUksS0FBcEQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBc0Q7QUFBQTtBQUFBLFlBUHhEO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQSxVQVFBLEtBVko7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFZQTtBQUFBLGFBM0dGO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUE0R0E7QUFBQSxXQTlIRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBK0hBO0FBQUE7QUFBQSxJQTNJRjtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUEsRUE0SUE7QUFFSjtBQUFDRCxJQXhKdUJELG1CQUFpQjtBQUFBUSxNQUFqQlI7QUFBaUIsSUFBQWxDLElBQUFpQyxLQUFBUztBQUFBQyxhQUFBM0MsSUFBQTtBQUFBMkMsYUFBQVYsS0FBQTtBQUFBVSxhQUFBRCxLQUFBIiwibmFtZXMiOlsiUmVhY3QiLCJ1c2VTdGF0ZSIsInVzZUVmZmVjdCIsIm1vdGlvbiIsIkFuaW1hdGVQcmVzZW5jZSIsIkxlZ29BaXJwbGFuZTNEIiwiaXNUYWtlb2ZmIiwicGVyc3BlY3RpdmUiLCJ4IiwieSIsInJ4IiwicnkiLCJoIiwibWFwIiwic3QiLCJpIiwib3BhY2l0eSIsInJlcGVhdCIsIkluZmluaXR5IiwiZHVyYXRpb24iLCJlYXNlIiwicm90YXRlIiwiX2MiLCJMZWdvUHJvZ3Jlc3NCYXIiLCJvbkNvbXBsZXRlIiwic3RhcnREZWxheSIsIl9zIiwicHJvZ3Jlc3MiLCJzZXRQcm9ncmVzcyIsImZyYW1lSWQiLCJzdGFydFRpbWUiLCJ0aW1lb3V0SWQiLCJzZXRUaW1lb3V0IiwicGVyZm9ybWFuY2UiLCJub3ciLCJ1cGRhdGVQcm9ncmVzcyIsImVsYXBzZWQiLCJsaW5lYXIiLCJNYXRoIiwibWluIiwiZWFzZWQiLCJwb3ciLCJwY3QiLCJyb3VuZCIsInJlcXVlc3RBbmltYXRpb25GcmFtZSIsImNsZWFyVGltZW91dCIsImNhbmNlbEFuaW1hdGlvbkZyYW1lIiwidG90YWxCYXJzIiwiYWN0aXZlQmFycyIsImZsb29yIiwiQXJyYXkiLCJmcm9tIiwibGVuZ3RoIiwiXyIsImlzRmlsbGVkIiwiX2MyIiwiTGVnb0N1cnRhaW5Mb2FkZXIiLCJfczIiLCJzZXRJc1Rha2VvZmYiLCJoYW5kbGVUYWtlb2ZmQ29tcGxldGUiLCJiYWNrZ3JvdW5kIiwidGltZXMiLCJzY2FsZSIsInRyYW5zaXRpb24iLCJfYzMiLCIkUmVmcmVzaFJlZyQiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiTGVnb0N1cnRhaW5Mb2FkZXIuanN4Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyB1c2VTdGF0ZSwgdXNlRWZmZWN0IH0gZnJvbSAncmVhY3QnO1xuaW1wb3J0IHsgbW90aW9uLCBBbmltYXRlUHJlc2VuY2UgfSBmcm9tICdmcmFtZXItbW90aW9uJztcblxuLyoqXG4gKiAzRCBJc29tZXRyaWMgTEVHTyBBZXJvZHluYW1pYyBTcG9ydCBQbGFuZVxuICogLSBUcnVlIDMvNCB2b2x1bWV0cmljIHBlcnNwZWN0aXZlIChmdXNlbGFnZSBkZXB0aCwgdG9wIGRlY2sgd2l0aCAzRCBzdHVkcywgZmFyICYgbmVhciB3aW5ncykuXG4gKiAtIEdlb21ldHJpY2FsbHkgYWNjdXJhdGUgM0QgcHJvcGVsbGVyIGFzc2VtYmx5OiBtb3VudGVkIG9uIHRoZSAzRCBzcGlubmVyIGh1YiBhbmQgcm90YXRpbmdcbiAqICAgaW4gdHJ1ZSBwZXJzcGVjdGl2ZSBlbGxpcHNlIHBsYW5lIG1hdGNoaW5nIHRoZSBhaXJjcmFmdCdzIGhlYWRpbmcuXG4gKiAtIDEwMCUgaGFybW9uaXplZCB3aXRoIHBvcnRmb2xpbydzIExlZ28gWWVsbG93ICgjRkZENTAwKSwgTGVnbyBSZWQgKCNFMzAwMEIpLCBhbmQgZGVlcCBzdHVkaW8gZGFyayB0aGVtZS5cbiAqL1xuZnVuY3Rpb24gTGVnb0FpcnBsYW5lM0QoeyBpc1Rha2VvZmYgPSBmYWxzZSB9KSB7XG4gIHJldHVybiAoXG4gICAgPGRpdlxuICAgICAgY2xhc3NOYW1lPVwicmVsYXRpdmUgdy04MCBoLTQ0IHNtOnctOTYgc206aC01MiBtZDp3LVsyOHJlbV0gbWQ6aC02MCBmaWx0ZXIgZHJvcC1zaGFkb3ctWzBfMjVweF80MHB4X3JnYmEoMCwwLDAsMC45NSldIHNlbGVjdC1ub25lXCJcbiAgICAgIHN0eWxlPXt7IHBlcnNwZWN0aXZlOiAxMDAwIH19XG4gICAgPlxuICAgICAgPHN2Z1xuICAgICAgICB2aWV3Qm94PVwiMCAwIDQyMCAyMjBcIlxuICAgICAgICBmaWxsPVwibm9uZVwiXG4gICAgICAgIHhtbG5zPVwiaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmdcIlxuICAgICAgICBjbGFzc05hbWU9XCJ3LWZ1bGwgaC1mdWxsIG92ZXJmbG93LXZpc2libGVcIlxuICAgICAgPlxuICAgICAgICA8ZGVmcz5cbiAgICAgICAgICB7LyogM0QgQUJTIFBsYXN0aWMgR3JhZGllbnRzIC0gTGlnaHQgc291cmNlIGZyb20gdG9wLWxlZnQgKi99XG4gICAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPVwicFJlZFRvcFwiIHgxPVwiMCVcIiB5MT1cIjAlXCIgeDI9XCIxMDAlXCIgeTI9XCIxMDAlXCI+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIwJVwiIHN0b3BDb2xvcj1cIiNGRjRENUFcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiNjAlXCIgc3RvcENvbG9yPVwiI0UzMDAwQlwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIxMDAlXCIgc3RvcENvbG9yPVwiI0M0MDAwOFwiIC8+XG4gICAgICAgICAgPC9saW5lYXJHcmFkaWVudD5cblxuICAgICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD1cInBSZWRTaWRlXCIgeDE9XCIwJVwiIHkxPVwiMCVcIiB4Mj1cIjAlXCIgeTI9XCIxMDAlXCI+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIwJVwiIHN0b3BDb2xvcj1cIiNFMzAwMEJcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiNzAlXCIgc3RvcENvbG9yPVwiI0IzMDAwOFwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIxMDAlXCIgc3RvcENvbG9yPVwiIzdBMDAwNVwiIC8+XG4gICAgICAgICAgPC9saW5lYXJHcmFkaWVudD5cblxuICAgICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD1cInBXaGl0ZVRvcFwiIHgxPVwiMCVcIiB5MT1cIjAlXCIgeDI9XCIxMDAlXCIgeTI9XCIxMDAlXCI+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIwJVwiIHN0b3BDb2xvcj1cIiNGRkZGRkZcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiNjUlXCIgc3RvcENvbG9yPVwiI0Y4RkFGQ1wiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIxMDAlXCIgc3RvcENvbG9yPVwiI0UyRThGMFwiIC8+XG4gICAgICAgICAgPC9saW5lYXJHcmFkaWVudD5cblxuICAgICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD1cInBXaGl0ZVNpZGVcIiB4MT1cIjAlXCIgeTE9XCIwJVwiIHgyPVwiMCVcIiB5Mj1cIjEwMCVcIj5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjAlXCIgc3RvcENvbG9yPVwiI0UyRThGMFwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIxMDAlXCIgc3RvcENvbG9yPVwiIzk0QTNCOFwiIC8+XG4gICAgICAgICAgPC9saW5lYXJHcmFkaWVudD5cblxuICAgICAgICAgIHsvKiBBdXRoZW50aWMgTGVnbyBZZWxsb3cgU3R1ZCBHcmFkaWVudHMgKi99XG4gICAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPVwicFllbGxvd1RvcFwiIHgxPVwiMCVcIiB5MT1cIjAlXCIgeDI9XCIxMDAlXCIgeTI9XCIxMDAlXCI+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIwJVwiIHN0b3BDb2xvcj1cIiNGRkY3ODVcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiNDAlXCIgc3RvcENvbG9yPVwiI0ZGRDUwMFwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIxMDAlXCIgc3RvcENvbG9yPVwiI0U2QjgwMFwiIC8+XG4gICAgICAgICAgPC9saW5lYXJHcmFkaWVudD5cblxuICAgICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD1cInBZZWxsb3dTaWRlXCIgeDE9XCIwJVwiIHkxPVwiMCVcIiB4Mj1cIjAlXCIgeTI9XCIxMDAlXCI+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIwJVwiIHN0b3BDb2xvcj1cIiNGRkQ1MDBcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMTAwJVwiIHN0b3BDb2xvcj1cIiNCMzg2MDBcIiAvPlxuICAgICAgICAgIDwvbGluZWFyR3JhZGllbnQ+XG5cbiAgICAgICAgICB7LyogM0QgR2xvc3N5IE9ic2lkaWFuIEJsYWNrIEFlcm9keW5hbWljIENhbm9weSBHcmFkaWVudCAqL31cbiAgICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9XCJwQ2Fub3B5QmxhY2szRFwiIHgxPVwiMTUlXCIgeTE9XCIwJVwiIHgyPVwiODUlXCIgeTI9XCIxMDAlXCI+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIwJVwiIHN0b3BDb2xvcj1cIiMzMzQxNTVcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMTglXCIgc3RvcENvbG9yPVwiIzFFMjkzQlwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCI1MCVcIiBzdG9wQ29sb3I9XCIjMEYxNzJBXCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjg1JVwiIHN0b3BDb2xvcj1cIiMwQjBGMTlcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMTAwJVwiIHN0b3BDb2xvcj1cIiMwMjA2MTdcIiAvPlxuICAgICAgICAgIDwvbGluZWFyR3JhZGllbnQ+XG5cbiAgICAgICAgICB7LyogT2JzaWRpYW4gSW5uZXIgU3BlY3VsYXIgR2xhcmUgR3JhZGllbnQgKi99XG4gICAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPVwicENhbm9weUdsYXJlXCIgeDE9XCIwJVwiIHkxPVwiMCVcIiB4Mj1cIjEwMCVcIiB5Mj1cIjgwJVwiPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMCVcIiBzdG9wQ29sb3I9XCIjRkZGRkZGXCIgc3RvcE9wYWNpdHk9XCIwLjk1XCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjM1JVwiIHN0b3BDb2xvcj1cIiM5M0M1RkRcIiBzdG9wT3BhY2l0eT1cIjAuNjVcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiNzAlXCIgc3RvcENvbG9yPVwiIzM4QkRGOFwiIHN0b3BPcGFjaXR5PVwiMC4yXCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjEwMCVcIiBzdG9wQ29sb3I9XCIjMDI4NEM3XCIgc3RvcE9wYWNpdHk9XCIwXCIgLz5cbiAgICAgICAgICA8L2xpbmVhckdyYWRpZW50PlxuXG4gICAgICAgICAgey8qIEVuZ2luZSBQcm9wdWxzaW9uIEZsYW1lICovfVxuICAgICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD1cInBFbmdpbmVGbGFtZVwiIHgxPVwiMTAwJVwiIHkxPVwiNTAlXCIgeDI9XCIwJVwiIHkyPVwiNTAlXCI+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIwJVwiIHN0b3BDb2xvcj1cIiNGRkZGRkZcIiBzdG9wT3BhY2l0eT1cIjFcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMjUlXCIgc3RvcENvbG9yPVwiI0ZGRjA2NlwiIHN0b3BPcGFjaXR5PVwiMC45NVwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCI2MCVcIiBzdG9wQ29sb3I9XCIjRkY4QTAwXCIgc3RvcE9wYWNpdHk9XCIwLjg1XCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjEwMCVcIiBzdG9wQ29sb3I9XCIjRTMwMDBCXCIgc3RvcE9wYWNpdHk9XCIwXCIgLz5cbiAgICAgICAgICA8L2xpbmVhckdyYWRpZW50PlxuXG4gICAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPVwicEVuZ2luZUNvcmVcIiB4MT1cIjEwMCVcIiB5MT1cIjUwJVwiIHgyPVwiMCVcIiB5Mj1cIjUwJVwiPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMCVcIiBzdG9wQ29sb3I9XCIjRkZGRkZGXCIgc3RvcE9wYWNpdHk9XCIxXCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjQwJVwiIHN0b3BDb2xvcj1cIiNGRkQ1MDBcIiBzdG9wT3BhY2l0eT1cIjAuOVwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIxMDAlXCIgc3RvcENvbG9yPVwiI0ZGNUExRlwiIHN0b3BPcGFjaXR5PVwiMFwiIC8+XG4gICAgICAgICAgPC9saW5lYXJHcmFkaWVudD5cblxuICAgICAgICAgIHsvKiBTaWxreSBUcmFuc2x1Y2VudCBBZXJvZHluYW1pYyBQcm9wZWxsZXIgQmx1ciBHcmFkaWVudCAqL31cbiAgICAgICAgICA8cmFkaWFsR3JhZGllbnQgaWQ9XCJwUHJvcERpc2NcIiBjeD1cIjUwJVwiIGN5PVwiNTAlXCIgcj1cIjUwJVwiPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMCVcIiBzdG9wQ29sb3I9XCIjRkZGRkZGXCIgc3RvcE9wYWNpdHk9XCIwLjIyXCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjQwJVwiIHN0b3BDb2xvcj1cIiNGRkZGRkZcIiBzdG9wT3BhY2l0eT1cIjAuMVwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCI3NSVcIiBzdG9wQ29sb3I9XCIjRkZGRkZGXCIgc3RvcE9wYWNpdHk9XCIwLjAzXCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjg4JVwiIHN0b3BDb2xvcj1cIiNGRkQ1MDBcIiBzdG9wT3BhY2l0eT1cIjAuMThcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiOTclXCIgc3RvcENvbG9yPVwiI0ZGRjI3NVwiIHN0b3BPcGFjaXR5PVwiMC4zMlwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIxMDAlXCIgc3RvcENvbG9yPVwiI0ZGRDUwMFwiIHN0b3BPcGFjaXR5PVwiMFwiIC8+XG4gICAgICAgICAgPC9yYWRpYWxHcmFkaWVudD5cblxuICAgICAgICAgIHsvKiAzRCBTcGlubmVyIFJlZCBCb2R5IEdyYWRpZW50IChJZGVudGljYWwgdG8gRnVzZWxhZ2UgUmVkKSAqL31cbiAgICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9XCJwU3Bpbm5lclJlZFwiIHgxPVwiMCVcIiB5MT1cIjAlXCIgeDI9XCIwJVwiIHkyPVwiMTAwJVwiPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMCVcIiBzdG9wQ29sb3I9XCIjRkY0RDVBXCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjMwJVwiIHN0b3BDb2xvcj1cIiNFMzAwMEJcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiNzAlXCIgc3RvcENvbG9yPVwiI0IzMDAwOFwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCIxMDAlXCIgc3RvcENvbG9yPVwiIzdBMDAwNVwiIC8+XG4gICAgICAgICAgPC9saW5lYXJHcmFkaWVudD5cblxuICAgICAgICAgIHsvKiAzRCBTcGlubmVyIEFscGluZSBXaGl0ZSBUaXAgKE1hdGNoaW5nIFdoaXRlIFJhY2luZyBTdHJpcGUpICovfVxuICAgICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD1cInBTcGlubmVyV2hpdGVUaXBcIiB4MT1cIjAlXCIgeTE9XCIwJVwiIHgyPVwiMCVcIiB5Mj1cIjEwMCVcIj5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjAlXCIgc3RvcENvbG9yPVwiI0ZGRkZGRlwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCI1NSVcIiBzdG9wQ29sb3I9XCIjRjhGQUZDXCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjEwMCVcIiBzdG9wQ29sb3I9XCIjQ0JENUUxXCIgLz5cbiAgICAgICAgICA8L2xpbmVhckdyYWRpZW50PlxuXG4gICAgICAgICAgey8qIEFlcm9keW5hbWljIFByb3BlbGxlciBCbGFkZSBUaXAgTGlnaHQgU3dlZXAgKi99XG4gICAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPVwicEJsYWRlU3dlZXBcIiB4MT1cIjAlXCIgeTE9XCIwJVwiIHgyPVwiMTAwJVwiIHkyPVwiMTAwJVwiPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMCVcIiBzdG9wQ29sb3I9XCIjRkZGRkZGXCIgc3RvcE9wYWNpdHk9XCIwLjg1XCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjMwJVwiIHN0b3BDb2xvcj1cIiNGRkYyNzVcIiBzdG9wT3BhY2l0eT1cIjAuNVwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCI3MCVcIiBzdG9wQ29sb3I9XCIjRkZENTAwXCIgc3RvcE9wYWNpdHk9XCIwLjE1XCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjEwMCVcIiBzdG9wQ29sb3I9XCIjRkZENTAwXCIgc3RvcE9wYWNpdHk9XCIwXCIgLz5cbiAgICAgICAgICA8L2xpbmVhckdyYWRpZW50PlxuXG4gICAgICAgICAgey8qIEFlcm9keW5hbWljIFByb3BlbGxlciBCbGFkZSBCb2R5IEdyYWRpZW50ICovfVxuICAgICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD1cInBCbGFkZUJvZHlcIiB4MT1cIjAlXCIgeTE9XCIwJVwiIHgyPVwiMTAwJVwiIHkyPVwiMCVcIj5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjAlXCIgc3RvcENvbG9yPVwiIzQ3NTU2OVwiIC8+XG4gICAgICAgICAgICA8c3RvcCBvZmZzZXQ9XCI0MCVcIiBzdG9wQ29sb3I9XCIjMzM0MTU1XCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjEwMCVcIiBzdG9wQ29sb3I9XCIjMUUyOTNCXCIgLz5cbiAgICAgICAgICA8L2xpbmVhckdyYWRpZW50PlxuXG4gICAgICAgICAgey8qIEZ1c2VsYWdlIFVuZGVyYmVsbHkgM0QgQ3VydmVkIFNoYWRvdyBHcmFkaWVudCAqL31cbiAgICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9XCJwVW5kZXJiZWxseVwiIHgxPVwiMCVcIiB5MT1cIjAlXCIgeDI9XCIwJVwiIHkyPVwiMTAwJVwiPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMCVcIiBzdG9wQ29sb3I9XCIjOEYwMDA2XCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjQwJVwiIHN0b3BDb2xvcj1cIiM2QjAwMDVcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMTAwJVwiIHN0b3BDb2xvcj1cIiM0QTAwMDNcIiAvPlxuICAgICAgICAgIDwvbGluZWFyR3JhZGllbnQ+XG5cbiAgICAgICAgICB7LyogTkFDQSBBaXIgSW50YWtlIEludGVybmFsIFNoYWRvdyBHcmFkaWVudCAqL31cbiAgICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9XCJwTmFjYUludGFrZVwiIHgxPVwiMCVcIiB5MT1cIjAlXCIgeDI9XCIxMDAlXCIgeTI9XCIwJVwiPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMCVcIiBzdG9wQ29sb3I9XCIjMTgxODFCXCIgLz5cbiAgICAgICAgICAgIDxzdG9wIG9mZnNldD1cIjYwJVwiIHN0b3BDb2xvcj1cIiMyNzI3MkFcIiAvPlxuICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PVwiMTAwJVwiIHN0b3BDb2xvcj1cIiM2QjAwMDVcIiAvPlxuICAgICAgICAgIDwvbGluZWFyR3JhZGllbnQ+XG5cbiAgICAgICAgICA8ZmlsdGVyIGlkPVwicFRocnVzdEdsb3dcIiB4PVwiLTUwJVwiIHk9XCItNTAlXCIgd2lkdGg9XCIyMDAlXCIgaGVpZ2h0PVwiMjAwJVwiPlxuICAgICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj1cIjRcIiByZXN1bHQ9XCJibHVyXCIgLz5cbiAgICAgICAgICAgIDxmZUNvbXBvc2l0ZSBpbj1cIlNvdXJjZUdyYXBoaWNcIiBpbjI9XCJibHVyXCIgb3BlcmF0b3I9XCJvdmVyXCIgLz5cbiAgICAgICAgICA8L2ZpbHRlcj5cblxuICAgICAgICAgIHsvKiBTeW1tZXRyaWNhbCAzRCBQcm9wZWxsZXIgQmxhZGUgVGVtcGxhdGUgKElkZW50aWNhbCBmb3IgYWxsIGJsYWRlcykgKi99XG4gICAgICAgICAgPGcgaWQ9XCJwcm9wQmxhZGVEZWZcIj5cbiAgICAgICAgICAgIHsvKiBBZXJvZHluYW1pYyBCbGFkZSBCb2R5ICovfVxuICAgICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgICAgZD1cIk0gLTIuNSAtNSBcbiAgICAgICAgICAgICAgICAgQyAtMy44IC0xNiwgLTQgLTMyLCAtMyAtNDIgXG4gICAgICAgICAgICAgICAgIFEgLTIuOCAtNDgsIDAgLTQ4IFxuICAgICAgICAgICAgICAgICBRIDIuOCAtNDgsIDMgLTQyIFxuICAgICAgICAgICAgICAgICBDIDQgLTMyLCAzLjggLTE2LCAyLjUgLTUgWlwiXG4gICAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BCbGFkZUJvZHkpXCJcbiAgICAgICAgICAgICAgc3Ryb2tlPVwiIzFFMjkzQlwiXG4gICAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC42XCJcbiAgICAgICAgICAgICAgb3BhY2l0eT1cIjAuODhcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgICAgIHsvKiBIaWdoLVZpc2liaWxpdHkgVGlwIENhcCAoVWp1bmcgQmFsaW5nLUJhbGluZykgKi99XG4gICAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgICBkPVwiTSAtMyAtNDIgXG4gICAgICAgICAgICAgICAgIEMgLTIuOCAtNDYsIC0yIC00OCwgMCAtNDggXG4gICAgICAgICAgICAgICAgIEMgMiAtNDgsIDIuOCAtNDYsIDMgLTQyIFxuICAgICAgICAgICAgICAgICBaXCJcbiAgICAgICAgICAgICAgZmlsbD1cIiNGRkQ1MDBcIlxuICAgICAgICAgICAgICBzdHJva2U9XCIjQzk5NzAwXCJcbiAgICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIwLjVcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgICAgIHsvKiBBZXJvZHluYW1pYyBUaXAgVm9ydGV4IExpZ2h0IFN3ZWVwICovfVxuICAgICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgICAgZD1cIk0gMCAtNDggQSA0OCA0OCAwIDAgMSAzNCAtMzRcIlxuICAgICAgICAgICAgICBmaWxsPVwibm9uZVwiXG4gICAgICAgICAgICAgIHN0cm9rZT1cInVybCgjcEJsYWRlU3dlZXApXCJcbiAgICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIyLjJcIlxuICAgICAgICAgICAgICBzdHJva2VMaW5lY2FwPVwicm91bmRcIlxuICAgICAgICAgICAgICB2ZWN0b3JFZmZlY3Q9XCJub24tc2NhbGluZy1zdHJva2VcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgICA8L2c+XG4gICAgICAgIDwvZGVmcz5cblxuICAgICAgICB7LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovfVxuICAgICAgICB7LyogMS4gRkFSIFdJTkcgKFNheWFwIEF0YXMvS2lyaSAtIFRydWUgM0QgQWVyb2R5bmFtaWMgVHdpbiBXaW5nKSovfVxuICAgICAgICB7LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovfVxuICAgICAgICA8ZyBpZD1cImZhci13aW5nXCIgb3BhY2l0eT1cIjAuOTVcIj5cbiAgICAgICAgICB7LyogRmFyIFdpbmcgTGVhZGluZyBFZGdlIFRoaWNrbmVzcyBCZXZlbCAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gMjM2IDcyIFxuICAgICAgICAgICAgICAgQyAxOTggNTAsIDE2MCAzNCwgMTI2IDMwIFxuICAgICAgICAgICAgICAgTCAxMTggMzAgXG4gICAgICAgICAgICAgICBRIDEwNiAzMiwgMTEwIDM4IFxuICAgICAgICAgICAgICAgTCAxMDggMzYgXG4gICAgICAgICAgICAgICBRIDEwNCAzMCwgMTE2IDI4IFxuICAgICAgICAgICAgICAgTCAxMjYgMjggXG4gICAgICAgICAgICAgICBDIDE2MCAzMiwgMTk4IDQ4LCAyMzYgNzAgWlwiXG4gICAgICAgICAgICBmaWxsPVwidXJsKCNwV2hpdGVTaWRlKVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjOTRBM0I4XCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC43XCJcbiAgICAgICAgICAvPlxuXG4gICAgICAgICAgey8qIEZhciBXaW5nIE1haW4gVG9wIFN1cmZhY2UgKE1hdGNoaW5nIEFscGluZSBXaGl0ZSBTd2VwdCBQbGF0ZSkgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDE1MiA4NiBcbiAgICAgICAgICAgICAgIEMgMTM4IDY4LCAxMjIgNTIsIDExMCAzOCBcbiAgICAgICAgICAgICAgIFEgMTA2IDMyLCAxMTggMzAgXG4gICAgICAgICAgICAgICBMIDEyNiAzMCBcbiAgICAgICAgICAgICAgIEMgMTYwIDM0LCAxOTggNTAsIDIzNiA3MiBcbiAgICAgICAgICAgICAgIEMgMjEwIDc4LCAxODAgODQsIDE1MiA4NiBcbiAgICAgICAgICAgICAgIFpcIlxuICAgICAgICAgICAgZmlsbD1cInVybCgjcFdoaXRlVG9wKVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjQ0JENUUxXCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMS4xXCJcbiAgICAgICAgICAvPlxuXG4gICAgICAgICAgey8qIEZhciBXaW5nIEFpbGVyb24gVHJpbSBMaW5lICovfVxuICAgICAgICAgIDxwYXRoIGQ9XCJNIDEyMCA0MiBMIDE3NSA2NlwiIHN0cm9rZT1cIiM5NEEzQjhcIiBzdHJva2VXaWR0aD1cIjAuN1wiIHN0cm9rZURhc2hhcnJheT1cIjMgMVwiIG9wYWNpdHk9XCIwLjc1XCIgLz5cblxuICAgICAgICAgIHsvKiBGYXIgV2luZyBSb3VuZGVkIFJlZCBBY2NlbnQgVGlwIChNYXRjaGluZyBOZWFyIFdpbmcgVGlwKSAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gMTEwIDM4IFxuICAgICAgICAgICAgICAgUSAxMDYgMzIsIDExOCAzMCBcbiAgICAgICAgICAgICAgIEwgMTI2IDMwIFxuICAgICAgICAgICAgICAgQyAxMjIgMzQsIDExOCAzNywgMTE2IDQwIFxuICAgICAgICAgICAgICAgWlwiXG4gICAgICAgICAgICBmaWxsPVwidXJsKCNwUmVkVG9wKVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjQjMwMDA4XCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC44XCJcbiAgICAgICAgICAvPlxuXG4gICAgICAgICAgey8qIEF1dGhlbnRpYyAzRCBMZWdvIFN0dWRzIG9uIEZhciBXaW5nIChTeW1tZXRyaWNhbCBUd2luIENvdW50ICYgU3BhY2luZykgKi99XG4gICAgICAgICAge1tcbiAgICAgICAgICAgIHsgeDogMTMwLCB5OiA0MCwgcng6IDUuMCwgcnk6IDIuMywgaDogMi44IH0sXG4gICAgICAgICAgICB7IHg6IDE1MiwgeTogNDksIHJ4OiA1LjIsIHJ5OiAyLjQsIGg6IDIuOCB9LFxuICAgICAgICAgICAgeyB4OiAxNzQsIHk6IDU4LCByeDogNS40LCByeTogMi41LCBoOiAzLjAgfSxcbiAgICAgICAgICAgIHsgeDogMTk2LCB5OiA2Nywgcng6IDUuNSwgcnk6IDIuNSwgaDogMy4wIH0sXG4gICAgICAgICAgXS5tYXAoKHN0LCBpKSA9PiAoXG4gICAgICAgICAgICA8ZyBrZXk9e2l9PlxuICAgICAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgICAgIGQ9e2BNICR7c3QueCAtIHN0LnJ4fSAke3N0Lnl9IFxuICAgICAgICAgICAgICAgICAgICBMICR7c3QueCAtIHN0LnJ4fSAke3N0LnkgLSBzdC5ofSBcbiAgICAgICAgICAgICAgICAgICAgQSAke3N0LnJ4fSAke3N0LnJ5fSAwIDAgMSAke3N0LnggKyBzdC5yeH0gJHtzdC55IC0gc3QuaH0gXG4gICAgICAgICAgICAgICAgICAgIEwgJHtzdC54ICsgc3Qucnh9ICR7c3QueX0gXG4gICAgICAgICAgICAgICAgICAgIEEgJHtzdC5yeH0gJHtzdC5yeX0gMCAwIDEgJHtzdC54IC0gc3Qucnh9ICR7c3QueX0gWmB9XG4gICAgICAgICAgICAgICAgZmlsbD1cInVybCgjcFllbGxvd1NpZGUpXCJcbiAgICAgICAgICAgICAgICBzdHJva2U9XCIjQjM4NjAwXCJcbiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuNVwiXG4gICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgIDxlbGxpcHNlXG4gICAgICAgICAgICAgICAgY3g9e3N0Lnh9XG4gICAgICAgICAgICAgICAgY3k9e3N0LnkgLSBzdC5ofVxuICAgICAgICAgICAgICAgIHJ4PXtzdC5yeH1cbiAgICAgICAgICAgICAgICByeT17c3Qucnl9XG4gICAgICAgICAgICAgICAgZmlsbD1cInVybCgjcFllbGxvd1RvcClcIlxuICAgICAgICAgICAgICAgIHN0cm9rZT1cIiNDOTk3MDBcIlxuICAgICAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC41XCJcbiAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgPGVsbGlwc2UgY3g9e3N0Lnh9IGN5PXtzdC55IC0gc3QuaCAtIDAuNH0gcng9e3N0LnJ4ICogMC43fSByeT17c3QucnkgKiAwLjZ9IGZpbGw9XCIjRkZGOUE2XCIgLz5cbiAgICAgICAgICAgIDwvZz5cbiAgICAgICAgICApKX1cbiAgICAgICAgPC9nPlxuXG4gICAgICAgIHsvKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi99XG4gICAgICAgIHsvKiBGQVIgSE9SSVpPTlRBTCBTVEFCSUxJWkVSIChUd2luIFRhaWwgRWxldmF0b3IgZGkgU2ViZXJhbmcpICAgKi99XG4gICAgICAgIHsvKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi99XG4gICAgICAgIDxnIGlkPVwiZmFyLWhvcml6b250YWwtc3RhYmlsaXplclwiPlxuICAgICAgICAgIHsvKiBGYXIgU3RhYmlsaXplciBMZWFkaW5nIEVkZ2UgQmV2ZWwgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDgyIDExMiBcbiAgICAgICAgICAgICAgIEMgNjggMTA0LCA1MiA5NywgMzYgOTQgXG4gICAgICAgICAgICAgICBMIDM4IDk2IFxuICAgICAgICAgICAgICAgQyA1NCA5OSwgNzAgMTA2LCA4NCAxMTQgWlwiXG4gICAgICAgICAgICBmaWxsPVwidXJsKCNwV2hpdGVTaWRlKVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjOTRBM0I4XCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC42XCJcbiAgICAgICAgICAvPlxuICAgICAgICAgIHsvKiBGYXIgU3RhYmlsaXplciBNYWluIEFlcm9keW5hbWljIFN1cmZhY2UgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDgyIDExMiBcbiAgICAgICAgICAgICAgIEMgNjggMTA0LCA1MiA5NywgMzYgOTQgXG4gICAgICAgICAgICAgICBRIDMwIDkyLCAzNCA5NiBcbiAgICAgICAgICAgICAgIEwgNDIgOTggXG4gICAgICAgICAgICAgICBDIDU0IDEwNCwgNjggMTExLCA3NCAxMTYgWlwiXG4gICAgICAgICAgICBmaWxsPVwidXJsKCNwV2hpdGVUb3ApXCJcbiAgICAgICAgICAgIHN0cm9rZT1cIiNDQkQ1RTFcIlxuICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIwLjhcIlxuICAgICAgICAgIC8+XG4gICAgICAgICAgey8qIEZhciBTdGFiaWxpemVyIFJvdW5kZWQgUmVkIFRpcCBDYXAgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDM2IDk0IFxuICAgICAgICAgICAgICAgUSAzMCA5MiwgMzQgOTYgXG4gICAgICAgICAgICAgICBMIDQyIDk4IFxuICAgICAgICAgICAgICAgQyA0MCA5NSwgNDIgOTMsIDQ0IDkyIFpcIlxuICAgICAgICAgICAgZmlsbD1cInVybCgjcFJlZFRvcClcIlxuICAgICAgICAgICAgc3Ryb2tlPVwiI0IzMDAwOFwiXG4gICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuNlwiXG4gICAgICAgICAgLz5cbiAgICAgICAgICB7LyogRmFyIFN0YWJpbGl6ZXIgVHJpbSBTZWFtICovfVxuICAgICAgICAgIDxwYXRoIGQ9XCJNIDQwIDk2IEwgNjggMTA4XCIgc3Ryb2tlPVwiIzk0QTNCOFwiIHN0cm9rZVdpZHRoPVwiMC42XCIgc3Ryb2tlRGFzaGFycmF5PVwiMiAxXCIgb3BhY2l0eT1cIjAuNzVcIiAvPlxuICAgICAgICA8L2c+XG5cbiAgICAgICAgey8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAqL31cbiAgICAgICAgey8qIDIuIFJFQVIgRVhIQVVTVCAmIEVOR0lORSBUSFJVU1QgSkVUUyAgICAgICAgICAgICAgICAgICAgICAgICAqL31cbiAgICAgICAgey8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAqL31cbiAgICAgICAgPGcgdHJhbnNmb3JtPVwidHJhbnNsYXRlKDM0LCAxMTYpXCIgY2xhc3NOYW1lPVwib3ZlcmZsb3ctdmlzaWJsZVwiPlxuICAgICAgICAgIHsvKiBPdXRlciBQcm9wdWxzaW9uIEpldCBGbGFtZSAqL31cbiAgICAgICAgICA8bW90aW9uLmVsbGlwc2VcbiAgICAgICAgICAgIGN4PVwiNlwiXG4gICAgICAgICAgICBjeT1cIjEwXCJcbiAgICAgICAgICAgIHJ4PXtpc1Rha2VvZmYgPyA0NCA6IDIyfVxuICAgICAgICAgICAgcnk9e2lzVGFrZW9mZiA/IDEwIDogNS4yfVxuICAgICAgICAgICAgZmlsbD1cInVybCgjcEVuZ2luZUZsYW1lKVwiXG4gICAgICAgICAgICBhbmltYXRlPXt7XG4gICAgICAgICAgICAgIHJ4OiBpc1Rha2VvZmYgPyBbNDIsIDYyLCA0MF0gOiBbMTgsIDI4LCAyMF0sXG4gICAgICAgICAgICAgIG9wYWNpdHk6IGlzVGFrZW9mZiA/IFswLjk1LCAxLCAwLjldIDogWzAuNzUsIDAuOTUsIDAuNzVdLFxuICAgICAgICAgICAgfX1cbiAgICAgICAgICAgIHRyYW5zaXRpb249e3sgcmVwZWF0OiBJbmZpbml0eSwgZHVyYXRpb246IDAuMTIsIGVhc2U6ICdlYXNlSW5PdXQnIH19XG4gICAgICAgICAgLz5cbiAgICAgICAgICB7LyogQ29uY2VudHJhdGVkIEhvdCBDb3JlIFRocnVzdCBGbGFtZSAqL31cbiAgICAgICAgICA8bW90aW9uLmVsbGlwc2VcbiAgICAgICAgICAgIGN4PVwiOVwiXG4gICAgICAgICAgICBjeT1cIjEwXCJcbiAgICAgICAgICAgIHJ4PXtpc1Rha2VvZmYgPyAyMiA6IDExfVxuICAgICAgICAgICAgcnk9e2lzVGFrZW9mZiA/IDUuMiA6IDIuOH1cbiAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BFbmdpbmVDb3JlKVwiXG4gICAgICAgICAgICBhbmltYXRlPXt7XG4gICAgICAgICAgICAgIHJ4OiBpc1Rha2VvZmYgPyBbMjAsIDMyLCAxOV0gOiBbOSwgMTUsIDEwXSxcbiAgICAgICAgICAgIH19XG4gICAgICAgICAgICB0cmFuc2l0aW9uPXt7IHJlcGVhdDogSW5maW5pdHksIGR1cmF0aW9uOiAwLjA4LCBlYXNlOiAnZWFzZUluT3V0JyB9fVxuICAgICAgICAgIC8+XG4gICAgICAgICAgey8qIFJlYXIgRXhoYXVzdCBUaXRhbml1bSBOb3p6bGUgQ29sbGFyICovfVxuICAgICAgICAgIDxlbGxpcHNlIGN4PVwiMTRcIiBjeT1cIjEwXCIgcng9XCI1LjVcIiByeT1cIjcuMlwiIGZpbGw9XCIjMjcyNzJBXCIgc3Ryb2tlPVwiIzQ3NTU2OVwiIHN0cm9rZVdpZHRoPVwiMS4yXCIgLz5cbiAgICAgICAgICB7LyogR2xvd2luZyBFbmdpbmUgQWZ0ZXJidXJuZXIgSW50ZXJpb3IgSXJpcyAqL31cbiAgICAgICAgICA8ZWxsaXBzZSBjeD1cIjEzXCIgY3k9XCIxMFwiIHJ4PVwiMy41XCIgcnk9XCI0LjhcIiBmaWxsPVwiI0ZGOEEwMFwiIG9wYWNpdHk9XCIwLjg1XCIgLz5cbiAgICAgICAgICA8ZWxsaXBzZSBjeD1cIjEyLjVcIiBjeT1cIjEwXCIgcng9XCIyXCIgcnk9XCIzXCIgZmlsbD1cIiNGRkYyNzVcIiBvcGFjaXR5PVwiMC45NVwiIC8+XG4gICAgICAgIDwvZz5cblxuICAgICAgICB7LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovfVxuICAgICAgICB7LyogMy4gVkVSVElDQUwgVEFJTCBGSU4gKFN3ZXB0LUJhY2sgU21vb3RoIEFlcm9keW5hbWljIEZpbikgICAgICovfVxuICAgICAgICB7LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovfVxuICAgICAgICA8ZyBpZD1cInRhaWwtZmluXCI+XG4gICAgICAgICAgey8qIEZpbiBQb3J0LVNpZGUgM0QgU2hhZG93IFRoaWNrbmVzcyBCZXZlbCAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gNTIgMTI0IFxuICAgICAgICAgICAgICAgQyA2MiA5OCwgNzYgNjYsIDg2IDQyIFxuICAgICAgICAgICAgICAgUSA4OSAzNiwgOTUgMzYgXG4gICAgICAgICAgICAgICBMIDk3IDQwIFxuICAgICAgICAgICAgICAgQyA4NSA2NCwgNzIgOTYsIDY0IDEyNiBaXCJcbiAgICAgICAgICAgIGZpbGw9XCIjOEYwMDA2XCJcbiAgICAgICAgICAvPlxuICAgICAgICAgIHsvKiBGaW4gTWFpbiBCb2R5IEZhY2Ugd2l0aCBzbW9vdGggZ3JhY2VmdWwgc3dlZXAgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDY0IDEyNiBcbiAgICAgICAgICAgICAgIEMgNzIgOTYsIDg1IDY0LCA5NyA0MCBcbiAgICAgICAgICAgICAgIFEgMTAyIDM2LCAxMTAgMzkgXG4gICAgICAgICAgICAgICBMIDEwOCA0NCBcbiAgICAgICAgICAgICAgIEMgMTA2IDcyLCAxMDUgMTAyLCAxMDQgMTI0IFpcIlxuICAgICAgICAgICAgZmlsbD1cInVybCgjcFJlZFNpZGUpXCJcbiAgICAgICAgICAgIHN0cm9rZT1cIiM3QTAwMDVcIlxuICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIxXCJcbiAgICAgICAgICAvPlxuICAgICAgICAgIHsvKiBTbW9vdGggUm91bmRlZCBBZXJvZHluYW1pYyBGaW4gQ2FwIChNYXRjaGluZyBSZWQgQUJTIFBsYXN0aWMpICovfVxuICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICBkPVwiTSA4NiA0MiBRIDk1IDM1LCAxMDIgMzcgTCAxMTAgMzkgUSAxMDIgNDQsIDk3IDQyIFpcIlxuICAgICAgICAgICAgZmlsbD1cInVybCgjcFJlZFRvcClcIlxuICAgICAgICAgICAgc3Ryb2tlPVwiI0IzMDAwOFwiXG4gICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuOFwiXG4gICAgICAgICAgLz5cbiAgICAgICAgICB7LyogQWVyb2R5bmFtaWMgRmluIFRpcCBCZWFjb24gTGlnaHQgKi99XG4gICAgICAgICAgPGNpcmNsZSBjeD1cIjk4XCIgY3k9XCIzNi41XCIgcj1cIjEuNVwiIGZpbGw9XCIjRkY0RDVBXCIgLz5cbiAgICAgICAgICA8Y2lyY2xlIGN4PVwiOThcIiBjeT1cIjM2LjVcIiByPVwiMC43XCIgZmlsbD1cIiNGRkZGRkZcIiAvPlxuICAgICAgICAgIHsvKiBSdWRkZXIgQWVyb2R5bmFtaWMgSGluZ2UgU2VhbSBMaW5lICovfVxuICAgICAgICAgIDxsaW5lIHgxPVwiOTlcIiB5MT1cIjQxXCIgeDI9XCIxMDNcIiB5Mj1cIjEyNFwiIHN0cm9rZT1cIiM3QTAwMDVcIiBzdHJva2VXaWR0aD1cIjAuN1wiIHN0cm9rZURhc2hhcnJheT1cIjQgMS41XCIgb3BhY2l0eT1cIjAuNzVcIiAvPlxuICAgICAgICAgIHsvKiBTd2VwdCBEeW5hbWljIFJhY2luZyBTdHJpcGUgb24gRmluICovfVxuICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICBkPVwiTSA3NCA5MiBDIDg0IDkxLCA5NiA5MSwgMTA1IDkyIEwgMTAzIDk3IEMgOTUgOTcsIDg0IDk3LCA3MiA5OCBaXCJcbiAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BXaGl0ZVRvcClcIlxuICAgICAgICAgICAgc3Ryb2tlPVwiI0NCRDVFMVwiXG4gICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuNVwiXG4gICAgICAgICAgLz5cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gNzUgOTAgQyA4NSA4OSwgOTYgODksIDEwNSA5MCBMIDEwNSA5MS41IEMgOTYgOTAuNSwgODUgOTAuNSwgNzQgOTEuNSBaXCJcbiAgICAgICAgICAgIGZpbGw9XCIjRkZENTAwXCJcbiAgICAgICAgICAvPlxuICAgICAgICA8L2c+XG5cbiAgICAgICAgey8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAqL31cbiAgICAgICAgey8qIDQuIE1BSU4gRlVTRUxBR0UgM0QgQk9EWSAoQWlyZnJhbWUgSGFsdXMgJiBNZW5nYWxpciBBZXJvZGluYW1pcykgKi99XG4gICAgICAgIHsvKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi99XG4gICAgICAgIDxnIGlkPVwiZnVzZWxhZ2UtM2RcIj5cbiAgICAgICAgICB7LyogRnVzZWxhZ2UgVW5kZXJiZWxseSAoU21vb3RoIDNEIGJvYXQtdGFpbCBjdXJ2ZSB0byBub3p6bGUpICovfVxuICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICBkPVwiTSA0OCAxMjYgXG4gICAgICAgICAgICAgICBDIDYyIDEzMywgODUgMTQ0LCAxNDAgMTQyIFxuICAgICAgICAgICAgICAgQyAyMzAgMTM2LCAzMTAgMTE1LCAzMjQgMTA0LjUgXG4gICAgICAgICAgICAgICBMIDMxNCAxMDUgXG4gICAgICAgICAgICAgICBDIDIzMCAxMjAsIDE0MCAxMzUsIDY2IDEyNSBcbiAgICAgICAgICAgICAgIEMgNTYgMTIzLCA1MCAxMjQsIDQ4IDEyNiBaXCJcbiAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BVbmRlcmJlbGx5KVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjNEEwMDAzXCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC44XCJcbiAgICAgICAgICAvPlxuXG4gICAgICAgICAgey8qIEZ1c2VsYWdlIE5lYXIgU2lkZSBXYWxsIChTbW9vdGggZmxvd2luZyBhZXJvZHluYW1pYyBjb250b3VyKSAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gNDggMTI2IFxuICAgICAgICAgICAgICAgQyA1OCAxMTksIDg4IDExMCwgMTc1IDkyIFxuICAgICAgICAgICAgICAgQyAyNzUgODIsIDI5OCA4MCwgMzI0IDkwLjUgXG4gICAgICAgICAgICAgICBMIDMyNCAxMDQuNSBcbiAgICAgICAgICAgICAgIEMgMjY1IDExMywgMTY1IDEyNywgNjIgMTMzIFxuICAgICAgICAgICAgICAgQyA1NCAxMzEsIDQ5IDEyOCwgNDggMTI2IFpcIlxuICAgICAgICAgICAgZmlsbD1cInVybCgjcFJlZFNpZGUpXCJcbiAgICAgICAgICAgIHN0cm9rZT1cIiM4RjAwMDZcIlxuICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIxLjJcIlxuICAgICAgICAgIC8+XG5cbiAgICAgICAgICB7LyogQWVyb2R5bmFtaWMgV2luZy1Cb2R5IEZpbGxldCAoQmxlbmRzIHdpbmcgc21vb3RobHkgaW50byBmdXNlbGFnZSkgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDE0OCAxMTQgXG4gICAgICAgICAgICAgICBDIDE2OCAxMTEsIDIxMiAxMDUsIDI0NiAxMDAgXG4gICAgICAgICAgICAgICBDIDI0NCAxMDcsIDIzMCAxMTgsIDIwNSAxMjMgXG4gICAgICAgICAgICAgICBDIDE3NSAxMjUsIDE1NSAxMjAsIDE0OCAxMTQgWlwiXG4gICAgICAgICAgICBmaWxsPVwidXJsKCNwUmVkU2lkZSlcIlxuICAgICAgICAgICAgc3Ryb2tlPVwiIzdBMDAwNVwiXG4gICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuOFwiXG4gICAgICAgICAgICBvcGFjaXR5PVwiMC44NVwiXG4gICAgICAgICAgLz5cblxuICAgICAgICAgIHsvKiBEdWFsIFJhY2luZyBTcGVlZC1TdHJpcGU6IEdvbGQgUGluc3RyaXBlIEFjY2VudCAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gNTggMTIzLjUgXG4gICAgICAgICAgICAgICBDIDExMCAxMTMsIDIxOCA5OSwgMzA2IDkxIFxuICAgICAgICAgICAgICAgTCAzMjQgOTIuNSBcbiAgICAgICAgICAgICAgIEwgMzI0IDkzLjggXG4gICAgICAgICAgICAgICBMIDMwNiA5Mi4yIFxuICAgICAgICAgICAgICAgQyAyMTggMTAwLjUsIDExMCAxMTQuNSwgNTggMTI0LjggWlwiXG4gICAgICAgICAgICBmaWxsPVwiI0ZGRDUwMFwiXG4gICAgICAgICAgLz5cblxuICAgICAgICAgIHsvKiBNYWluIEFscGluZSBXaGl0ZSBSYWNpbmcgU3RyaXBlIChGbG93cyBzbW9vdGhseSBmcm9tIGNvd2wgYWxsIHRoZSB3YXkgdG8gYm9hdC10YWlsKSAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gNTggMTIyIFxuICAgICAgICAgICAgICAgQyAxMTAgMTExLCAyMTggOTcsIDMwNiA5MSBcbiAgICAgICAgICAgICAgIEwgMzI0IDkzLjggXG4gICAgICAgICAgICAgICBMIDMyNCA5Ny41IFxuICAgICAgICAgICAgICAgQyAzMDQgOTYuNSwgMjE4IDEwMywgNTYgMTI2IFxuICAgICAgICAgICAgICAgWlwiXG4gICAgICAgICAgICBmaWxsPVwidXJsKCNwV2hpdGVUb3ApXCJcbiAgICAgICAgICAgIHN0cm9rZT1cIiNDQkQ1RTFcIlxuICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIwLjVcIlxuICAgICAgICAgIC8+XG5cbiAgICAgICAgICB7LyogU3VidGxlIEluamVjdGlvbi1Nb2xkZWQgQWVybyBTZWFtcyAqL31cbiAgICAgICAgICA8cGF0aCBkPVwiTSAxNTIgOTUgTCAxNTIgMTE4XCIgc3Ryb2tlPVwiIzdBMDAwNVwiIHN0cm9rZVdpZHRoPVwiMC42XCIgc3Ryb2tlRGFzaGFycmF5PVwiMyAxLjVcIiBvcGFjaXR5PVwiMC42NVwiIC8+XG4gICAgICAgICAgPHBhdGggZD1cIk0gMjUyIDc4IEwgMjUyIDEwMlwiIHN0cm9rZT1cIiM3QTAwMDVcIiBzdHJva2VXaWR0aD1cIjAuNlwiIHN0cm9rZURhc2hhcnJheT1cIjMgMS41XCIgb3BhY2l0eT1cIjAuNjVcIiAvPlxuXG4gICAgICAgICAgey8qIFNjdWxwdGVkIE5BQ0EgRW5naW5lIENvb2xpbmcgVmVudCAoU2xlZWsgYWVyb2R5bmFtaWMgdmVudCkgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDI3MCA5NC41IEwgMjg0IDkzIEwgMjgzIDk2LjUgTCAyNjkgOTcuNSBaXCJcbiAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BOYWNhSW50YWtlKVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjN0EwMDA1XCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC42XCJcbiAgICAgICAgICAvPlxuICAgICAgICAgIDxsaW5lIHgxPVwiMjcxXCIgeTE9XCI5NS41XCIgeDI9XCIyODIuNVwiIHkyPVwiOTRcIiBzdHJva2U9XCIjQ0JENUUxXCIgc3Ryb2tlV2lkdGg9XCIwLjZcIiBzdHJva2VMaW5lY2FwPVwicm91bmRcIiBvcGFjaXR5PVwiMC42XCIgLz5cblxuICAgICAgICAgIHsvKiBGdXNlbGFnZSBUb3AgRGVjayB3aXRoIE9yZ2FuaWMgQ3VydmF0dXJlIHRvIENvd2wgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDEwOCAxMDggXG4gICAgICAgICAgICAgICBDIDE0OCA5NSwgMjEwIDg0LCAyODAgODAgXG4gICAgICAgICAgICAgICBDIDMwMCA3OCwgMzE0IDg0LCAzMjQgOTAuNSBcbiAgICAgICAgICAgICAgIEwgMzIwIDk0IFxuICAgICAgICAgICAgICAgQyAyOTUgODYsIDIxMCA5MiwgMTA4IDEwOCBaXCJcbiAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BSZWRUb3ApXCJcbiAgICAgICAgICAgIHN0cm9rZT1cIiNGRjRENUFcIlxuICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIwLjhcIlxuICAgICAgICAgIC8+XG5cbiAgICAgICAgICB7LyogU3BlY3VsYXIgRWRnZSBDaGFtZmVycyAoUHJlY2lzaW9uIGhpZ2hsaWdodCBvbiBleHBvc2VkIHJlZCBkZWNrKSAqL31cbiAgICAgICAgICB7LyogUmVhciBTcGluZSBDaGFtZmVyICovfVxuICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICBkPVwiTSAxMDQgMTEwIEMgMTI0IDEwMywgMTM4IDk4LCAxNDggOTVcIlxuICAgICAgICAgICAgc3Ryb2tlPVwiI0ZGQTRBQlwiXG4gICAgICAgICAgICBzdHJva2VXaWR0aD1cIjEuMlwiXG4gICAgICAgICAgICBzdHJva2VMaW5lY2FwPVwicm91bmRcIlxuICAgICAgICAgICAgZmlsbD1cIm5vbmVcIlxuICAgICAgICAgIC8+XG4gICAgICAgICAgey8qIEZyb250IEhvb2QgQ2hhbWZlciAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gMjUyIDgxIEMgMjgwIDgwLCAzMDAgNzgsIDMxNCA4NCBMIDMyNCA5MC41XCJcbiAgICAgICAgICAgIHN0cm9rZT1cIiNGRkE0QUJcIlxuICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIxLjJcIlxuICAgICAgICAgICAgc3Ryb2tlTGluZWNhcD1cInJvdW5kXCJcbiAgICAgICAgICAgIGZpbGw9XCJub25lXCJcbiAgICAgICAgICAvPlxuXG4gICAgICAgIDwvZz5cblxuICAgICAgICB7LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovfVxuICAgICAgICB7LyogNS4gUFJFQ0lTSU9OLUZJVFRFRCBPQlNJRElBTiBUSU5URUQgQ0FOT1BZIChFbGVnYW4gJiBQcmVzaXNpKSovfVxuICAgICAgICB7LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovfVxuICAgICAgICA8ZyBpZD1cImNvY2twaXQtM2RcIj5cbiAgICAgICAgICB7LyogTWFpbiAzRCBHbG9zc3kgT2JzaWRpYW4gU21va2VkIENhbm9weSBEb21lIChQcmVzaXNpIDEwMCUgTWVuZ2lrdXRpIEJvZGkpICovfVxuICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICBkPVwiTSAxNDggOTUgXG4gICAgICAgICAgICAgICBDIDE2MiA2NiwgMTgyIDUwLCAyMDYgNTAgXG4gICAgICAgICAgICAgICBDIDIzMCA1MCwgMjQ2IDYzLCAyNTIgODEgXG4gICAgICAgICAgICAgICBDIDIxNSA4My41LCAxNzggODksIDE0OCA5NSBaXCJcbiAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BDYW5vcHlCbGFjazNEKVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjMzM0MTU1XCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMS4wXCJcbiAgICAgICAgICAvPlxuXG4gICAgICAgICAgey8qIElubmVyIERlcHRoIFJpbSBIaWdobGlnaHQgKFZvbHVtZXRyaWsgM0QgTGVuZ2t1bmcgU2VtcHVybmEpICovfVxuICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICBkPVwiTSAxNTIgOTMgQyAxNjUgNjgsIDE4NCA1MywgMjA2IDUzIEMgMjI4IDUzLCAyNDMgNjUsIDI0OSA3OVwiXG4gICAgICAgICAgICBmaWxsPVwibm9uZVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjNjQ3NDhCXCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC44XCJcbiAgICAgICAgICAgIG9wYWNpdHk9XCIwLjZcIlxuICAgICAgICAgIC8+XG5cbiAgICAgICAgICB7LyogUHJpbWFyeSBIaWdoLUdsb3NzIEN1cnZlZCBTcGVjdWxhciBHbGFyZSBBcmMgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDE2MCA2NiBRIDE5OCA0OCwgMjM4IDU4XCJcbiAgICAgICAgICAgIHN0cm9rZT1cInVybCgjcENhbm9weUdsYXJlKVwiXG4gICAgICAgICAgICBzdHJva2VXaWR0aD1cIjIuOFwiXG4gICAgICAgICAgICBzdHJva2VMaW5lY2FwPVwicm91bmRcIlxuICAgICAgICAgIC8+XG5cbiAgICAgICAgICB7LyogU2Vjb25kYXJ5IFN1YnRsZSBBbWJpZW50IFJlZmxlY3Rpb24gR2xhcmUgQXJjICovfVxuICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICBkPVwiTSAxNjggNzIgUSAyMDQgNTUsIDIzMCA2NFwiXG4gICAgICAgICAgICBzdHJva2U9XCIjRkZGRkZGXCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMS4xXCJcbiAgICAgICAgICAgIHN0cm9rZUxpbmVjYXA9XCJyb3VuZFwiXG4gICAgICAgICAgICBvcGFjaXR5PVwiMC40NVwiXG4gICAgICAgICAgLz5cblxuICAgICAgICAgIHsvKiBGcm9udCBOb3NlIEJ1YmJsZSBQaW5wb2ludCBTcGVjdWxhciBIaWdobGlnaHQgKi99XG4gICAgICAgICAgPGNpcmNsZSBjeD1cIjIzOFwiIGN5PVwiNTlcIiByPVwiMS40XCIgZmlsbD1cIiNGRkZGRkZcIiBvcGFjaXR5PVwiMC45XCIgLz5cblxuICAgICAgICAgIHsvKiBQcmVjaXNpb24gRmFjdG9yeSBNb3VudGluZyBDb2FtaW5nIFJhaWwgKFRlcnRhbmFtIFJhcGkgUGFkYSBEZWsgUGVzYXdhdCkgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDE0NiA5Ni41IFxuICAgICAgICAgICAgICAgQyAxNzggOTAuNSwgMjE1IDg1LCAyNTQgODIuNSBcbiAgICAgICAgICAgICAgIEwgMjUyIDc5LjUgXG4gICAgICAgICAgICAgICBDIDIxNSA4MiwgMTc4IDg3LjUsIDE0OCA5My41IFpcIlxuICAgICAgICAgICAgZmlsbD1cIiMxRTI5M0JcIlxuICAgICAgICAgICAgc3Ryb2tlPVwiIzMzNDE1NVwiXG4gICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuNlwiXG4gICAgICAgICAgLz5cblxuICAgICAgICAgIHsvKiBQcmVjaXNpb24gRmFzdGVuZXJzIC8gTGF0Y2hlcyAoUmFwaSAmIFNpbWV0cmlzKSAqL31cbiAgICAgICAgICA8Y2lyY2xlIGN4PVwiMTcwXCIgY3k9XCI5MFwiIHI9XCIwLjc1XCIgZmlsbD1cIiM5NEEzQjhcIiAvPlxuICAgICAgICAgIDxjaXJjbGUgY3g9XCIyMDBcIiBjeT1cIjg1LjVcIiByPVwiMC43NVwiIGZpbGw9XCIjOTRBM0I4XCIgLz5cbiAgICAgICAgICA8Y2lyY2xlIGN4PVwiMjMwXCIgY3k9XCI4MS41XCIgcj1cIjAuNzVcIiBmaWxsPVwiIzk0QTNCOFwiIC8+XG4gICAgICAgIDwvZz5cblxuICAgICAgICB7LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovfVxuICAgICAgICB7LyogNi4gTkVBUiBXSU5HIChTYXlhcCBEZWthdCBNZWxlbmdrdW5nIEFuZ2d1biAmIFVqdW5nIE1lbWJ1bGF0KSAqL31cbiAgICAgICAgey8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAqL31cbiAgICAgICAgPGcgaWQ9XCJuZWFyLXdpbmdcIj5cbiAgICAgICAgICB7LyogV2luZyBUaGlja25lc3MgTGVhZGluZyBFZGdlIChTbW9vdGggQ3VydmVkIEJldmVsKSAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gMTUwIDExNCBcbiAgICAgICAgICAgICAgIEMgMTQyIDEyNiwgMTIwIDE1MiwgMTAyIDE3MiBcbiAgICAgICAgICAgICAgIFEgOTYgMTc4LCAxMDQgMTg0IFxuICAgICAgICAgICAgICAgTCAxMTQgMTgyIFxuICAgICAgICAgICAgICAgQyAxMjYgMTYwLCAxNTAgMTM0LCAxNjggMTI0IFxuICAgICAgICAgICAgICAgWlwiXG4gICAgICAgICAgICBmaWxsPVwidXJsKCNwV2hpdGVTaWRlKVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjOTRBM0I4XCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC44XCJcbiAgICAgICAgICAvPlxuXG4gICAgICAgICAgey8qIFdpbmcgTWFpbiBUb3AgU3VyZmFjZSAoU21vb3RoIFN3ZXB0IEFlcm9keW5hbWljIFBsYXRlKSAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gMTUwIDExNCBcbiAgICAgICAgICAgICAgIEMgMTQyIDEyNiwgMTIwIDE1MiwgMTAyIDE3MiBcbiAgICAgICAgICAgICAgIFEgOTYgMTc4LCAxMDQgMTg0IFxuICAgICAgICAgICAgICAgTCAxMTQgMTgyIFxuICAgICAgICAgICAgICAgQyAxNDUgMTcwLCAxODggMTUyLCAyMjIgMTQ0IFxuICAgICAgICAgICAgICAgQyAyMzggMTQwLCAyNDYgMTE4LCAyNDggMTAwIFxuICAgICAgICAgICAgICAgQyAyNDggMTAwLCAyMDAgMTA4LCAxNTAgMTE0IFxuICAgICAgICAgICAgICAgWlwiXG4gICAgICAgICAgICBmaWxsPVwidXJsKCNwV2hpdGVUb3ApXCJcbiAgICAgICAgICAgIHN0cm9rZT1cIiNDQkQ1RTFcIlxuICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIxLjJcIlxuICAgICAgICAgIC8+XG5cbiAgICAgICAgICB7LyogQWlsZXJvbiBUcmFpbGluZyBFZGdlIFRyaW0gTGluZSAqL31cbiAgICAgICAgICA8cGF0aCBkPVwiTSAxMjYgMTY4IEwgMTk1IDE0NlwiIHN0cm9rZT1cIiM5NEEzQjhcIiBzdHJva2VXaWR0aD1cIjAuN1wiIHN0cm9rZURhc2hhcnJheT1cIjMgMVwiIG9wYWNpdHk9XCIwLjc1XCIgLz5cblxuICAgICAgICAgIHsvKiBXaW5nIFJlZCBBY2NlbnQgVGlwIHdpdGggU21vb3RoIFJvdW5kZWQgQ3VydmUgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDEwMiAxNzIgXG4gICAgICAgICAgICAgICBRIDk2IDE3OCwgMTA0IDE4NCBcbiAgICAgICAgICAgICAgIEwgMTE4IDE4MSBcbiAgICAgICAgICAgICAgIEMgMTE0IDE3NCwgMTI0IDE2OCwgMTI4IDE2NiBcbiAgICAgICAgICAgICAgIFpcIlxuICAgICAgICAgICAgZmlsbD1cInVybCgjcFJlZFRvcClcIlxuICAgICAgICAgICAgc3Ryb2tlPVwiI0IzMDAwOFwiXG4gICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuOFwiXG4gICAgICAgICAgLz5cblxuICAgICAgICAgIHsvKiAzRCBMZWdvIFN0dWRzIG9uIE5lYXIgV2luZyAoU3ltbWV0cmljYWwgVHdpbiBDb3VudCAmIFNwYWNpbmcpICovfVxuICAgICAgICAgIHtbXG4gICAgICAgICAgICB7IHg6IDEyOCwgeTogMTY0LCByeDogNi4wLCByeTogMi44LCBoOiAzLjIgfSxcbiAgICAgICAgICAgIHsgeDogMTUwLCB5OiAxNTIsIHJ4OiA2LjIsIHJ5OiAyLjksIGg6IDMuNCB9LFxuICAgICAgICAgICAgeyB4OiAxNzIsIHk6IDE0MCwgcng6IDYuNCwgcnk6IDMuMCwgaDogMy41IH0sXG4gICAgICAgICAgICB7IHg6IDE5NCwgeTogMTI4LCByeDogNi41LCByeTogMy4wLCBoOiAzLjUgfSxcbiAgICAgICAgICBdLm1hcCgoc3QsIGkpID0+IChcbiAgICAgICAgICAgIDxnIGtleT17aX0+XG4gICAgICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICAgICAgZD17YE0gJHtzdC54IC0gc3Qucnh9ICR7c3QueX0gXG4gICAgICAgICAgICAgICAgICAgIEwgJHtzdC54IC0gc3Qucnh9ICR7c3QueSAtIHN0Lmh9IFxuICAgICAgICAgICAgICAgICAgICBBICR7c3Qucnh9ICR7c3Qucnl9IDAgMCAxICR7c3QueCArIHN0LnJ4fSAke3N0LnkgLSBzdC5ofSBcbiAgICAgICAgICAgICAgICAgICAgTCAke3N0LnggKyBzdC5yeH0gJHtzdC55fSBcbiAgICAgICAgICAgICAgICAgICAgQSAke3N0LnJ4fSAke3N0LnJ5fSAwIDAgMSAke3N0LnggLSBzdC5yeH0gJHtzdC55fSBaYH1cbiAgICAgICAgICAgICAgICBmaWxsPVwidXJsKCNwWWVsbG93U2lkZSlcIlxuICAgICAgICAgICAgICAgIHN0cm9rZT1cIiNCMzg2MDBcIlxuICAgICAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMC42XCJcbiAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgPGVsbGlwc2UgY3g9e3N0Lnh9IGN5PXtzdC55IC0gc3QuaH0gcng9e3N0LnJ4fSByeT17c3Qucnl9IGZpbGw9XCJ1cmwoI3BZZWxsb3dUb3ApXCIgc3Ryb2tlPVwiI0M5OTcwMFwiIHN0cm9rZVdpZHRoPVwiMC41XCIgLz5cbiAgICAgICAgICAgICAgPGVsbGlwc2UgY3g9e3N0Lnh9IGN5PXtzdC55IC0gc3QuaCAtIDAuNH0gcng9e3N0LnJ4ICogMC43fSByeT17c3QucnkgKiAwLjZ9IGZpbGw9XCIjRkZGOUE2XCIgLz5cbiAgICAgICAgICAgIDwvZz5cbiAgICAgICAgICApKX1cbiAgICAgICAgPC9nPlxuXG4gICAgICAgIHsvKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi99XG4gICAgICAgIHsvKiA3LiBORUFSIEhPUklaT05UQUwgU1RBQklMSVpFUiAoVHdpbiBUYWlsIEVsZXZhdG9yIGRpIFNpc2kgRGVrYXQpICovfVxuICAgICAgICB7LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovfVxuICAgICAgICA8ZyBpZD1cIm5lYXItaG9yaXpvbnRhbC1zdGFiaWxpemVyXCI+XG4gICAgICAgICAgey8qIE5lYXIgU3RhYmlsaXplciBMZWFkaW5nIEVkZ2UgQmV2ZWwgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDgwIDEyOCBcbiAgICAgICAgICAgICAgIEMgNjQgMTM4LCA0OCAxNDgsIDM0IDE1NCBcbiAgICAgICAgICAgICAgIEwgMzYgMTU2IFxuICAgICAgICAgICAgICAgQyA1MCAxNTAsIDY2IDE0MCwgODIgMTMwIFpcIlxuICAgICAgICAgICAgZmlsbD1cInVybCgjcFdoaXRlU2lkZSlcIlxuICAgICAgICAgICAgc3Ryb2tlPVwiIzk0QTNCOFwiXG4gICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuNlwiXG4gICAgICAgICAgLz5cblxuICAgICAgICAgIHsvKiBOZWFyIFN0YWJpbGl6ZXIgTWFpbiBBZXJvZHluYW1pYyBUb3AgU3VyZmFjZSAqL31cbiAgICAgICAgICA8cGF0aFxuICAgICAgICAgICAgZD1cIk0gODAgMTI4IFxuICAgICAgICAgICAgICAgQyA2NCAxMzgsIDQ4IDE0OCwgMzQgMTU0IFxuICAgICAgICAgICAgICAgUSAyOCAxNTcsIDM0IDE2MCBcbiAgICAgICAgICAgICAgIEwgNDQgMTU4IFxuICAgICAgICAgICAgICAgQyA1NCAxNTAsIDY4IDE0MiwgNzQgMTM0IFpcIlxuICAgICAgICAgICAgZmlsbD1cInVybCgjcFdoaXRlVG9wKVwiXG4gICAgICAgICAgICBzdHJva2U9XCIjQ0JENUUxXCJcbiAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMS4wXCJcbiAgICAgICAgICAvPlxuXG4gICAgICAgICAgey8qIE5lYXIgU3RhYmlsaXplciBSb3VuZGVkIExlZ28gUmVkIEFjY2VudCBUaXAgKi99XG4gICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgIGQ9XCJNIDM0IDE1NCBcbiAgICAgICAgICAgICAgIFEgMjggMTU3LCAzNCAxNjAgXG4gICAgICAgICAgICAgICBMIDQ0IDE1OCBcbiAgICAgICAgICAgICAgIEMgNDEgMTU0LCA0MyAxNTEsIDQ1IDE0OSBaXCJcbiAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BSZWRUb3ApXCJcbiAgICAgICAgICAgIHN0cm9rZT1cIiNCMzAwMDhcIlxuICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIwLjdcIlxuICAgICAgICAgIC8+XG5cbiAgICAgICAgICB7LyogRWxldmF0b3IgVHJpbSBIaW5nZSBMaW5lICovfVxuICAgICAgICAgIDxwYXRoIGQ9XCJNIDQwIDE1NSBMIDcwIDEzOVwiIHN0cm9rZT1cIiM5NEEzQjhcIiBzdHJva2VXaWR0aD1cIjAuN1wiIHN0cm9rZURhc2hhcnJheT1cIjMgMVwiIG9wYWNpdHk9XCIwLjc1XCIgLz5cbiAgICAgICAgPC9nPlxuXG4gICAgICAgIHsvKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi99XG4gICAgICAgIHsvKiA4LiBOT1NFIENPTkUgJiBQVVJFIExVTUlOT1VTIFBST1BFTExFUiBTWVNURU0gICAgICAgICAgICAgICAgKi99XG4gICAgICAgIHsvKiBTZWFtbGVzc2x5IGZsb3dpbmcgZnJvbSBub3NlIGNvd2wgdG8gc3Bpbm5lciB0aXAgICAgICAgICAgICAgKi99XG4gICAgICAgIHsvKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi99XG4gICAgICAgIDxnIGlkPVwibm9zZS1hbmQtcHJvcGVsbGVyXCI+XG4gICAgICAgICAgey8qIFxuICAgICAgICAgICAgSU5URUdSQVRFRCBQUk9QRUxMRVIgJiBTUElOTkVSIEFTU0VNQkxZXG4gICAgICAgICAgICBDb25jZW50cmljIGF0IGVuZ2luZSBjb3dsIGZpcmV3YWxsICgzMjQsIDk3LjUpLCBuYXR1cmFsIGZsaWdodCB0aWx0IC00ZGVnXG4gICAgICAgICAgKi99XG4gICAgICAgICAgPGcgdHJhbnNmb3JtPVwidHJhbnNsYXRlKDMyNCwgOTcuNSkgcm90YXRlKC00KVwiPlxuICAgICAgICAgICAgey8qIEVuZ2luZSBDb3dsIENpcmN1bGFyIEZpcmV3YWxsIE9wZW5pbmcgKi99XG4gICAgICAgICAgICA8ZWxsaXBzZSBjeD1cIjBcIiBjeT1cIjBcIiByeD1cIjEuOFwiIHJ5PVwiN1wiIGZpbGw9XCIjOEYwMDA2XCIgc3Ryb2tlPVwiIzRBMDAwM1wiIHN0cm9rZVdpZHRoPVwiMC44XCIgLz5cbiAgICAgICAgICAgIDxlbGxpcHNlIGN4PVwiMC40XCIgY3k9XCIwXCIgcng9XCIxLjJcIiByeT1cIjYuNlwiIGZpbGw9XCIjMTgxODFCXCIgLz5cblxuICAgICAgICAgICAgey8qIE91dGVyIEFlcm9keW5hbWljIEFpcmZsb3cgV2FzaCBEaXNjIChTb2Z0IEV0aGVyZWFsIFNoaW1tZXIpICovfVxuICAgICAgICAgICAgPGVsbGlwc2VcbiAgICAgICAgICAgICAgY3g9XCIwXCJcbiAgICAgICAgICAgICAgY3k9XCIwXCJcbiAgICAgICAgICAgICAgcng9e2lzVGFrZW9mZiA/IDggOiA2fVxuICAgICAgICAgICAgICByeT17aXNUYWtlb2ZmID8gNTQgOiA0Nn1cbiAgICAgICAgICAgICAgZmlsbD1cInVybCgjcFByb3BEaXNjKVwiXG4gICAgICAgICAgICAvPlxuXG4gICAgICAgICAgICB7LyogSGlnaC1WZWxvY2l0eSBDb3JlIEFpcmZsb3cgKi99XG4gICAgICAgICAgICA8ZWxsaXBzZVxuICAgICAgICAgICAgICBjeD1cIjBcIlxuICAgICAgICAgICAgICBjeT1cIjBcIlxuICAgICAgICAgICAgICByeD17aXNUYWtlb2ZmID8gNCA6IDN9XG4gICAgICAgICAgICAgIHJ5PXtpc1Rha2VvZmYgPyAzOCA6IDMyfVxuICAgICAgICAgICAgICBmaWxsPVwiI0ZGRkZGRlwiXG4gICAgICAgICAgICAgIG9wYWNpdHk9XCIwLjEyXCJcbiAgICAgICAgICAgIC8+XG5cbiAgICAgICAgICAgIHsvKiBEZWxpY2F0ZSBBZXJvZHluYW1pYyBHb2xkZW4gVGlwIFJpbSAqL31cbiAgICAgICAgICAgIDxlbGxpcHNlXG4gICAgICAgICAgICAgIGN4PVwiMFwiXG4gICAgICAgICAgICAgIGN5PVwiMFwiXG4gICAgICAgICAgICAgIHJ4PXtpc1Rha2VvZmYgPyA4IDogNn1cbiAgICAgICAgICAgICAgcnk9e2lzVGFrZW9mZiA/IDU0IDogNDZ9XG4gICAgICAgICAgICAgIGZpbGw9XCJub25lXCJcbiAgICAgICAgICAgICAgc3Ryb2tlPVwiI0ZGRDUwMFwiXG4gICAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMVwiXG4gICAgICAgICAgICAgIG9wYWNpdHk9XCIwLjVcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgICAgIDxlbGxpcHNlXG4gICAgICAgICAgICAgIGN4PVwiMFwiXG4gICAgICAgICAgICAgIGN5PVwiMFwiXG4gICAgICAgICAgICAgIHJ4PXtpc1Rha2VvZmYgPyA3LjYgOiA1LjZ9XG4gICAgICAgICAgICAgIHJ5PXtpc1Rha2VvZmYgPyA1MyA6IDQ1fVxuICAgICAgICAgICAgICBmaWxsPVwibm9uZVwiXG4gICAgICAgICAgICAgIHN0cm9rZT1cIiNGRkZGRkZcIlxuICAgICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuNlwiXG4gICAgICAgICAgICAgIG9wYWNpdHk9XCIwLjY1XCJcbiAgICAgICAgICAgIC8+XG5cbiAgICAgICAgICAgIHsvKiBcbiAgICAgICAgICAgICAgUk9UQVRJTkcgUFJPUEVMTEVSIEJMQURFUyAoMTAwJSBTeW1tZXRyaWNhbCAxODDCsCBSb3RhdGlvbmFsIEJhbGFuY2UpXG4gICAgICAgICAgICAgIEJvdGggYmxhZGVzIHNoYXJlIHRoZSBleGFjdCBzYW1lIHRlbXBsYXRlIGFuZCByb3RhdGlvbmFsIHN5bW1ldHJ5XG4gICAgICAgICAgICAqL31cbiAgICAgICAgICAgIDxnIHRyYW5zZm9ybT17YHNjYWxlKCR7aXNUYWtlb2ZmID8gOCAvIDU0IDogNiAvIDQ2fSwgMSlgfT5cbiAgICAgICAgICAgICAgPG1vdGlvbi5nXG4gICAgICAgICAgICAgICAgYW5pbWF0ZT17eyByb3RhdGU6IFswLCAzNjBdIH19XG4gICAgICAgICAgICAgICAgdHJhbnNpdGlvbj17e1xuICAgICAgICAgICAgICAgICAgcmVwZWF0OiBJbmZpbml0eSxcbiAgICAgICAgICAgICAgICAgIGR1cmF0aW9uOiBpc1Rha2VvZmYgPyAwLjA4IDogMC4xNCxcbiAgICAgICAgICAgICAgICAgIGVhc2U6ICdsaW5lYXInLFxuICAgICAgICAgICAgICAgIH19XG4gICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICB7LyogQmxhZGUgMSAqL31cbiAgICAgICAgICAgICAgICA8dXNlIGhyZWY9XCIjcHJvcEJsYWRlRGVmXCIgLz5cbiAgICAgICAgICAgICAgICB7LyogQmxhZGUgMiAoRXhhY3QgMTgwwrAgUm90YXRpb25hbCBTeW1tZXRyeSAtIFBlcmZlY3RseSBJZGVudGljYWwpICovfVxuICAgICAgICAgICAgICAgIDx1c2UgaHJlZj1cIiNwcm9wQmxhZGVEZWZcIiB0cmFuc2Zvcm09XCJyb3RhdGUoMTgwKVwiIC8+XG4gICAgICAgICAgICAgIDwvbW90aW9uLmc+XG4gICAgICAgICAgICA8L2c+XG5cbiAgICAgICAgICAgIHsvKiBcbiAgICAgICAgICAgICAgM0QgU1BJTk5FUiBIVUIgJiBOT1NFIFRJUFxuICAgICAgICAgICAgICBEaXJlY3Qgb3JnYW5pYyBjb250aW51YXRpb24gb2YgdGhlIHJlZCBmdXNlbGFnZSBhbmQgd2hpdGUgcmFjaW5nIHN0cmlwZVxuICAgICAgICAgICAgKi99XG4gICAgICAgICAgICA8ZyBpZD1cInNwaW5uZXItaHViLTNkXCI+XG4gICAgICAgICAgICAgIHsvKiBGaW5lIEdvbGRlbiBTZWFtIFJpbmcgYXQgQ293bC10by1TcGlubmVyIEp1bmN0aW9uICovfVxuICAgICAgICAgICAgICA8ZWxsaXBzZSBjeD1cIjBcIiBjeT1cIjBcIiByeD1cIjAuOFwiIHJ5PVwiNi44XCIgZmlsbD1cIm5vbmVcIiBzdHJva2U9XCIjRkZENTAwXCIgc3Ryb2tlV2lkdGg9XCIwLjhcIiBvcGFjaXR5PVwiMC44NVwiIC8+XG5cbiAgICAgICAgICAgICAgey8qIE1haW4gM0QgQnVsbGV0IFNwaW5uZXIgQm9keSBpbiBMZWdvIFJlZCAoRXhhY3QgY29udGludWF0aW9uIG9mIEZ1c2VsYWdlKSAqL31cbiAgICAgICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgICAgICBkPVwiTSAwIC02LjVcbiAgICAgICAgICAgICAgICAgICBDIDggLTYuNSwgMTcgLTMsIDIzIDBcbiAgICAgICAgICAgICAgICAgICBDIDE3IDMsIDggNi41LCAwIDYuNVxuICAgICAgICAgICAgICAgICAgIEMgLTEgNCwgLTEgLTQsIDAgLTYuNVxuICAgICAgICAgICAgICAgICAgIFpcIlxuICAgICAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BTcGlubmVyUmVkKVwiXG4gICAgICAgICAgICAgICAgc3Ryb2tlPVwiIzhGMDAwNlwiXG4gICAgICAgICAgICAgICAgc3Ryb2tlV2lkdGg9XCIwLjhcIlxuICAgICAgICAgICAgICAvPlxuXG4gICAgICAgICAgICAgIHsvKiBFbGVnYW50IEFscGluZSBXaGl0ZSBDZXJhbWljIE5vc2UgVGlwIERvbWUgKENvbXBsZXRlcyB0aGUgV2hpdGUgUmFjaW5nIFN0cmlwZSkgKi99XG4gICAgICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICAgICAgZD1cIk0gMTUgLTMuNVxuICAgICAgICAgICAgICAgICAgIEMgMTggLTMuMSwgMjEuMiAtMS41LCAyMy4yIDBcbiAgICAgICAgICAgICAgICAgICBDIDIxLjIgMS41LCAxOCAzLjEsIDE1IDMuNVxuICAgICAgICAgICAgICAgICAgIEMgMTQuMSAxLjcsIDE0LjEgLTEuNywgMTUgLTMuNVxuICAgICAgICAgICAgICAgICAgIFpcIlxuICAgICAgICAgICAgICAgIGZpbGw9XCJ1cmwoI3BTcGlubmVyV2hpdGVUaXApXCJcbiAgICAgICAgICAgICAgICBzdHJva2U9XCIjOTRBM0I4XCJcbiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aD1cIjAuNlwiXG4gICAgICAgICAgICAgIC8+XG5cbiAgICAgICAgICAgICAgey8qIE1hY2hpbmVkIEdvbGQgU2VwYXJhdGlvbiBMaW5lIGJldHdlZW4gUmVkIEJvZHkgYW5kIFdoaXRlIFRpcCAqL31cbiAgICAgICAgICAgICAgPGVsbGlwc2UgY3g9XCIxNVwiIGN5PVwiMFwiIHJ4PVwiMC43XCIgcnk9XCIzLjVcIiBmaWxsPVwibm9uZVwiIHN0cm9rZT1cIiNGRkQ1MDBcIiBzdHJva2VXaWR0aD1cIjAuN1wiIG9wYWNpdHk9XCIwLjlcIiAvPlxuXG4gICAgICAgICAgICAgIHsvKiBTcGVjdWxhciBFZGdlIEhpZ2hsaWdodCAoQ29udGludW91cyBTdW5saWdodCBHbGludCBmcm9tIENvY2twaXQgYWNyb3NzIFRpcCkgKi99XG4gICAgICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICAgICAgZD1cIk0gMSAtNC41IEMgOCAtNC4yLCAxNS41IC0yLjQsIDIyLjIgLTAuMlwiXG4gICAgICAgICAgICAgICAgZmlsbD1cIm5vbmVcIlxuICAgICAgICAgICAgICAgIHN0cm9rZT1cIiNGRkZGRkZcIlxuICAgICAgICAgICAgICAgIHN0cm9rZVdpZHRoPVwiMVwiXG4gICAgICAgICAgICAgICAgc3Ryb2tlTGluZWNhcD1cInJvdW5kXCJcbiAgICAgICAgICAgICAgICBvcGFjaXR5PVwiMC44NVwiXG4gICAgICAgICAgICAgIC8+XG5cbiAgICAgICAgICAgICAgey8qIEdsb3NzeSBSZWZsZWN0aW9uIFNwb3Qgb24gV2hpdGUgTm9zZSBUaXAgKi99XG4gICAgICAgICAgICAgIDxlbGxpcHNlIGN4PVwiMTlcIiBjeT1cIi0wLjhcIiByeD1cIjEuNlwiIHJ5PVwiMC43XCIgZmlsbD1cIiNGRkZGRkZcIiBvcGFjaXR5PVwiMC45NVwiIC8+XG5cbiAgICAgICAgICAgICAgey8qIFByZWNpc2lvbiBTdGFnbmF0aW9uIFBvaW50IFNwYXJrbGUgcmlnaHQgYXQgQXBleCAqL31cbiAgICAgICAgICAgICAgPGNpcmNsZSBjeD1cIjIyLjVcIiBjeT1cIjBcIiByPVwiMC42XCIgZmlsbD1cIiNGRkZGRkZcIiBvcGFjaXR5PVwiMC45XCIgLz5cbiAgICAgICAgICAgIDwvZz5cbiAgICAgICAgICA8L2c+XG4gICAgICAgIDwvZz5cbiAgICAgIDwvc3ZnPlxuICAgIDwvZGl2PlxuICApO1xufVxuXG4vKipcbiAqIE1pbmltYWxpc3QgU2VnbWVudGVkIEZsaWdodCBNZXRlclxuICogLSBGb2N1c2VkIHB1cmVseSBvbiB0aGUgcGVyY2VudGFnZSByZWFkb3V0IGFuZCB0aGUgc2VnbWVudGVkIGxvYWQgYmFyLlxuICogLSBBbGwgc2lkZSBsYWJlbHMsIGJhZGdlcywgYW5kIHBlcmlwaGVyYWwgY2x1dHRlciByZW1vdmVkLlxuICovXG5mdW5jdGlvbiBMZWdvUHJvZ3Jlc3NCYXIoeyBvbkNvbXBsZXRlLCBzdGFydERlbGF5ID0gMzUwIH0pIHtcbiAgY29uc3QgW3Byb2dyZXNzLCBzZXRQcm9ncmVzc10gPSB1c2VTdGF0ZSgwKTtcblxuICB1c2VFZmZlY3QoKCkgPT4ge1xuICAgIGNvbnN0IGR1cmF0aW9uID0gMTgwMDsgLy8gbXM6IG9yZ2FuaWMgc3Bvb2wtdXAgZmVlbCBmcm9tIDAlIHRvIDEwMCVcbiAgICBsZXQgZnJhbWVJZDtcbiAgICBsZXQgc3RhcnRUaW1lO1xuXG4gICAgLy8gVHVuZ2d1IHNlamVuYWsgYWdhciB1c2VyIG1lbGloYXQgYW5na2EgWzAlXSBzYWF0IHBlc2F3YXQgbXVsYWkgbWVuZGFyYXRcbiAgICBjb25zdCB0aW1lb3V0SWQgPSBzZXRUaW1lb3V0KCgpID0+IHtcbiAgICAgIHN0YXJ0VGltZSA9IHBlcmZvcm1hbmNlLm5vdygpO1xuXG4gICAgICBjb25zdCB1cGRhdGVQcm9ncmVzcyA9IChub3cpID0+IHtcbiAgICAgICAgY29uc3QgZWxhcHNlZCA9IG5vdyAtIHN0YXJ0VGltZTtcbiAgICAgICAgY29uc3QgbGluZWFyID0gTWF0aC5taW4oMSwgZWxhcHNlZCAvIGR1cmF0aW9uKTtcbiAgICAgICAgLy8gU21vb3RoIG9yZ2FuaWMgZWFzZS1pbi1vdXQ6IG11bGFpIHBlcmxhaGFuIGRhcmkgMCUsIHN0YWJpbCBkaSB0ZW5nYWgsIGxhbHUgYW5nZ3VuIGRpIDEwMCVcbiAgICAgICAgY29uc3QgZWFzZWQgPVxuICAgICAgICAgIGxpbmVhciA8IDAuNVxuICAgICAgICAgICAgPyAyICogbGluZWFyICogbGluZWFyXG4gICAgICAgICAgICA6IDEgLSBNYXRoLnBvdygtMiAqIGxpbmVhciArIDIsIDIpIC8gMjtcbiAgICAgICAgY29uc3QgcGN0ID0gTWF0aC5taW4oMTAwLCBNYXRoLnJvdW5kKGVhc2VkICogMTAwKSk7XG4gICAgICAgIHNldFByb2dyZXNzKHBjdCk7XG5cbiAgICAgICAgaWYgKGxpbmVhciA8IDEpIHtcbiAgICAgICAgICBmcmFtZUlkID0gcmVxdWVzdEFuaW1hdGlvbkZyYW1lKHVwZGF0ZVByb2dyZXNzKTtcbiAgICAgICAgfSBlbHNlIHtcbiAgICAgICAgICBzZXRUaW1lb3V0KCgpID0+IHtcbiAgICAgICAgICAgIGlmIChvbkNvbXBsZXRlKSBvbkNvbXBsZXRlKCk7XG4gICAgICAgICAgfSwgMjgwKTtcbiAgICAgICAgfVxuICAgICAgfTtcblxuICAgICAgZnJhbWVJZCA9IHJlcXVlc3RBbmltYXRpb25GcmFtZSh1cGRhdGVQcm9ncmVzcyk7XG4gICAgfSwgc3RhcnREZWxheSk7XG5cbiAgICByZXR1cm4gKCkgPT4ge1xuICAgICAgY2xlYXJUaW1lb3V0KHRpbWVvdXRJZCk7XG4gICAgICBpZiAoZnJhbWVJZCkgY2FuY2VsQW5pbWF0aW9uRnJhbWUoZnJhbWVJZCk7XG4gICAgfTtcbiAgfSwgW29uQ29tcGxldGUsIHN0YXJ0RGVsYXldKTtcblxuICAvLyAxOCBzZWdtZW50ZWQgTEVEIHRocnVzdCBiYXJzXG4gIGNvbnN0IHRvdGFsQmFycyA9IDE4O1xuICBjb25zdCBhY3RpdmVCYXJzID0gTWF0aC5mbG9vcigocHJvZ3Jlc3MgLyAxMDApICogdG90YWxCYXJzKTtcblxuICByZXR1cm4gKFxuICAgIDxkaXYgY2xhc3NOYW1lPVwidy1mdWxsIG1heC13LVsyNjBweF0gc206bWF4LXctWzI5MHB4XSBmbGV4IGZsZXgtY29sIGl0ZW1zLWNlbnRlciBzZWxlY3Qtbm9uZSBmb250LW1vbm9cIj5cbiAgICAgIHsvKiBDcmlzcCBNb25vc3BhY2UgVGFidWxhciBQZXJjZW50YWdlICovfVxuICAgICAgPGRpdiBjbGFzc05hbWU9XCJtYi0yIHRleHQtY2VudGVyXCI+XG4gICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cInRleHQtc20gc206dGV4dC1iYXNlIGZvbnQtYm9sZCB0cmFja2luZy13aWRlciB0ZXh0LVsjRkZENTAwXSB0YWJ1bGFyLW51bXMgZHJvcC1zaGFkb3ctWzBfMnB4XzEwcHhfcmdiYSgyNTUsMjEzLDAsMC4zNSldXCI+XG4gICAgICAgICAge3Byb2dyZXNzfSVcbiAgICAgICAgPC9zcGFuPlxuICAgICAgPC9kaXY+XG5cbiAgICAgIHsvKiAxOC1TZWdtZW50IExFRCBBcnJheSBMb2FkIEJhciAqL31cbiAgICAgIDxkaXYgY2xhc3NOYW1lPVwidy1mdWxsIGZsZXggZ2FwLVszcHhdIHAtMSBiZy1bIzA3MGExMl0gcm91bmRlZC1sZyBib3JkZXIgYm9yZGVyLVsjMTgyMDMyXSBzaGFkb3ctW2luc2V0XzBfMnB4XzRweF9yZ2JhKDAsMCwwLDAuODUpLDBfNHB4XzE2cHhfcmdiYSgwLDAsMCwwLjUpXVwiPlxuICAgICAgICB7QXJyYXkuZnJvbSh7IGxlbmd0aDogdG90YWxCYXJzIH0pLm1hcCgoXywgaSkgPT4ge1xuICAgICAgICAgIGNvbnN0IGlzRmlsbGVkID0gaSA8IGFjdGl2ZUJhcnMgfHwgKGkgPT09IDAgJiYgcHJvZ3Jlc3MgPiAyKTtcbiAgICAgICAgICByZXR1cm4gKFxuICAgICAgICAgICAgPGRpdlxuICAgICAgICAgICAgICBrZXk9e2l9XG4gICAgICAgICAgICAgIGNsYXNzTmFtZT17YGZsZXgtMSBoLTMgc206aC0zLjUgcm91bmRlZC1bMS41cHhdIHRyYW5zaXRpb24tYWxsIGR1cmF0aW9uLTEwMCAke1xuICAgICAgICAgICAgICAgIGlzRmlsbGVkXG4gICAgICAgICAgICAgICAgICA/ICdiZy1ncmFkaWVudC10by10IGZyb20tWyNFNkI4MDBdIHZpYS1bI0ZGRDUwMF0gdG8tWyNGRkY3ODVdIHNoYWRvdy1bMF8wXzZweF9yZ2JhKDI1NSwyMTMsMCwwLjUpXSdcbiAgICAgICAgICAgICAgICAgIDogJ2JnLVsjMTIxNzI0XSdcbiAgICAgICAgICAgICAgfWB9XG4gICAgICAgICAgICAvPlxuICAgICAgICAgICk7XG4gICAgICAgIH0pfVxuICAgICAgPC9kaXY+XG4gICAgPC9kaXY+XG4gICk7XG59XG5cbi8qKlxuICogQ2luZW1hdGljIFN1cGVyc29uaWMgVGFrZW9mZiBMb2FkZXIgd2l0aCAzRCBMZWdvIEFpcnBsYW5lXG4gKi9cbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIExlZ29DdXJ0YWluTG9hZGVyKHsgb25Db21wbGV0ZSB9KSB7XG4gIGNvbnN0IFtpc1Rha2VvZmYsIHNldElzVGFrZW9mZl0gPSB1c2VTdGF0ZShmYWxzZSk7XG5cbiAgY29uc3QgaGFuZGxlVGFrZW9mZkNvbXBsZXRlID0gKCkgPT4ge1xuICAgIGlmIChvbkNvbXBsZXRlKSB7XG4gICAgICBvbkNvbXBsZXRlKCk7XG4gICAgfVxuICB9O1xuXG4gIHJldHVybiAoXG4gICAgPG1vdGlvbi5kaXZcbiAgICAgIGluaXRpYWw9e2ZhbHNlfVxuICAgICAgYW5pbWF0ZT17eyBvcGFjaXR5OiAxIH19XG4gICAgICBleGl0PXt7IG9wYWNpdHk6IDAgfX1cbiAgICAgIHRyYW5zaXRpb249e3sgZHVyYXRpb246IDAuNSwgZWFzZTogWzAuMTYsIDEsIDAuMywgMV0gfX1cbiAgICAgIGNsYXNzTmFtZT1cImZpeGVkIGluc2V0LTAgei1bOTk5OTldIG92ZXJmbG93LWhpZGRlbiBwb2ludGVyLWV2ZW50cy1hdXRvIHNlbGVjdC1ub25lIGJnLVsjMDkwYjEyXVwiXG4gICAgPlxuICAgICAgey8qIFxuICAgICAgICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PVxuICAgICAgICBDSU5FTUFUSUMgQkFDS0RST1A6IEVYQUNUIE1BVENIIFdJVEggSE9NRS5KU1ggU1RVRElPIExJR0hUSU5HXG4gICAgICAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG4gICAgICAqL31cbiAgICAgIDxkaXYgY2xhc3NOYW1lPVwiYWJzb2x1dGUgaW5zZXQtMCB3LWZ1bGwgaC1mdWxsXCI+XG4gICAgICAgIHsvKiBIYXJtb25pb3VzIFN0dWRpbyBMaWdodGluZyAoRXhhY3QgcGFsZXR0ZSBhcyBIb21lLmpzeCkgKi99XG4gICAgICAgIDxkaXZcbiAgICAgICAgICBjbGFzc05hbWU9XCJhYnNvbHV0ZSBpbnNldC0wIHBvaW50ZXItZXZlbnRzLW5vbmVcIlxuICAgICAgICAgIHN0eWxlPXt7XG4gICAgICAgICAgICBiYWNrZ3JvdW5kOiBgXG4gICAgICAgICAgICAgIHJhZGlhbC1ncmFkaWVudChlbGxpcHNlIDkwJSA2MCUgYXQgNzUlIDQwJSwgcmdiYSgyNTUsIDIxMywgMCwgMC4wOCksIHRyYW5zcGFyZW50IDcwJSksXG4gICAgICAgICAgICAgIHJhZGlhbC1ncmFkaWVudChlbGxpcHNlIDcwJSA1MCUgYXQgMjUlIDMwJSwgcmdiYSgwLCA4NSwgMTkxLCAwLjA3KSwgdHJhbnNwYXJlbnQgNjUlKSxcbiAgICAgICAgICAgICAgcmFkaWFsLWdyYWRpZW50KGNpcmNsZSA4MDBweCBhdCA1MCUgMTEwJSwgcmdiYSgyMjcsIDAsIDExLCAwLjA0KSwgdHJhbnNwYXJlbnQgNzAlKSxcbiAgICAgICAgICAgICAgIzA5MGIxMlxuICAgICAgICAgICAgYCxcbiAgICAgICAgICB9fVxuICAgICAgICAvPlxuXG5cbiAgICAgICAgey8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAqL31cbiAgICAgICAgey8qIENFTlRFUiBTVEFHRTogVEhFIDNEIExFR08gQUlSUExBTkUgQVNTRU1CTFkgICAgICAgICAgICAgICAgICAqL31cbiAgICAgICAgey8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAqL31cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJhYnNvbHV0ZSBpbnNldC0wIGZsZXggZmxleC1jb2wgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHB4LTQgei0yMFwiPlxuICAgICAgICAgIHsvKiBXYXJtIEdvbGRlbiBTcG90bGlnaHQgYmVoaW5kIHBsYW5lIChQdXJlIGdyYWRpZW50LCB6ZXJvIGJsdXIgZmlsdGVyKSAqL31cbiAgICAgICAgICA8ZGl2XG4gICAgICAgICAgICBjbGFzc05hbWU9XCJhYnNvbHV0ZSB3LVs0NjBweF0gaC1bMjYwcHhdIHJvdW5kZWQtZnVsbCBwb2ludGVyLWV2ZW50cy1ub25lXCJcbiAgICAgICAgICAgIHN0eWxlPXt7XG4gICAgICAgICAgICAgIGJhY2tncm91bmQ6XG4gICAgICAgICAgICAgICAgJ3JhZGlhbC1ncmFkaWVudChlbGxpcHNlIDY1JSA1NSUgYXQgNTAlIDUwJSwgcmdiYSgyNTUsIDIxMywgMCwgMC4wOSkgMCUsIHJnYmEoMjU0LCAxMzgsIDI0LCAwLjAzKSA0NSUsIHRyYW5zcGFyZW50IDc1JSknLFxuICAgICAgICAgICAgfX1cbiAgICAgICAgICAvPlxuXG4gICAgICAgICAgey8qIEFpcmNyYWZ0IFN0YWdlOiBTd29vcHMgaW4gZnJvbSBMZWZ0IG9uIGxvYWQsIGhvdmVycyBpbiBjZW50ZXIsIGFuZCBibGFzdHMgb2ZmIHRvIFJpZ2h0IG9uIHRha2VvZmYgKi99XG4gICAgICAgICAgPG1vdGlvbi5kaXZcbiAgICAgICAgICAgIGNsYXNzTmFtZT1cInJlbGF0aXZlIHotMjAgZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXJcIlxuICAgICAgICAgICAgaW5pdGlhbD17eyB4OiAnLTkwdncnLCBvcGFjaXR5OiAwIH19XG4gICAgICAgICAgICBhbmltYXRlPXtcbiAgICAgICAgICAgICAgaXNUYWtlb2ZmXG4gICAgICAgICAgICAgICAgPyB7XG4gICAgICAgICAgICAgICAgICAgIHg6IFsnMHZ3JywgJzE1dncnLCAnMTQwdncnXSxcbiAgICAgICAgICAgICAgICAgICAgb3BhY2l0eTogMSwgLy8gVGV0YXAgc29saWQgMTAwJSwgamFuZ2FuIGhpbGFuZyBkaSB0ZW5nYWggamFsYW4hXG4gICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgOiB7XG4gICAgICAgICAgICAgICAgICAgIHg6ICcwdncnLFxuICAgICAgICAgICAgICAgICAgICBvcGFjaXR5OiAxLFxuICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgfVxuICAgICAgICAgICAgdHJhbnNpdGlvbj17XG4gICAgICAgICAgICAgIGlzVGFrZW9mZlxuICAgICAgICAgICAgICAgID8ge1xuICAgICAgICAgICAgICAgICAgICBkdXJhdGlvbjogMC44NSxcbiAgICAgICAgICAgICAgICAgICAgZWFzZTogWzAuMzIsIDAsIDAuMTgsIDFdLCAvLyBTbW9vdGggc3VwZXJzb25pYyBjbGltYlxuICAgICAgICAgICAgICAgICAgICB0aW1lczogWzAsIDAuMzUsIDFdLFxuICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgIDoge1xuICAgICAgICAgICAgICAgICAgICBkdXJhdGlvbjogMC44NSxcbiAgICAgICAgICAgICAgICAgICAgZWFzZTogWzAuMTYsIDEsIDAuMywgMV0sIC8vIFNpbGt5IGFlcm9keW5hbWljIGFycml2YWwgZ2xpZGUgZnJvbSBsZWZ0XG4gICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICBvbkFuaW1hdGlvbkNvbXBsZXRlPXsoKSA9PiB7XG4gICAgICAgICAgICAgIGlmIChpc1Rha2VvZmYpIHtcbiAgICAgICAgICAgICAgICBoYW5kbGVUYWtlb2ZmQ29tcGxldGUoKTtcbiAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgfX1cbiAgICAgICAgICA+XG4gICAgICAgICAgICB7LyogVGhlIDNEIEFpcnBsYW5lIChBZXJvZHluYW1pYyBDcnVpc2luZyBIb3ZlciAmIEJhbmtpbmcpICovfVxuICAgICAgICAgICAgPG1vdGlvbi5kaXZcbiAgICAgICAgICAgICAgY2xhc3NOYW1lPVwicmVsYXRpdmUgei0yMFwiXG4gICAgICAgICAgICAgIGFuaW1hdGU9e1xuICAgICAgICAgICAgICAgIGlzVGFrZW9mZlxuICAgICAgICAgICAgICAgICAgPyB7XG4gICAgICAgICAgICAgICAgICAgICAgeTogWycwcHgnLCAnLTEwcHgnLCAnLTU1cHgnXSxcbiAgICAgICAgICAgICAgICAgICAgICByb3RhdGU6IFswLCAtMy41LCAtOF0sXG4gICAgICAgICAgICAgICAgICAgICAgc2NhbGU6IFsxLCAxLjA0LCAxLjEyXSxcbiAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgOiB7XG4gICAgICAgICAgICAgICAgICAgICAgeTogWy02LCA2LCAtNl0sXG4gICAgICAgICAgICAgICAgICAgICAgcm90YXRlOiBbLTEuMiwgMS40LCAtMS4yXSxcbiAgICAgICAgICAgICAgICAgICAgICBzY2FsZTogMSxcbiAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgIHRyYW5zaXRpb249e1xuICAgICAgICAgICAgICAgIGlzVGFrZW9mZlxuICAgICAgICAgICAgICAgICAgPyB7XG4gICAgICAgICAgICAgICAgICAgICAgZHVyYXRpb246IDAuODUsXG4gICAgICAgICAgICAgICAgICAgICAgZWFzZTogWzAuMzIsIDAsIDAuMTgsIDFdLFxuICAgICAgICAgICAgICAgICAgICAgIHRpbWVzOiBbMCwgMC4zNSwgMV0sXG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgIDoge1xuICAgICAgICAgICAgICAgICAgICAgIHJlcGVhdDogSW5maW5pdHksXG4gICAgICAgICAgICAgICAgICAgICAgZHVyYXRpb246IDMuMixcbiAgICAgICAgICAgICAgICAgICAgICBlYXNlOiAnZWFzZUluT3V0JyxcbiAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICB9XG4gICAgICAgICAgICA+XG4gICAgICAgICAgICAgIDxMZWdvQWlycGxhbmUzRCBpc1Rha2VvZmY9e2lzVGFrZW9mZn0gLz5cbiAgICAgICAgICAgIDwvbW90aW9uLmRpdj5cblxuICAgICAgICAgICAgey8qIFJlYWxpc3RpYyAzRCBHcm91bmQgLyBBbWJpZW50IFNoYWRvdyAqL31cbiAgICAgICAgICAgIDxtb3Rpb24uZGl2XG4gICAgICAgICAgICAgIGNsYXNzTmFtZT1cInctNTYgc206dy03MiBtZDp3LTgwIGgtNCByb3VuZGVkLWZ1bGwgYmctYmxhY2svNzUgYmx1ci1bOHB4XSBtdC0xIG1iLTggcG9pbnRlci1ldmVudHMtbm9uZVwiXG4gICAgICAgICAgICAgIGFuaW1hdGU9e1xuICAgICAgICAgICAgICAgIGlzVGFrZW9mZlxuICAgICAgICAgICAgICAgICAgPyB7IHNjYWxlOiBbMSwgMC40LCAwXSwgb3BhY2l0eTogWzAuNiwgMC4yNSwgMF0gfVxuICAgICAgICAgICAgICAgICAgOiB7IHNjYWxlOiBbMC45MiwgMS4wNSwgMC45Ml0sIG9wYWNpdHk6IFswLjUsIDAuNywgMC41XSB9XG4gICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgdHJhbnNpdGlvbj17XG4gICAgICAgICAgICAgICAgaXNUYWtlb2ZmXG4gICAgICAgICAgICAgICAgICA/IHsgZHVyYXRpb246IDAuNTUsIGVhc2U6ICdlYXNlT3V0JyB9XG4gICAgICAgICAgICAgICAgICA6IHsgcmVwZWF0OiBJbmZpbml0eSwgZHVyYXRpb246IDMuMiwgZWFzZTogJ2Vhc2VJbk91dCcgfVxuICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAvPlxuICAgICAgICAgIDwvbW90aW9uLmRpdj5cblxuICAgICAgICAgIHsvKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi99XG4gICAgICAgICAgey8qIEhBUk1PTklPVVMgTEVHTyBQUk9HUkVTUyBJTkRJQ0FUT1IgICAgICAgICAgICAgICAgICAgICAgICAgICAqL31cbiAgICAgICAgICB7LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovfVxuICAgICAgICAgIDxBbmltYXRlUHJlc2VuY2U+XG4gICAgICAgICAgICB7IWlzVGFrZW9mZiAmJiAoXG4gICAgICAgICAgICAgIDxtb3Rpb24uZGl2XG4gICAgICAgICAgICAgICAgaW5pdGlhbD17eyBvcGFjaXR5OiAwLCB5OiAxMCB9fVxuICAgICAgICAgICAgICAgIGFuaW1hdGU9e3sgb3BhY2l0eTogMSwgeTogMCB9fVxuICAgICAgICAgICAgICAgIGV4aXQ9e3sgb3BhY2l0eTogMCwgeTogLTgsIHRyYW5zaXRpb246IHsgZHVyYXRpb246IDAuMjUsIGVhc2U6ICdlYXNlT3V0JyB9IH19XG4gICAgICAgICAgICAgICAgdHJhbnNpdGlvbj17eyBkdXJhdGlvbjogMC4zLCBlYXNlOiAnZWFzZU91dCcgfX1cbiAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJ3LWZ1bGwgbWF4LXcteHMgc206bWF4LXctc20gZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXJcIlxuICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgPExlZ29Qcm9ncmVzc0JhciBvbkNvbXBsZXRlPXsoKSA9PiBzZXRJc1Rha2VvZmYodHJ1ZSl9IC8+XG4gICAgICAgICAgICAgIDwvbW90aW9uLmRpdj5cbiAgICAgICAgICAgICl9XG4gICAgICAgICAgPC9BbmltYXRlUHJlc2VuY2U+XG4gICAgICAgIDwvZGl2PlxuICAgICAgPC9kaXY+XG4gICAgPC9tb3Rpb24uZGl2PlxuICApO1xufVxuIl0sImZpbGUiOiJDOi9Vc2Vycy9BUFJJTEVPRVJMQU5HR0EvbXktcG9ydG9mb2xpby9zcmMvY29tcG9uZW50cy9MZWdvQ3VydGFpbkxvYWRlci5qc3gifQ==

@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background-color: #090b12;
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+canvas {
+  background-color: transparent !important;
+}
+
+/* Background grid pattern */
+.bg-grid-white\/5 {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+}
+
+/* Enhanced 3D Transformations with smooth performance */
+.transform-style-3d {
+  transform-style: preserve-3d;
+  transform: rotateX(15deg) rotateY(15deg);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Optimized transform classes */
+.translate-z-40 {
+  transform: translateZ(40px);
+  backface-visibility: hidden;
+}
+
+.translate-z-80 {
+  transform: translateZ(80px);
+  backface-visibility: hidden;
+}
+
+.rotate-y-90 {
+  transform: rotateY(90deg);
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+}
+
+.rotate-y-270 {
+  transform: rotateY(270deg);
+  backface-visibility: hidden;
+}
+
+.rotate-x-90 {
+  transform: rotateX(90deg);
+  backface-visibility: hidden;
+}
+
+.rotate-x-270 {
+  transform: rotateX(270deg);
+  backface-visibility: hidden;
+}
+
+/* Smooth transitions untuk 3D elements */
+.cube-face {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Performance optimizations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+/* Enhanced cube container */
+.cube-container {
+  perspective: 1200px;
+  perspective-origin: center center;
+}
+
+.cube-3d {
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Smooth rotation keyframes */
+@keyframes smoothAutoRotate {
+  from {
+    transform: rotateX(15deg) rotateY(15deg);
+  }
+  to {
+    transform: rotateX(15deg) rotateY(375deg);
+  }
+}
+
+.auto-rotate {
+  animation: smoothAutoRotate 20s linear infinite;
+}
+
+/* Modern scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e40af;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+
+/* Enhanced performance for animations */
+* {
+  box-sizing: border-box;
+}
+
+.motion-reduce {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Smooth gradient animations */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease infinite;
+}
+
+/* Enhanced glow effects */
+.enhanced-glow {
+  filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.3));
+  transition: filter 0.3s ease;
+}
+
+.enhanced-glow:hover {
+  filter: drop-shadow(0 0 30px rgba(34, 211, 238, 0.5));
+}
+
+/* Backdrop blur support */
+.backdrop-blur-enhanced {
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+}
+
+/* Text shadow untuk better readability */
+.text-shadow-glow {
+  text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+}
+
+/* Border glow animation */
+@keyframes borderGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 5px rgba(34, 211, 238, 0.3),
+      inset 0 0 5px rgba(34, 211, 238, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 20px rgba(34, 211, 238, 0.6),
+      inset 0 0 10px rgba(34, 211, 238, 0.2);
+  }
+}
+
+.border-glow {
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+/* Anti-aliasing untuk smooth edges */
+.smooth-edges {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Infinite Marquee Animations */
+@keyframes marqueeLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marqueeRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marqueeLeft 34s linear infinite;
+}
+
+.animate-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: marqueeRight 34s linear infinite;
+}
+
+/* Independent Hover & Touch-Hold Pause: Baris berhenti saat di-hover kursor atau disentuh jari di HP */
+.animate-marquee-left:hover,
+.animate-marquee-left:active {
+  animation-play-state: paused;
+}
+
+.animate-marquee-right:hover,
+.animate-marquee-right:active {
+  animation-play-state: paused;
+}
+
+.marquee-container {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
