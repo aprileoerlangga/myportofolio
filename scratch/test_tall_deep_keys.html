@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tall Deep Keycaps Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #000000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 50px;
+    }
+
+    .perspective-stage {
+      perspective: 1200px;
+      perspective-origin: 45% 40%;
+    }
+
+    .macropad-body {
+      transform-style: preserve-3d;
+      transform: rotateX(46deg) rotateY(-6deg) rotateZ(-36deg);
+      background: #05070c;
+      border-radius: 24px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.22) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.95) inset,
+        -1px 2px 0 #05070a,
+        -2px 5px 0 #030407,
+        -4px 9px 0 #020305,
+        -6px 15px 0 #010203,
+        -10px 24px 38px rgba(0,0,0,0.98),
+        -18px 46px 65px rgba(0,0,0,0.95);
+    }
+
+    .switch-plate {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 9px;
+      background: #000002;
+      border-radius: 18px;
+      padding: 8px;
+      box-shadow: inset 0 8px 30px rgba(0, 0, 0, 0.99);
+      transform-style: preserve-3d;
+    }
+
+    /* 
+      AUTHENTIC SA HIGH-PROFILE MECHANICAL KEYCAP:
+      - Tall 14px physical height extrusion down to plate
+      - Deep 8px mechanical plunge actuation
+      - Crystal clear pure white SVG logos with drop shadow
+    */
+    .keycap-tall {
+      position: relative;
+      width: 62px;
+      height: 62px;
+      border-radius: 13px;
+      padding: 6px;
+      background: linear-gradient(135deg, var(--side) 0%, var(--side-dark) 100%);
+      border: none;
+      outline: none;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.08s cubic-bezier(0.2, 0.8, 0.2, 1);
+      
+      box-shadow:
+        0 1px 1.5px rgba(255, 255, 255, 0.5) inset,
+        -1px 1px 0 var(--side),
+        -2px 2px 0 var(--side),
+        -3px 3px 0 var(--side),
+        -4px 4px 0 var(--side),
+        -5px 5px 0 var(--side),
+        -6px 6px 0 var(--side),
+        -7px 7px 0 var(--side-dark),
+        -8px 8px 0 var(--side-dark),
+        -9px 9px 0 var(--side-dark),
+        -10px 10px 0 var(--side-dark),
+        -11px 11px 0 #080c14,
+        -12px 12px 0 #05070c,
+        -13px 13px 0 #020306,
+        -14px 14px 0 #000002,
+        -18px 20px 28px rgba(0, 0, 0, 0.98),
+        -8px 10px 14px rgba(0, 0, 0, 0.88);
+    }
+
+    .keycap-tall:hover {
+      transform: translate(-2px, 2px);
+    }
+
+    /* DEEP 8PX ACTUATION TRAVEL */
+    .keycap-tall:active, .keycap-tall.pressed {
+      transform: translate(-8px, 8px);
+      box-shadow:
+        -1px 1px 0 #020305,
+        -2px 2px 4px rgba(0, 0, 0, 0.9),
+        inset 0 2px 6px rgba(0, 0, 0, 0.75);
+    }
+
+    .keycap-top {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 1.5px 1px rgba(255, 255, 255, 0.65) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.55) inset,
+        -1px 1.5px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .keycap-dish {
+      position: absolute;
+      inset: 2px;
+      border-radius: 6px;
+      background: radial-gradient(circle at 45% 30%, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0) 65%);
+      box-shadow: inset 0 1.5px 3px rgba(255, 255, 255, 0.45), inset 0 -1.5px 3px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+    }
+
+    .keycap-symbol {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.8));
+    }
+
+    .keycap-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95), 0 0 16px rgba(255, 255, 255, 0.6);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen">
+
+  <div class="perspective-stage">
+    <div class="macropad-body">
+      <div class="switch-plate" id="switchPlate"></div>
+    </div>
+  </div>
+
+  <script>
+    // 24 Keys with pure white bold icons and vibrant keycap bodies:
+    const SKILLS = [
+      // ROW 1
+      { id: 'js', name: 'JavaScript', row: 0, col: 0, bg: '#F59E0B', side: '#D97706', sideDark: '#92400E', text: 'JS' },
+      { id: 'ts', name: 'TypeScript', row: 0, col: 1, bg: '#2563EB', side: '#1D4ED8', sideDark: '#1E3A8A', text: 'TS' },
+      { id: 'html5', name: 'HTML5', row: 0, col: 2, bg: '#E44D26', side: '#DC2626', sideDark: '#7F1D1D', icon: 'html5' },
+      { id: 'css3', name: 'CSS3', row: 0, col: 3, bg: '#7C3AED', side: '#6D28D9', sideDark: '#4C1D95', icon: 'css3' },
+      { id: 'react', name: 'React', row: 0, col: 4, bg: '#06B6D4', side: '#0891B2', sideDark: '#155E75', icon: 'react' },
+      { id: 'java', name: 'Java', row: 0, col: 5, bg: '#EA580C', side: '#C2410C', sideDark: '#7C2D12', icon: 'java' },
+
+      // ROW 2
+      { id: 'nextjs', name: 'Next.js', row: 1, col: 0, bg: '#18181B', side: '#09090B', sideDark: '#000000', icon: 'nextjs' },
+      { id: 'tailwind', name: 'Tailwind CSS', row: 1, col: 1, bg: '#06B6D4', side: '#0891B2', sideDark: '#0E7490', icon: 'tailwind' },
+      { id: 'nodejs', name: 'Node.js', row: 1, col: 2, bg: '#16A34A', side: '#15803D', sideDark: '#14532D', icon: 'nodejs' },
+      { id: 'express', name: 'Express.js', row: 1, col: 3, bg: '#262626', side: '#171717', sideDark: '#0A0A0A', text: 'ex', italic: true },
+      { id: 'python', name: 'Python', row: 1, col: 4, bg: '#18181B', side: '#09090B', sideDark: '#000000', icon: 'python' },
+      { id: 'mongodb', name: 'MongoDB', row: 1, col: 5, bg: '#10B981', side: '#059669', sideDark: '#064E3B', icon: 'mongodb' },
+
+      // ROW 3
+      { id: 'git', name: 'Git', row: 2, col: 0, bg: '#EF4444', side: '#DC2626', sideDark: '#7F1D1D', icon: 'git' },
+      { id: 'github', name: 'GitHub', row: 2, col: 1, bg: '#18181B', side: '#09090B', sideDark: '#000000', icon: 'github' },
+      { id: 'postgres', name: 'PostgreSQL', row: 2, col: 2, bg: '#1E293B', side: '#0F172A', sideDark: '#020617', icon: 'postgres' },
+      { id: 'npm', name: 'npm', row: 2, col: 3, bg: '#DC2626', side: '#B91C1C', sideDark: '#7F1D1D', icon: 'npm' },
+      { id: 'mysql', name: 'MySQL', row: 2, col: 4, bg: '#F59E0B', side: '#D97706', sideDark: '#92400E', icon: 'mysql' },
+      { id: 'php', name: 'PHP', row: 2, col: 5, bg: '#6366F1', side: '#4F46E5', sideDark: '#312E81', icon: 'php' },
+
+      // ROW 4
+      { id: 'linux', name: 'Linux', row: 3, col: 0, bg: '#18181B', side: '#09090B', sideDark: '#000000', icon: 'linux' },
+      { id: 'docker', name: 'Docker', row: 3, col: 1, bg: '#0284C7', side: '#0369A1', sideDark: '#0C4A6E', icon: 'docker' },
+      { id: 'flutter', name: 'Flutter', row: 3, col: 2, bg: '#0284C7', side: '#0369A1', sideDark: '#075985', icon: 'flutter' },
+      { id: 'dart', name: 'Dart', row: 3, col: 3, bg: '#0284C7', side: '#0369A1', sideDark: '#075985', icon: 'dart' },
+      { id: 'laravel', name: 'Laravel', row: 3, col: 4, bg: '#EF4444', side: '#DC2626', sideDark: '#7F1D1D', icon: 'laravel' },
+      { id: 'figma', name: 'Figma', row: 3, col: 5, bg: '#18181B', side: '#09090B', sideDark: '#000000', icon: 'figma' },
+    ];
+
+    const ICONS = {
+      // HTML5: Official shield with bold '5' (Pure White)
+      html5: `<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.236-2.672H5.591l.707 8.062h8.995l-.316 3.49-3.003.812-3.011-.815-.192-2.164H6.076l.377 4.417 5.521 1.533 5.529-1.533.743-8.415H8.531z"/></svg>`,
+      
+      // CSS3: Official shield with bold '3' (Pure White)
+      css3: `<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413H5.41l.235 2.672h10.364l-.24 2.665H6.079l.235 2.672h9.458l-.358 3.993-3.44.955-3.444-.955-.221-2.48H5.972l.432 4.908 5.57 1.543 5.576-1.543 1.04-11.927z"/></svg>`,
+      
+      // React: Iconic atom (Pure White)
+      react: `<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><circle cx="12" cy="12" r="2.2"/><g fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="12" cy="12" rx="10" ry="3.8"/><ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(120 12 12)"/></g></svg>`,
+      
+      // Java: Steaming coffee cup (Pure White)
+      java: `<svg viewBox="0 0 384 512" width="26" height="26" fill="currentColor"><path d="M277.7 348.6c-48.4 12.3-102.7 13.9-152.1 4.5-13.9-2.7-27.4-6.3-40.4-10.8 14.1 8.8 29.8 15.6 46.5 20.3 54.1 15.2 113.8 13.3 166.4-5.3 13.2-4.7 25.8-10.9 37.6-18.4-18.4 4.8-38.6 8.3-58 9.7zm-4.7-65.4c-43.9 10.9-93.5 12.7-138.8 4.7-16.1-2.8-31.8-7.1-46.7-12.8 15.8 8.8 33.2 15.4 51.7 19.5 48.6 10.8 101.6 8.6 148.8-6.1 14.5-4.5 28.5-10.6 41.5-18-17.7 5.7-37.4 9.9-56.5 12.7zm-207.3-64c12.3 8.3 26.1 14.8 40.8 19.3 47.7 14.4 100.8 13.8 148.1-1.7 18.5-6.1 36.1-14.7 52.4-25.3-19.4 6.8-40.6 11.2-61.9 13-43.3 3.7-88.3-.4-129-11.8-17.2-4.8-33.6-11.8-48.8-20.7-3.6 8.9-3.9 18.4-1.6 27.2zM368 416H16c-8.8 0-16 7.2-16 16s7.2 16 16 16h352c8.8 0 16-7.2 16-16s-7.2-16-16-16zm-126.7-98.3c27.1-13.8 48.2-36.8 59.8-64.6 2.5-6 1.4-12.9-2.8-17.9-4.2-5-10.7-7.4-17.1-6.3-5.5.9-10.8 2.3-15.9 4.1 14.5-27.7 15.5-60.9 2.6-89.4-4-8.8-13.4-14-23.1-12.9-9.6 1.1-17.3 8.3-19 17.8-6.8 38.3-29.2 71.4-61.6 91.1-12.7 7.7-22.7 18.8-28.7 31.9-6.3 13.7-7.7 29.1-4 43.8 4.3 17.2 14.9 32.1 29.6 41.9 19.4 12.9 43.1 19.3 67.2 18 20.3-1.1 39.7-8.3 56.1-20.7 7.9-6 14.9-13.1 20.7-21.2-20.7 4.4-42.3 2.5-62.8-4.5z"/></svg>`,
+
+      // Next.js: Circular white badge with black N (matching photo)
+      nextjs: `<div class="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow">
+        <svg viewBox="0 0 32 32" width="16" height="16" fill="none">
+          <path d="M21.5 24.2l-9.8-12.7v10.9H9.5V9.5h2.8l9.7 12.6V9.5h2.2v14.7h-2.7z" fill="#000000"/>
+        </svg>
+      </div>`,
+
+      // Tailwind: Twin waves (Pure White)
+      tailwind: `<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zM6.001 12c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C7.666 17.818 9.027 19.2 12.001 19.2c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/></svg>`,
+
+      // Node.js: Hexagon (Pure White)
+      nodejs: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 0l10.4 6v12L12 24 1.6 18V6L12 0zm0 2.3L3.6 7.2v9.6L12 21.7l8.4-4.9V7.2L12 2.3z"/></svg>`,
+
+      // Python: Dual serpents (Pure White)
+      python: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.006 2.752h5.814v.826H3.896S0 5.8 0 11.897c0 6.096 3.4 5.882 3.4 5.882h2.03v-2.85s-.11-3.4 3.344-3.4h5.757s3.238.053 3.238-3.13V2.656S18.337 0 11.914 0zm-3.21 1.764c.64 0 1.16.52 1.16 1.16 0 .64-.52 1.16-1.16 1.16-.64 0-1.16-.52-1.16-1.16 0-.64.52-1.16 1.16-1.16zM12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.006-2.752H11.98v-.826h8.124s3.896.434 3.896-5.663c0-6.096-3.4-5.882-3.4-5.882h-2.03v2.85s.11 3.4-3.344 3.4H9.47s-3.238-.053-3.238 3.13v5.538S5.663 24 12.086 24zm3.21-1.764c-.64 0-1.16-.52-1.16-1.16 0-.64.52-1.16 1.16-1.16.64 0 1.16.52 1.16 1.16 0 .64-.52 1.16-1.16 1.16z"/></svg>`,
+
+      // MongoDB: Leaf (Pure White)
+      mongodb: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 0c-.3 0-.6.2-.7.4C10.5 2 6 9.8 6 15c0 3.3 2.7 6 6 6s6-2.7 6-6c0-5.2-4.5-13-5.3-14.6-.1-.2-.4-.4-.7-.4zm0 2c1.2 2.5 4 8.7 4 13 0 2.2-1.8 4-4 4s-4-1.8-4-4c0-4.3 2.8-10.5 4-13z"/></svg>`,
+
+      // Git: White diamond with red branching emblem (matching photo)
+      git: `<div class="w-5 h-5 bg-white rounded-[3.5px] flex items-center justify-center transform rotate-45 shadow">
+        <svg viewBox="0 0 32 32" width="14" height="14" fill="#F05032" class="transform -rotate-45">
+          <path d="M30.4 14.5L17.5 1.6c-.8-.8-2.2-.8-3 0L11.6 4.5l3.8 3.8c.9-.3 1.9-.1 2.6.6.7.7.9 1.7.6 2.6l3.6 3.6c.9-.3 1.9-.1 2.6.6 1 1 1 2.7 0 3.7-1 1-2.7 1-3.7 0-.8-.8-1-2-.5-3l-3.4-3.4v8.8c.3.2.6.4.8.7 1 1 1 2.7 0 3.7-1 1-2.7 1-3.7 0-1-1-1-2.7 0-3.7.3-.3.6-.5.9-.7V9.7c-.3-.2-.6-.4-.9-.7-1-1-1-2.7 0-3.7.8-.8 2-.9 3-.5L10 1.6 1.6 10c-.8.8-.8 2.2 0 3l12.9 12.9c.8.8 2.2.8 3 0l12.9-12.9c.8-.8.8-2.2 0-3z"/>
+        </svg>
+      </div>`,
+
+      // GitHub: Octocat (Pure White)
+      github: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>`,
+
+      // PostgreSQL: Elephant (Pure White)
+      postgres: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12.001 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3.896 17.652c-.672.436-1.55.728-2.61.859-1.232.152-2.32-.089-3.168-.692-.619-.441-1.077-1.095-1.341-1.916-.363-1.127-.291-2.482.208-3.924.32-.924.8-1.782 1.41-2.522.846-1.026 1.942-1.745 3.183-2.091 1.054-.294 2.13-.244 3.109.146 1.066.425 1.879 1.258 2.302 2.361.352.919.414 1.936.177 2.932-.295 1.242-1.074 2.348-2.227 3.197-.334.246-.689.46-1.043.65z"/></svg>`,
+
+      // npm: Block logo (Pure White)
+      npm: `<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M0 7.334v9.332h24V7.334H0zm18.666 6.668H16V10h-2.666v4.002H8V10H5.334v4.002H2.666V8.666h16v5.336z"/></svg>`,
+
+      // MySQL: Dolphin (Pure White)
+      mysql: `<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M16.5 4.5c-2.4 0-4.6 1.2-6 3.1-1.4-1.9-3.6-3.1-6-3.1-4.1 0-7.5 3.4-7.5 7.5 0 5.4 7.5 10.5 13.5 10.5s13.5-5.1 13.5-10.5c0-4.1-3.4-7.5-7.5-7.5zm-3 12.8c-3.8 0-8.2-3.4-8.2-6.8 0-2.5 2-4.5 4.5-4.5 2.1 0 3.9 1.4 4.4 3.4.1.4.5.7.9.7s.8-.3.9-.7c.5-2 2.3-3.4 4.4-3.4 2.5 0 4.5 2 4.5 4.5 0 3.4-4.4 6.8-8.2 6.8z"/></svg>`,
+
+      // PHP: Oval emblem (Pure White)
+      php: `<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-4.5 13.5H6l1.5-7h2.25c1.24 0 2.25 1.01 2.25 2.25S11 13 9.75 13H8.25l-.75 2.5zm7 0H13l1.5-7h2.25c1.24 0 2.25 1.01 2.25 2.25S18 13 16.75 13h-1.5l-.75 2.5z"/></svg>`,
+
+      // Linux: Tux outline (Pure White)
+      linux: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12.003 0c-3.12 0-5.32 2.373-5.32 5.568 0 1.233.35 2.652.88 3.978-2.02.77-3.42 2.57-3.42 4.73 0 2.06 1.25 3.82 3.08 4.63-.44 1.28-.68 2.63-.68 4.02 0 .59.45 1.07 1.04 1.07h8.84c.59 0 1.04-.48 1.04-1.07 0-1.39-.24-2.74-.68-4.02 1.83-.81 3.08-2.57 3.08-4.63 0-2.16-1.4-3.96-3.42-4.73.53-1.326.88-2.745.88-3.978 0-3.195-2.2-5.568-5.32-5.568zm0 2.1c1.92 0 3.22 1.503 3.22 3.468 0 1.13-.34 2.45-.88 3.69-.17.39-.03.85.34 1.07 1.57.94 2.52 2.52 2.52 4.25 0 2.4-1.8 4.35-4.1 4.5-.42.03-.76.35-.8.77-.38 2.61-1.35 5.06-2.8 7.06h-5c-1.45-2-2.42-4.45-2.8-7.06-.04-.42-.38-.74-.8-.77-2.3-.15-4.1-2.1-4.1-4.5 0-1.73.95-3.31 2.52-4.25.37-.22.51-.68.34-1.07-.54-1.24-.88-2.56-.88-3.69 0-1.965 1.3-3.468 3.22-3.468h4.2z"/></svg>`,
+
+      // Docker: Whale with container blocks (Pure White)
+      docker: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186m5.893 2.715h2.118a.186.186 0 00.186-.186V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.186V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.186V9.006a.185.185 0 00-.186-.186h-2.118a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185m-2.928 0h2.119a.185.185 0 00.185-.186V9.006a.185.185 0 00-.185-.186H2.208a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185M23.99 12.01c-.135-.85-.815-1.503-1.634-1.55-.41-.02-.816.09-1.18.31a4.9 4.9 0 00-1.612-1.373c-1.155-.58-2.518-.616-3.71-.1-.137.06-.23.18-.248.33-.018.15.04.3.155.39.814.65 1.488 1.48 1.97 2.43.08.16.24.26.42.24.52-.06 1.05.04 1.51.31.25.14.5.34.65.59.08.13.23.2.38.17.65-.12 1.32.06 1.83.48.15.12.35.13.5.02.16-.11.23-.3.17-.48l-.2-.75zM0 13.52c.2 4.54 3.73 8.16 8.27 8.46 5.86.39 10.9-3.8 11.58-9.61.05-.4-.25-.76-.66-.79-6.38-.49-12.79.03-19.19 1.94z"/></svg>`,
+
+      // Flutter: Wing (Pure White)
+      flutter: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M14.314 0L2.3 12 6 15.7 21.684.013h-7.37zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z"/></svg>`,
+
+      // Dart: Geometric Dart (Pure White)
+      dart: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M4.125 0L0 4.125l1.625 9.875L9.875 22.5 14 18.375 19.875 24 24 19.875 18.375 14 22.5 9.875 14 1.625 4.125 0zm5.75 3.375l6.5 6.5-4.125 4.125-6.5-6.5 4.125-4.125z"/></svg>`,
+
+      // Laravel: Origami (Pure White)
+      laravel: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M23.644 6.18a.747.747 0 00-.354-.47L16.494.618a.754.754 0 00-.77.037L8.91 5.378a.75.75 0 00-.33.626v5.82a.75.75 0 00.373.65l6.814 3.934a.754.754 0 00.748-.002l6.812-3.934a.75.75 0 00.377-.65V6.18zm-8.03 8.354l-5.32-3.072v-4.63l5.32 3.073v4.63zm.75-5.918L11.045 5.54l5.32-3.072 5.32 3.072-5.32 3.076zm6.07 4.63l-5.32 3.072v-4.63l5.32-3.073v4.63zM.71 11.82a.747.747 0 00-.354-.47L.35 11.35v11.642a.75.75 0 00.373.65l6.814 3.934a.754.754 0 00.748-.002l6.812-3.934a.75.75 0 00.377-.65v-5.822a.75.75 0 00-.373-.65l-6.814-3.934a.754.754 0 00-.748.002L.71 11.82zm7.2 12.714l-5.32-3.072v-4.63l5.32 3.073v4.63zm.75-5.918l-5.32-3.076 5.32-3.072 5.32 3.072-5.32 3.076zm6.07 4.63l-5.32 3.072v-4.63l5.32-3.073v4.63z"/></svg>`,
+
+      // Figma: Logo (Pure White)
+      figma: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 12a4 4 0 114-4 4 4 0 01-4 4zm-4 4a4 4 0 00-4 4 4 4 0 004 4h4v-8H8zm0-16a4 4 0 000 8h4V0H8zm8 0h-4v8h4a4 4 0 000-8zm-8 8a4 4 0 000 8h4v-8H8z"/></svg>`
+    };
+
+    const container = document.getElementById('switchPlate');
+
+    SKILLS.forEach((skill, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'keycap-tall' + (index === 4 ? ' active' : '');
+      btn.style.setProperty('--bg', skill.bg);
+      btn.style.setProperty('--side', skill.side);
+      btn.style.setProperty('--side-dark', skill.sideDark);
+      
+      // Precision Isometric Layering: rows in front and columns to the left sit on top
+      const zIndex = (skill.row * 10) + (6 - skill.col);
+      btn.style.zIndex = zIndex;
+      btn.title = skill.name;
+
+      let symbolHtml = '';
+      if (skill.text) {
+        symbolHtml = `<span class="font-black text-2xl tracking-tight leading-none text-white ${skill.italic ? 'italic' : ''}">${skill.text}</span>`;
+      } else if (ICONS[skill.icon]) {
+        symbolHtml = ICONS[skill.icon];
+      }
+
+      btn.innerHTML = `
+        <div class="keycap-top">
+          <div class="keycap-dish"></div>
+          <div class="keycap-symbol">${symbolHtml}</div>
+          ${index === 4 ? '<div class="keycap-ring"></div>' : ''}
+        </div>
+      `;
+
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.keycap-ring').forEach(r => r.remove());
+        btn.querySelector('.keycap-top').insertAdjacentHTML('beforeend', '<div class="keycap-ring"></div>');
+        btn.classList.add('pressed');
+        btn.style.zIndex = 120;
+        setTimeout(() => {
+          btn.classList.remove('pressed');
+          btn.style.zIndex = zIndex;
+        }, 150);
+      });
+
+      container.appendChild(btn);
+    });
+  </script>
+</body>
+</html>

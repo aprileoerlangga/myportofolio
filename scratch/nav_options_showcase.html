@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quotes Navigation Options Showcase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0b071a;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .syne-headline {
+      font-family: 'Syne', sans-serif;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    /* Lego Stud 3D effect */
+    .lego-stud {
+      position: relative;
+      border-radius: 9999px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.4);
+    }
+    .lego-stud::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50%;
+      height: 50%;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body class="p-8 max-w-5xl mx-auto space-y-16">
+
+  <div class="text-center space-y-2">
+    <h1 class="text-3xl font-bold tracking-tight text-white">Eksplorasi Gaya Navigasi Kutipan (Quotes Navigation)</h1>
+    <p class="text-slate-400 text-sm">Pilih konsep tampilan yang paling cocok dengan selera dan nuansa Lego / Retro-Futuristic portfolio.</p>
+  </div>
+
+  <!-- Shared Preview Quote Header -->
+  <div class="text-center py-4 px-6 rounded-2xl bg-white/[0.02] border border-white/5 max-w-2xl mx-auto">
+    <div class="syne-headline text-2xl sm:text-3xl uppercase leading-tight text-white">
+      EVERY MASTER BUILDER<br>
+      BEGAN ON A<br>
+      <span class="text-[#FFD500] drop-shadow-[0_0_24px_rgba(255,213,0,0.5)]">BLANK BASEPLATE.</span>
+    </div>
+    <p class="mt-3 text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-md mx-auto">
+      &ldquo;Never fear the first line of code or the vast unknown ahead. Massive digital architectures are just thousands of simple, solid steps compounded.&rdquo;
+    </p>
+  </div>
+
+  <!-- GRID OF 4 CONCEPTS -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+    <!-- OPTION A: LEGO STUD CAPSULE DOCK -->
+    <div id="option-a" class="p-6 rounded-2xl bg-[#110b27] border-2 border-[#FFD500]/30 relative overflow-hidden flex flex-col justify-between">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <span class="text-xs font-mono font-bold tracking-wider text-[#FFD500] uppercase">Opsi A &bull; Lego Stud Capsule Dock</span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FFD500]/20 text-[#FFD500]">Paling Tematik Lego</span>
+      </div>
+      <p class="text-xs text-slate-400 mt-2">
+        Dock kapsul melayang dengan <b>5 Lego Round Studs</b> (kancing Lego 3D) berpendar trans-yellow dan tombol panah tactile micro-keys ber-border halus.
+      </p>
+
+      <!-- Visual Component Mockup -->
+      <div class="py-8 flex items-center justify-center">
+        <div class="inline-flex items-center gap-3 px-3.5 py-2 rounded-full bg-black/40 border border-white/15 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
+          <!-- Prev Button -->
+          <button class="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+
+          <!-- 5 Lego Studs -->
+          <div class="flex items-center gap-2.5 px-2">
+            <!-- Stud 1 -->
+            <div class="w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 cursor-pointer transition-all"></div>
+            <!-- Stud 2 -->
+            <div class="w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 cursor-pointer transition-all"></div>
+            <!-- Stud 3 (Active) -->
+            <div class="relative flex items-center justify-center">
+              <div class="w-3.5 h-3.5 rounded-full bg-[#FFD500] shadow-[0_0_12px_rgba(255,213,0,0.9)] flex items-center justify-center cursor-pointer">
+                <div class="w-1.5 h-1.5 rounded-full border border-yellow-800/40"></div>
+              </div>
+            </div>
+            <!-- Stud 4 -->
+            <div class="w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 cursor-pointer transition-all"></div>
+            <!-- Stud 5 -->
+            <div class="w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 cursor-pointer transition-all"></div>
+          </div>
+
+          <!-- Next Button -->
+          <button class="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-500 font-mono text-center">Tampilan: Sleek, tactile, tidak memakan tempat & nuansa Lego kuat.</div>
+    </div>
+
+    <!-- OPTION B: KEYPAD CHIPS (MATCHING SKILLS KEYBOARD) -->
+    <div id="option-b" class="p-6 rounded-2xl bg-[#110b27] border-2 border-white/10 relative overflow-hidden flex flex-col justify-between">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <span class="text-xs font-mono font-bold tracking-wider text-slate-300 uppercase">Opsi B &bull; Retro Keypad Chips</span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">Senada Skills Keyboard</span>
+      </div>
+      <p class="text-xs text-slate-400 mt-2">
+        Tombol angka mini <code class="text-white">01-05</code> seperti keycap keyboard mekanikal mini di section Skills. Slide aktif berubah jadi key kuning menyala.
+      </p>
+
+      <!-- Visual Component Mockup -->
+      <div class="py-8 flex items-center justify-center">
+        <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-black/40 border border-white/15 backdrop-blur-md shadow-lg">
+          <button class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 text-xs">
+            &larr;
+          </button>
+          
+          <div class="flex items-center gap-1.5 font-mono text-xs">
+            <button class="w-6 h-6 rounded bg-white/5 text-slate-400 border border-white/10 flex items-center justify-center text-[11px]">01</button>
+            <button class="w-6 h-6 rounded bg-white/5 text-slate-400 border border-white/10 flex items-center justify-center text-[11px]">02</button>
+            <button class="w-6 h-6 rounded bg-[#FFD500] text-black font-bold border border-[#FFD500] shadow-[0_0_10px_rgba(255,213,0,0.6)] flex items-center justify-center text-[11px]">03</button>
+            <button class="w-6 h-6 rounded bg-white/5 text-slate-400 border border-white/10 flex items-center justify-center text-[11px]">04</button>
+            <button class="w-6 h-6 rounded bg-white/5 text-slate-400 border border-white/10 flex items-center justify-center text-[11px]">05</button>
+          </div>
+
+          <button class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 text-xs">
+            &rarr;
+          </button>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-500 font-mono text-center">Tampilan: Retro, tactile, interaktif & konsisten dengan tema keyboard.</div>
+    </div>
+
+    <!-- OPTION C: SLEEK MINIMALIST PROGRESS BAR (LINEAR / APPLE STYLE) -->
+    <div id="option-c" class="p-6 rounded-2xl bg-[#110b27] border-2 border-white/10 relative overflow-hidden flex flex-col justify-between">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <span class="text-xs font-mono font-bold tracking-wider text-slate-300 uppercase">Opsi C &bull; Minimalist Dynamic Progress Bar</span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Clean & Modern</span>
+      </div>
+      <p class="text-xs text-slate-400 mt-2">
+        Garis 5 segmen halus ultra-minimalis dengan timer bar yang terisi otomatis. Sangat bersih, modern, dan tidak ada teks "PREV/NEXT" yang mengganggu.
+      </p>
+
+      <!-- Visual Component Mockup -->
+      <div class="py-8 flex items-center justify-center">
+        <div class="w-full max-w-xs flex items-center gap-3">
+          <button class="text-slate-400 hover:text-[#FFD500] transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          
+          <!-- Segmented line bar -->
+          <div class="flex-1 grid grid-cols-5 gap-1.5 h-1">
+            <div class="bg-white/20 rounded-full h-full"></div>
+            <div class="bg-white/20 rounded-full h-full"></div>
+            <div class="bg-[#FFD500] shadow-[0_0_8px_rgba(255,213,0,0.8)] rounded-full h-full"></div>
+            <div class="bg-white/20 rounded-full h-full"></div>
+            <div class="bg-white/20 rounded-full h-full"></div>
+          </div>
+
+          <span class="text-[11px] font-mono text-slate-400 tracking-wider">03/05</span>
+
+          <button class="text-slate-400 hover:text-[#FFD500] transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-500 font-mono text-center">Tampilan: Elegan, modern, fokus 100% pada isi kutipan.</div>
+    </div>
+
+    <!-- OPTION D: LEGO 1X5 MICRO BASEPLATE (3D LEGO BRICK) -->
+    <div id="option-d" class="p-6 rounded-2xl bg-[#110b27] border-2 border-white/10 relative overflow-hidden flex flex-col justify-between">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <span class="text-xs font-mono font-bold tracking-wider text-slate-300 uppercase">Opsi D &bull; Lego 1x5 Micro Baseplate</span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-red-500/20 text-red-300">Retro Nostalgia</span>
+      </div>
+      <p class="text-xs text-slate-400 mt-2">
+        Plat Lego mini berbentuk 1x5 plate abu-abu/biru Classic Space dengan 5 kancing timbul nyata. Stud aktif berubah jadi balok kuning yang terpasang!
+      </p>
+
+      <!-- Visual Component Mockup -->
+      <div class="py-8 flex items-center justify-center">
+        <div class="flex items-center gap-4">
+          <button class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-[#FFD500] hover:border-[#FFD500]/50 transition-all text-xs font-mono">
+            &lt;
+          </button>
+
+          <!-- 1x5 Lego Plate -->
+          <div class="h-8 px-2.5 rounded-md bg-[#252836] border-b-2 border-black/60 shadow-inner flex items-center gap-2">
+            <div class="w-3.5 h-3.5 rounded-full bg-[#3b4054] shadow-[0_1px_2px_rgba(0,0,0,0.5)]"></div>
+            <div class="w-3.5 h-3.5 rounded-full bg-[#3b4054] shadow-[0_1px_2px_rgba(0,0,0,0.5)]"></div>
+            <div class="w-4 h-4 rounded-full bg-[#FFD500] shadow-[0_0_12px_rgba(255,213,0,0.9),0_2px_3px_rgba(0,0,0,0.6)] border border-yellow-200"></div>
+            <div class="w-3.5 h-3.5 rounded-full bg-[#3b4054] shadow-[0_1px_2px_rgba(0,0,0,0.5)]"></div>
+            <div class="w-3.5 h-3.5 rounded-full bg-[#3b4054] shadow-[0_1px_2px_rgba(0,0,0,0.5)]"></div>
+          </div>
+
+          <button class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-[#FFD500] hover:border-[#FFD500]/50 transition-all text-xs font-mono">
+            &gt;
+          </button>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-500 font-mono text-center">Tampilan: Mirip potongan mainan Lego asli, sangat unik.</div>
+    </div>
+
+  </div>
+
+</body>
+</html>
+

@@ -1,0 +1,117 @@
+const { spawn } = require('child_process');
+const http = require('http');
+const path = require('path');
+const os = require('os');
+const fs = require('fs');
+
+async function capturePreciseBurst() {
+  const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+  const port = 9590;
+  const userDataDir = path.join(os.tmpdir(), 'chrome_cdp_burst_' + Date.now());
+
+  const chrome = spawn(chromePath, [
+    '--headless=new',
+    `--remote-debugging-port=${port}`,
+    '--window-size=1440,900',
+    '--disable-gpu',
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows',
+    '--disable-renderer-backgrounding',
+    `--user-data-dir=${userDataDir}`
+  ]);
+
+  let ver;
+  for (let i = 0; i < 30; i++) {
+    try {
+      ver = await new Promise((res, rej) => {
+        const req = http.get(`http://127.0.0.1:${port}/json/version`, r => {
+          let d = ''; r.on('data', c => d += c); r.on('end', () => res(JSON.parse(d)));
+        });
+        req.on('error', rej);
+        req.setTimeout(500, () => req.destroy());
+      });
+      if (ver) break;
+    } catch {
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+
+  const targets = await new Promise((res, rej) => {
+    http.get(`http://127.0.0.1:${port}/json/list`, r => {
+      let d = ''; r.on('data', c => d += c); r.on('end', () => res(JSON.parse(d)));
+    }).on('error', rej);
+  });
+  const pageTarget = targets.find(t => t.type === 'page') || targets[0];
+
+  const ws = new WebSocket(pageTarget.webSocketDebuggerUrl);
+  let id = 1;
+  const pending = new Map();
+  ws.onmessage = e => {
+    const msg = JSON.parse(e.data);
+    if (msg.id && pending.has(msg.id)) {
+      pending.get(msg.id)(msg);
+      pending.delete(msg.id);
+    }
+  };
+  function send(method, params = {}) {
+    return new Promise(res => {
+      const msgId = id++;
+      pending.set(msgId, res);
+      ws.send(JSON.stringify({ id: msgId, method, params }));
+    });
+  }
+
+  await new Promise(r => ws.onopen = r);
+  await send('Page.enable');
+  await send('Runtime.enable');
+  await send('Emulation.setDeviceMetricsOverride', {
+    width: 1440,
+    height: 900,
+    deviceScaleFactor: 1,
+    mobile: false
+  });
+
+  async function screenshot(name) {
+    const res = await send('Page.captureScreenshot', { format: 'png' });
+    const buffer = Buffer.from(res.result.data, 'base64');
+    fs.writeFileSync(path.join(__dirname, name), buffer);
+    console.log('Saved screenshot:', name);
+  }
+
+  console.log('Navigating to http://localhost:5174/ ...');
+  await send('Page.navigate', { url: 'http://localhost:5174/' });
+
+  console.log('Waiting for idle (8.5s)...');
+  await new Promise(r => setTimeout(r, 8500));
+
+  // Click Discover More
+  console.log('Clicking Discover More button...');
+  await send('Runtime.evaluate', {
+    expression: `(() => {
+      const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Discover More'));
+      if (btn) btn.click();
+    })()`
+  });
+
+  // 1. Windup (550ms after click)
+  await new Promise(r => setTimeout(r, 550));
+  await screenshot('burst_1_windup.png');
+
+  // 2. Brick hurtling forward closing in on screen (450ms later = 1000ms after click)
+  await new Promise(r => setTimeout(r, 450));
+  await screenshot('burst_2_approaching.png');
+
+  // 3. Impact & burst (200ms later = 1200ms after click)
+  await new Promise(r => setTimeout(r, 200));
+  await screenshot('burst_3_shatter_burst.png');
+
+  // 4. Settled About page
+  await new Promise(r => setTimeout(r, 600));
+  await screenshot('burst_4_about_settled.png');
+
+  chrome.kill();
+  console.log('Precise burst capture done!');
+}
+
+capturePreciseBurst().catch(console.error);
+

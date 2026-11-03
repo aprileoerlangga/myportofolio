@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real 3D Mechanical Macropad V2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #030305;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .perspective-stage {
+      perspective: 1100px;
+      perspective-origin: 45% 42%;
+    }
+
+    /* 
+      AUTHENTIC CNC MACROPAD CHASSIS:
+      Matching the exact pitch, yaw, and roll of the reference image:
+      rotateX(52deg) rotateY(-4deg) rotateZ(-36deg)
+    */
+    .macropad-chassis {
+      transform-style: preserve-3d;
+      transform: rotateX(46deg) rotateY(-8deg) rotateZ(-38deg);
+      background: linear-gradient(145deg, #161922 0%, #0d1017 55%, #07090e 100%);
+      border-radius: 32px;
+      padding: 16px 16px 22px 16px;
+      position: relative;
+      /* Solid 3D CNC machined aluminum/matte case extrusion */
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.22) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.9) inset,
+        1px 2px 0 #131620,
+        2px 5px 0 #0f121b,
+        3px 8px 0 #0b0e15,
+        4px 11px 0 #080a10,
+        5px 14px 0 #06080c,
+        6px 18px 0 #040508,
+        8px 23px 0 #020305,
+        10px 28px 0 #010203,
+        14px 36px 48px rgba(0, 0, 0, 0.95),
+        22px 55px 75px rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Recessed switch mounting plate */
+    .switch-plate {
+      background: #05070a;
+      border-radius: 22px;
+      padding: 10px;
+      box-shadow: 
+        inset 0 4px 12px rgba(0, 0, 0, 0.98),
+        inset 0 1px 3px rgba(0, 0, 0, 0.9),
+        0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    /* 
+      AUTHENTIC CHUNKY MECHANICAL KEYCAP (CHERRY / OEM PROFILE):
+      - Deep 12px-14px vertical sidewalls
+      - Plump 18px rounded corners
+      - Deep concave scoop on top
+      - Pure white typography & icons that pop
+    */
+    .chunky-keycap {
+      position: relative;
+      transform-style: preserve-3d;
+      width: 66px;
+      height: 66px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.09s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .keycap-face {
+      width: 100%;
+      height: 100%;
+      border-radius: 18px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Authentic 3D mechanical keycap sidewalls */
+      box-shadow:
+        /* Specular rim highlight */
+        0 1.5px 1.5px rgba(255, 255, 255, 0.55) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.4) inset,
+        /* 12-Layer Solid 3D Keycap Extruded Sides */
+        0 1px 0 var(--side),
+        0 2px 0 var(--side),
+        0 3px 0 var(--side),
+        0 4px 0 var(--side),
+        0 5px 0 var(--side),
+        0 6px 0 var(--side),
+        0 7px 0 var(--side),
+        0 8px 0 var(--side),
+        0 9px 0 var(--side-deep),
+        0 10px 0 var(--side-deep),
+        0 11px 0 #080a0f,
+        0 12px 0 #040508,
+        /* Keycap ambient cast shadow on switch plate */
+        0 16px 22px -2px rgba(0, 0, 0, 0.92),
+        0 24px 34px -4px rgba(0, 0, 0, 0.75);
+    }
+
+    /* Concave finger dish scoop on the top surface */
+    .keycap-dish {
+      position: absolute;
+      inset: 4px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 45% 32%, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0) 65%);
+      box-shadow: 
+        inset 0 2px 5px rgba(255, 255, 255, 0.45),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.55);
+      pointer-events-none;
+    }
+
+    .chunky-keycap:hover .keycap-face {
+      transform: translateY(-2px);
+    }
+
+    .chunky-keycap:active .keycap-face {
+      transform: translateY(7px);
+      box-shadow:
+        0 1px 0 var(--side),
+        0 2px 0 var(--side),
+        0 3px 0 #050608,
+        0 8px 12px rgba(0, 0, 0, 0.85),
+        inset 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Crisp drop shadow on keycap glyphs */
+    .key-glyph {
+      color: #ffffff;
+      font-weight: 900;
+      line-height: 1;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="p-8 flex flex-col items-center justify-center min-h-screen">
+
+  <!-- TOP HEADER -->
+  <div class="text-center mb-12">
+    <h2 class="text-6xl font-black tracking-widest text-white uppercase drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]" style="letter-spacing: 0.18em;">
+      SKILLS
+    </h2>
+    <div class="text-slate-400 text-sm font-mono mt-1.5 tracking-wider">(hint: press a key)</div>
+  </div>
+
+  <div class="flex items-center justify-center gap-20 max-w-7xl w-full">
+
+    <!-- Active Skill Inspector (Ref: Prettier panel) -->
+    <div class="w-96 flex flex-col justify-center">
+      <h3 
+        class="text-6xl lg:text-7xl font-black text-white tracking-tight leading-none" 
+        style="text-shadow: 1px 1px 0 #cbd5e1, 2px 2px 0 #94a3b8, 3px 3px 0 #64748b, 4px 4px 0 #475569, 6px 6px 16px rgba(0,0,0,0.9);"
+      >
+        React
+      </h3>
+      <p class="mt-4 text-xl text-slate-300 font-normal leading-relaxed">
+        declarative components that turn complex UI logic into an absolute breeze.
+      </p>
+    </div>
+
+    <!-- The 3D Mechanical Macropad Keyboard -->
+    <div class="perspective-stage">
+      <div class="macropad-chassis">
+        <div class="switch-plate">
+          <div class="grid grid-cols-6 gap-3.5">
+
+            <!-- ========================================== -->
+            <!-- ROW 1 (Ascending from Left to Top-Right)    -->
+            <!-- ========================================== -->
+            <!-- JS (Warm Orange with WHITE JS text) -->
+            <div class="chunky-keycap" style="--side: #C46700; --side-deep: #7E3E00;">
+              <div class="keycap-face bg-[#F59E0B]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl font-black">JS</span>
+              </div>
+            </div>
+
+            <!-- TS (Rich Electric Blue with WHITE TS text) -->
+            <div class="chunky-keycap" style="--side: #1D4ED8; --side-deep: #173896;">
+              <div class="keycap-face bg-[#2563EB]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl font-black">TS</span>
+              </div>
+            </div>
+
+            <!-- HTML5 (Punchy Red with WHITE 5 text) -->
+            <div class="chunky-keycap" style="--side: #BE123C; --side-deep: #730B24;">
+              <div class="keycap-face bg-[#E11D48]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-3xl font-black">5</span>
+              </div>
+            </div>
+
+            <!-- CSS3 (Royal Purple with WHITE 3 text) -->
+            <div class="chunky-keycap" style="--side: #6B21A8; --side-deep: #43126B;">
+              <div class="keycap-face bg-[#7C3AED]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-3xl font-black">3</span>
+              </div>
+            </div>
+
+            <!-- React (Luminous Cyan with WHITE Atom) -->
+            <div class="chunky-keycap" style="--side: #0891B2; --side-deep: #0D576B;">
+              <div class="keycap-face bg-[#06B6D4]">
+                <div class="keycap-dish"></div>
+                <svg class="w-9 h-9 key-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(0 12 12)" />
+                  <ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(60 12 12)" />
+                  <ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(120 12 12)" />
+                  <circle cx="12" cy="12" r="2" fill="currentColor" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Vite (Emerald Green with WHITE V) -->
+            <div class="chunky-keycap" style="--side: #047857; --side-deep: #044E39;">
+              <div class="keycap-face bg-[#10B981]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-3xl font-black">V</span>
+              </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- ROW 2                                      -->
+            <!-- ========================================== -->
+            <!-- Next (Sleek Matte Black with WHITE N) -->
+            <div class="chunky-keycap" style="--side: #18181B; --side-deep: #0A0A0C;">
+              <div class="keycap-face bg-[#27272A] border border-white/10">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl font-black">N</span>
+              </div>
+            </div>
+
+            <!-- Tailwind (Cyan with WHITE waves) -->
+            <div class="chunky-keycap" style="--side: #0284C7; --side-deep: #08567F;">
+              <div class="keycap-face bg-[#38BDF8]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-3xl font-black">≈</span>
+              </div>
+            </div>
+
+            <!-- Node (Vibrant Green with WHITE hex) -->
+            <div class="chunky-keycap" style="--side: #15803D; --side-deep: #0F5829;">
+              <div class="keycap-face bg-[#22C55E]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl font-black">⬢</span>
+              </div>
+            </div>
+
+            <!-- Express (Dark with WHITE ex) -->
+            <div class="chunky-keycap" style="--side: #1C1917; --side-deep: #0C0A09;">
+              <div class="keycap-face bg-[#292524] border border-white/10">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl font-black">ex</span>
+              </div>
+            </div>
+
+            <!-- PHP (Punchy Berry/Red with WHITE PHP) -->
+            <div class="chunky-keycap" style="--side: #9F1239; --side-deep: #5A071E;">
+              <div class="keycap-face bg-[#E11D48]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-xl font-black">PHP</span>
+              </div>
+            </div>
+
+            <!-- MongoDB (Forest Green with WHITE leaf) -->
+            <div class="chunky-keycap" style="--side: #047857; --side-deep: #044E39;">
+              <div class="keycap-face bg-[#10B981]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl">🍃</span>
+              </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- ROW 3                                      -->
+            <!-- ========================================== -->
+            <!-- Git (Bold Crimson Red with WHITE branch) -->
+            <div class="chunky-keycap" style="--side: #B91C1C; --side-deep: #701111;">
+              <div class="keycap-face bg-[#EF4444]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl font-black">⎇</span>
+              </div>
+            </div>
+
+            <!-- GitHub (Matte Black with WHITE Octocat) -->
+            <div class="chunky-keycap" style="--side: #09090B; --side-deep: #000000;">
+              <div class="keycap-face bg-[#18181B] border border-white/15">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl">🐙</span>
+              </div>
+            </div>
+
+            <!-- PostgreSQL (Deep Slate Blue with WHITE P) -->
+            <div class="chunky-keycap" style="--side: #1E293B; --side-deep: #0F172A;">
+              <div class="keycap-face bg-[#334155] border border-white/10">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl font-black">P</span>
+              </div>
+            </div>
+
+            <!-- npm (Fire Red with WHITE npm) -->
+            <div class="chunky-keycap" style="--side: #991B1B; --side-deep: #560E0E;">
+              <div class="keycap-face bg-[#DC2626]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-base font-black">npm</span>
+              </div>
+            </div>
+
+            <!-- MySQL (Warm Amber with WHITE SQL) -->
+            <div class="chunky-keycap" style="--side: #B45309; --side-deep: #6E3205;">
+              <div class="keycap-face bg-[#F59E0B]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-sm font-black">SQL</span>
+              </div>
+            </div>
+
+            <!-- Java / AWS (Deep Orange with WHITE Java) -->
+            <div class="chunky-keycap" style="--side: #C2410C; --side-deep: #7A2706;">
+              <div class="keycap-face bg-[#EA580C]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-xl font-black">☕</span>
+              </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- ROW 4 (Bottom-Most Edge)                   -->
+            <!-- ========================================== -->
+            <!-- Linux (Dark Tux Penguin with WHITE outline) -->
+            <div class="chunky-keycap" style="--side: #09090B; --side-deep: #000000;">
+              <div class="keycap-face bg-[#18181B] border border-white/15">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl">🐧</span>
+              </div>
+            </div>
+
+            <!-- Docker (Pacific Blue with WHITE Whale) -->
+            <div class="chunky-keycap" style="--side: #0369A1; --side-deep: #06476E;">
+              <div class="keycap-face bg-[#0284C7]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl">🐳</span>
+              </div>
+            </div>
+
+            <!-- Flutter (Royal Blue with WHITE Flutter bird) -->
+            <div class="chunky-keycap" style="--side: #1D4ED8; --side-deep: #13399E;">
+              <div class="keycap-face bg-[#2563EB]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-2xl font-black">💙</span>
+              </div>
+            </div>
+
+            <!-- Dart (Cyan Blue with WHITE Dart text) -->
+            <div class="chunky-keycap" style="--side: #0284C7; --side-deep: #08567F;">
+              <div class="keycap-face bg-[#0284C7]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-sm font-black">Dart</span>
+              </div>
+            </div>
+
+            <!-- Laravel (Crimson Red with WHITE Lara text) -->
+            <div class="chunky-keycap" style="--side: #B91C1C; --side-deep: #701111;">
+              <div class="keycap-face bg-[#EF4444]">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-sm font-black">Lara</span>
+              </div>
+            </div>
+
+            <!-- Figma (Pitch Black with WHITE Play/Triangle) -->
+            <div class="chunky-keycap" style="--side: #000000; --side-deep: #000000;">
+              <div class="keycap-face bg-[#09090B] border border-white/15">
+                <div class="keycap-dish"></div>
+                <span class="key-glyph text-xl font-black">▲</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

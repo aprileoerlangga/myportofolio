@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exact TikTok Keyboard Match</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #030305;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .perspective-stage {
+      perspective: 1200px;
+      perspective-origin: 50% 40%;
+    }
+
+    /* 
+      The Keyboard Base:
+      No big "meja" / outer frame! Just a tight dark chassis underneath the keycaps.
+      Orientation:
+      - 6 keys go UP-RIGHT (-30deg to -35deg)
+      - 4 keys go DOWN-RIGHT (+30deg to +35deg)
+    */
+    .keyboard-matrix {
+      transform-style: preserve-3d;
+      transform: rotateX(55deg) rotateY(0deg) rotateZ(-35deg);
+    }
+
+    /* 
+      Realistic 3D Keycap from the TikTok reference:
+      Chunky, rounded corners, extruded bottom & right faces, soft scoop dish 
+    */
+    .keycap-item {
+      position: relative;
+      transform-style: preserve-3d;
+      border-radius: 14px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* 
+      In this isometric orientation (rotateX: 55deg, rotateZ: -35deg):
+      The front-left face and front-right face are visible!
+      Multi-layer box-shadow creates the solid extruded sides:
+    */
+    .keycap-item {
+      box-shadow:
+        /* Top rim specular highlight */
+        0 1px 1px rgba(255, 255, 255, 0.45) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.4) inset,
+        /* 3D Extruded vertical walls (colored to match keycap dark shade) */
+        0 1px 0 var(--dark),
+        0 2px 0 var(--dark),
+        0 3px 0 var(--dark),
+        0 4px 0 var(--dark),
+        0 5px 0 var(--dark),
+        0 6px 0 var(--dark),
+        0 7px 0 var(--dark),
+        0 8px 0 var(--dark),
+        0 9px 0 #06080d,
+        /* Keycap cast shadow onto base */
+        0 12px 16px -2px rgba(0, 0, 0, 0.8),
+        0 18px 24px -4px rgba(0, 0, 0, 0.6);
+    }
+
+    .keycap-item:hover {
+      transform: translateY(-2px) translateZ(3px);
+    }
+
+    .keycap-dish {
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.35), inset 0 -2px 4px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Underneath base plate - tight, only 6px padding, dark chassis */
+    .base-chassis {
+      background: #080b12;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.1) inset,
+        0 4px 0 #04060a,
+        0 8px 0 #020305,
+        0 12px 24px rgba(0,0,0,0.95),
+        0 24px 48px rgba(0,0,0,0.9);
+    }
+  </style>
+</head>
+<body class="p-10 flex flex-col items-center justify-center min-h-screen">
+
+  <div class="text-center mb-8">
+    <h2 class="text-5xl font-black tracking-widest uppercase mb-1">SKILLS</h2>
+    <div class="text-slate-400 text-sm font-mono">(hint: press a key)</div>
+  </div>
+
+  <div class="perspective-stage my-6">
+    <!-- Tight Chassis Base (NO huge "meja" / border!) -->
+    <div class="keyboard-matrix base-chassis p-2.5 rounded-[22px] border border-white/5">
+      
+      <!-- 4 Rows x 6 Columns Grid -->
+      <div class="grid grid-cols-6 gap-2.5">
+
+        <!-- ════════ ROW 1 (Starts at JS, ends at Top-Right) ════════ -->
+        <!-- JS -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-black" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #F7DF1E; --dark: #BFA80A;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black tracking-tight">JS</span>
+        </div>
+        <!-- TS -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #3178C6; --dark: #1E4E85;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black tracking-tight">TS</span>
+        </div>
+        <!-- HTML5 -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #E34F26; --dark: #9C2E11;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-xl font-black">5</span>
+        </div>
+        <!-- CSS3 -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #6A38B3; --dark: #451F78;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-xl font-black">3</span>
+        </div>
+        <!-- React (Cyan) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-black" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.55) 0%, transparent 60%), #00D8FF; --dark: #008AA3;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-xl font-black">⚛</span>
+        </div>
+        <!-- Vite / Vue (Green) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #00C58E; --dark: #007D5A;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-xl font-black">V</span>
+        </div>
+
+        <!-- ════════ ROW 2 ════════ -->
+        <!-- Next.js (White/Black) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.3) 0%, transparent 60%), #181818; --dark: #080808; border: 1px solid rgba(255,255,255,0.15);">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-base font-black">N</span>
+        </div>
+        <!-- Tailwind (Cyan) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #06B6D4; --dark: #087387;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">≈</span>
+        </div>
+        <!-- Node.js (Green) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #339933; --dark: #1E661E;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-sm font-black">US</span>
+        </div>
+        <!-- Express (Dark/Gray) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.3) 0%, transparent 60%), #222222; --dark: #111111; border: 1px solid rgba(255,255,255,0.15);">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-xs font-black">ex</span>
+        </div>
+        <!-- Python (Blue) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #3776AB; --dark: #1E4B72;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">🐍</span>
+        </div>
+        <!-- MongoDB (Green) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #47A248; --dark: #286429;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">🍃</span>
+        </div>
+
+        <!-- ════════ ROW 3 ════════ -->
+        <!-- Git (Red) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #F05032; --dark: #9C2E19;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">⎇</span>
+        </div>
+        <!-- GitHub (Dark) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.3) 0%, transparent 60%), #181717; --dark: #0A0A0A; border: 1px solid rgba(255,255,255,0.15);">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">🐙</span>
+        </div>
+        <!-- Prisma / PostgreSQL -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.3) 0%, transparent 60%), #2D3748; --dark: #1A202C;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-sm font-black">Pr</span>
+        </div>
+        <!-- npm (Red) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #CB3837; --dark: #8C1D1C;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-xs font-black">npm</span>
+        </div>
+        <!-- MySQL -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #E48E00; --dark: #9E6000;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-xs font-black">SQL</span>
+        </div>
+        <!-- Docker (Blue) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #0073EC; --dark: #004BA0;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">🐳</span>
+        </div>
+
+        <!-- ════════ ROW 4 (Bottom-Most) ════════ -->
+        <!-- Linux (Black - bottom-most left corner) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.3) 0%, transparent 60%), #141720; --dark: #080A0F; border: 1px solid rgba(255,255,255,0.15);">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">🐧</span>
+        </div>
+        <!-- Docker / Cloud (Cyan) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #2496ED; --dark: #125E96;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">☁</span>
+        </div>
+        <!-- Flutter (Blue) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #02569B; --dark: #01345E;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">💙</span>
+        </div>
+        <!-- Dart (Blue) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #0175C2; --dark: #004675;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">🎯</span>
+        </div>
+        <!-- Laravel (Red) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #FF2D20; --dark: #A31911;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">🔺</span>
+        </div>
+        <!-- Figma (Green/Accent) -->
+        <div class="keycap-item w-14 h-14 flex items-center justify-center font-bold text-white" style="background: radial-gradient(circle at 45% 30%, rgba(255,255,255,0.45) 0%, transparent 60%), #059669; --dark: #047857;">
+          <div class="absolute inset-1 rounded-xl keycap-dish pointer-events-none"></div>
+          <span class="text-lg font-black">❖</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+

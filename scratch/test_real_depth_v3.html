@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real Depth V3 Keyboard Verification</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #000000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .perspective-stage {
+      perspective: 1200px;
+      perspective-origin: 45% 40%;
+    }
+
+    .macropad-body {
+      transform-style: preserve-3d;
+      transform: rotateX(46deg) rotateY(-6deg) rotateZ(-36deg);
+      background: #05070c;
+      border-radius: 20px;
+      padding: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.18) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.95) inset,
+        -1px 2px 0 #040508,
+        -2px 5px 0 #020305,
+        -3px 8px 0 #010203,
+        -5px 14px 0 #000102,
+        -8px 22px 35px rgba(0,0,0,0.98),
+        -14px 38px 55px rgba(0,0,0,0.95);
+    }
+
+    .switch-plate {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      background: #000002;
+      border-radius: 15px;
+      padding: 6px;
+      box-shadow: inset 0 6px 25px rgba(0, 0, 0, 0.99);
+      transform-style: preserve-3d;
+    }
+
+    /* 
+      AUTHENTIC SA HIGH-PROFILE MECHANICAL KEYCAP:
+      - 5.5px tapered outer pyramid skirt
+      - 14px solid extruded side walls (-X and +Y)
+      - Deep bottom-out depression travel
+    */
+    .keycap-sa {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      border-radius: 12px;
+      padding: 5.5px;
+      background: linear-gradient(135deg, var(--side) 0%, var(--side-dark) 100%);
+      border: none;
+      outline: none;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.08s cubic-bezier(0.2, 0.8, 0.2, 1);
+      
+      box-shadow:
+        0 1px 1.5px rgba(255, 255, 255, 0.45) inset,
+        -1px 1px 0 var(--side),
+        -2px 2px 0 var(--side),
+        -3px 3px 0 var(--side),
+        -4px 4px 0 var(--side),
+        -5px 5px 0 var(--side),
+        -6px 6px 0 var(--side-dark),
+        -7px 7px 0 var(--side-dark),
+        -8px 8px 0 var(--side-dark),
+        -9px 9px 0 #080c14,
+        -10px 10px 0 #05070c,
+        -11px 11px 0 #020306,
+        -12px 12px 0 #000002,
+        -16px 18px 24px rgba(0, 0, 0, 0.98),
+        -8px 10px 12px rgba(0, 0, 0, 0.88);
+    }
+
+    .keycap-sa:hover {
+      transform: translate(-1.5px, 1.5px);
+    }
+
+    .keycap-sa:active, .keycap-sa.pressed {
+      transform: translate(-6px, 6px);
+      box-shadow:
+        -1px 1px 0 #020305,
+        -2px 2px 4px rgba(0, 0, 0, 0.9),
+        inset 0 2px 6px rgba(0, 0, 0, 0.7);
+    }
+
+    .keycap-top {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 7.5px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 1.5px 1px rgba(255, 255, 255, 0.6) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.5) inset,
+        -1px 1.5px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .keycap-dish {
+      position: absolute;
+      inset: 2px;
+      border-radius: 5.5px;
+      background: radial-gradient(circle at 45% 30%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 65%);
+      box-shadow: inset 0 1.5px 3px rgba(255, 255, 255, 0.45), inset 0 -1.5px 3px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+    }
+
+    .keycap-content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.7));
+      pointer-events: none;
+    }
+
+    .keycap-selected-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 7.5px;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95), 0 0 15px rgba(255, 255, 255, 0.5);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen">
+
+  <div class="perspective-stage">
+    <div class="macropad-body" id="macropad">
+      <div class="switch-plate" id="switchPlate">
+        <!-- Injected via script -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 24 Keys arranged exactly matching user reference & authentic tools:
+    const SKILLS = [
+      // ROW 1: [JS] -> [TS] -> [HTML5] -> [CSS3] -> [React] -> [Java]
+      { id: 'js', name: 'JavaScript', text: 'JS', bg: '#F59E0B', side: '#D97706', sideDark: '#92400E' },
+      { id: 'ts', name: 'TypeScript', text: 'TS', bg: '#2563EB', side: '#1D4ED8', sideDark: '#1E3A8A' },
+      { id: 'html5', name: 'HTML5', icon: 'html5', bg: '#E44D26', side: '#C026D3', sideDark: '#701A75', isRedShield: true, side: '#DC2626', sideDark: '#7F1D1D' },
+      { id: 'css3', name: 'CSS3', icon: 'css3', bg: '#7C3AED', side: '#6D28D9', sideDark: '#4C1D95' },
+      { id: 'react', name: 'React', icon: 'react', bg: '#06B6D4', side: '#0891B2', sideDark: '#155E75' },
+      { id: 'java', name: 'Java', icon: 'java', bg: '#EA580C', side: '#C2410C', sideDark: '#7C2D12' },
+
+      // ROW 2: [Next.js] -> [Tailwind] -> [Node.js] -> [Express] -> [Python] -> [MongoDB]
+      { id: 'nextjs', name: 'Next.js', isNextBadge: true, bg: '#18181B', side: '#09090B', sideDark: '#000000' },
+      { id: 'tailwind', name: 'Tailwind CSS', icon: 'tailwind', bg: '#06B6D4', side: '#0891B2', sideDark: '#0E7490' },
+      { id: 'nodejs', name: 'Node.js', icon: 'nodejs', bg: '#22C55E', side: '#16A34A', sideDark: '#14532D' },
+      { id: 'express', name: 'Express.js', text: 'ex', isItalic: true, bg: '#262626', side: '#171717', sideDark: '#0A0A0A' },
+      { id: 'python', name: 'Python', icon: 'python', bg: '#1E293B', side: '#0F172A', sideDark: '#020617' },
+      { id: 'mongodb', name: 'MongoDB', icon: 'mongodb', bg: '#10B981', side: '#059669', sideDark: '#064E3B' },
+
+      // ROW 3: [Git] -> [GitHub] -> [PostgreSQL] -> [npm] -> [MySQL] -> [PHP]
+      { id: 'git', name: 'Git', isGitDiamond: true, bg: '#EF4444', side: '#DC2626', sideDark: '#7F1D1D' },
+      { id: 'github', name: 'GitHub', icon: 'github', bg: '#18181B', side: '#09090B', sideDark: '#000000' },
+      { id: 'postgres', name: 'PostgreSQL', icon: 'postgres', bg: '#1E293B', side: '#0F172A', sideDark: '#020617' },
+      { id: 'npm', name: 'npm', icon: 'npm', bg: '#DC2626', side: '#B91C1C', sideDark: '#7F1D1D' },
+      { id: 'mysql', name: 'MySQL', icon: 'mysql', bg: '#F59E0B', side: '#D97706', sideDark: '#92400E' },
+      { id: 'php', name: 'PHP', icon: 'php', bg: '#6366F1', side: '#4F46E5', sideDark: '#312E81' },
+
+      // ROW 4: [Linux] -> [Docker] -> [Flutter] -> [Dart] -> [Laravel] -> [Figma]
+      { id: 'linux', name: 'Linux', icon: 'linux', bg: '#18181B', side: '#09090B', sideDark: '#000000' },
+      { id: 'docker', name: 'Docker', icon: 'docker', bg: '#0284C7', side: '#0369A1', sideDark: '#0C4A6E' },
+      { id: 'flutter', name: 'Flutter', icon: 'flutter', bg: '#0284C7', side: '#0369A1', sideDark: '#075985' },
+      { id: 'dart', name: 'Dart', icon: 'dart', bg: '#0284C7', side: '#0369A1', sideDark: '#075985' },
+      { id: 'laravel', name: 'Laravel', icon: 'laravel', bg: '#EF4444', side: '#DC2626', sideDark: '#7F1D1D' },
+      { id: 'figma', name: 'Figma', icon: 'figma', bg: '#18181B', side: '#09090B', sideDark: '#000000' },
+    ];
+
+    // SVG Vectors
+    const ICONS = {
+      html5: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.236-2.672H5.591l.707 8.062h8.995l-.316 3.49-3.003.812-3.011-.815-.192-2.164H6.076l.377 4.417 5.521 1.533 5.529-1.533.743-8.415H8.531z"/></svg>`,
+      css3: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413H5.41l.235 2.672h10.364l-.24 2.665H6.079l.235 2.672h9.458l-.358 3.993-3.44.955-3.444-.955-.221-2.48H5.972l.432 4.908 5.57 1.543 5.576-1.543 1.04-11.927z"/></svg>`,
+      react: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><circle cx="12" cy="12" r="2.2"/><g fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="12" cy="12" rx="10" ry="3.8"/><ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(120 12 12)"/></g></svg>`,
+      java: `<svg viewBox="0 0 384 512" width="24" height="24" fill="currentColor"><path d="M277.7 348.6c-48.4 12.3-102.7 13.9-152.1 4.5-13.9-2.7-27.4-6.3-40.4-10.8 14.1 8.8 29.8 15.6 46.5 20.3 54.1 15.2 113.8 13.3 166.4-5.3 13.2-4.7 25.8-10.9 37.6-18.4-18.4 4.8-38.6 8.3-58 9.7zm-4.7-65.4c-43.9 10.9-93.5 12.7-138.8 4.7-16.1-2.8-31.8-7.1-46.7-12.8 15.8 8.8 33.2 15.4 51.7 19.5 48.6 10.8 101.6 8.6 148.8-6.1 14.5-4.5 28.5-10.6 41.5-18-17.7 5.7-37.4 9.9-56.5 12.7zm-207.3-64c12.3 8.3 26.1 14.8 40.8 19.3 47.7 14.4 100.8 13.8 148.1-1.7 18.5-6.1 36.1-14.7 52.4-25.3-19.4 6.8-40.6 11.2-61.9 13-43.3 3.7-88.3-.4-129-11.8-17.2-4.8-33.6-11.8-48.8-20.7-3.6 8.9-3.9 18.4-1.6 27.2zM368 416H16c-8.8 0-16 7.2-16 16s7.2 16 16 16h352c8.8 0 16-7.2 16-16s-7.2-16-16-16zm-126.7-98.3c27.1-13.8 48.2-36.8 59.8-64.6 2.5-6 1.4-12.9-2.8-17.9-4.2-5-10.7-7.4-17.1-6.3-5.5.9-10.8 2.3-15.9 4.1 14.5-27.7 15.5-60.9 2.6-89.4-4-8.8-13.4-14-23.1-12.9-9.6 1.1-17.3 8.3-19 17.8-6.8 38.3-29.2 71.4-61.6 91.1-12.7 7.7-22.7 18.8-28.7 31.9-6.3 13.7-7.7 29.1-4 43.8 4.3 17.2 14.9 32.1 29.6 41.9 19.4 12.9 43.1 19.3 67.2 18 20.3-1.1 39.7-8.3 56.1-20.7 7.9-6 14.9-13.1 20.7-21.2-20.7 4.4-42.3 2.5-62.8-4.5z"/></svg>`,
+      tailwind: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"/></svg>`,
+      nodejs: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 0l10.4 6v12L12 24 1.6 18V6L12 0zm0 2.3L3.6 7.2v9.6L12 21.7l8.4-4.9V7.2L12 2.3z"/></svg>`,
+      python: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.006 2.752h5.814v.826H3.896S0 5.8 0 11.897c0 6.096 3.4 5.882 3.4 5.882h2.03v-2.85s-.11-3.4 3.344-3.4h5.757s3.238.053 3.238-3.13V2.656S18.337 0 11.914 0zm-3.21 1.764c.64 0 1.16.52 1.16 1.16 0 .64-.52 1.16-1.16 1.16-.64 0-1.16-.52-1.16-1.16 0-.64.52-1.16 1.16-1.16zM12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.006-2.752H11.98v-.826h8.124s3.896.434 3.896-5.663c0-6.096-3.4-5.882-3.4-5.882h-2.03v2.85s.11 3.4-3.344 3.4H9.47s-3.238-.053-3.238 3.13v5.538S5.663 24 12.086 24zm3.21-1.764c-.64 0-1.16-.52-1.16-1.16 0-.64.52-1.16 1.16-1.16.64 0 1.16.52 1.16 1.16 0 .64-.52 1.16-1.16 1.16z"/></svg>`,
+      mongodb: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 0c-.3 0-.6.2-.7.4C10.5 2 6 9.8 6 15c0 3.3 2.7 6 6 6s6-2.7 6-6c0-5.2-4.5-13-5.3-14.6-.1-.2-.4-.4-.7-.4zm0 2c1.2 2.5 4 8.7 4 13 0 2.2-1.8 4-4 4s-4-1.8-4-4c0-4.3 2.8-10.5 4-13z"/></svg>`,
+      github: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>`,
+      postgres: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12.001 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3.896 17.652c-.672.436-1.55.728-2.61.859-1.232.152-2.32-.089-3.168-.692-.619-.441-1.077-1.095-1.341-1.916-.363-1.127-.291-2.482.208-3.924.32-.924.8-1.782 1.41-2.522.846-1.026 1.942-1.745 3.183-2.091 1.054-.294 2.13-.244 3.109.146 1.066.425 1.879 1.258 2.302 2.361.352.919.414 1.936.177 2.932-.295 1.242-1.074 2.348-2.227 3.197-.334.246-.689.46-1.043.65z"/></svg>`,
+      npm: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M0 7.334v9.332h24V7.334H0zm18.666 6.668H16V10h-2.666v4.002H8V10H5.334v4.002H2.666V8.666h16v5.336z"/></svg>`,
+      mysql: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M16.5 4.5c-2.4 0-4.6 1.2-6 3.1-1.4-1.9-3.6-3.1-6-3.1-4.1 0-7.5 3.4-7.5 7.5 0 5.4 7.5 10.5 13.5 10.5s13.5-5.1 13.5-10.5c0-4.1-3.4-7.5-7.5-7.5zm-3 12.8c-3.8 0-8.2-3.4-8.2-6.8 0-2.5 2-4.5 4.5-4.5 2.1 0 3.9 1.4 4.4 3.4.1.4.5.7.9.7s.8-.3.9-.7c.5-2 2.3-3.4 4.4-3.4 2.5 0 4.5 2 4.5 4.5 0 3.4-4.4 6.8-8.2 6.8z"/></svg>`,
+      php: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-4.5 13.5H6l1.5-7h2.25c1.24 0 2.25 1.01 2.25 2.25S11 13 9.75 13H8.25l-.75 2.5zm7 0H13l1.5-7h2.25c1.24 0 2.25 1.01 2.25 2.25S18 13 16.75 13h-1.5l-.75 2.5z"/></svg>`,
+      linux: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12.003 0c-3.12 0-5.32 2.373-5.32 5.568 0 1.233.35 2.652.88 3.978-2.02.77-3.42 2.57-3.42 4.73 0 2.06 1.25 3.82 3.08 4.63-.44 1.28-.68 2.63-.68 4.02 0 .59.45 1.07 1.04 1.07h8.84c.59 0 1.04-.48 1.04-1.07 0-1.39-.24-2.74-.68-4.02 1.83-.81 3.08-2.57 3.08-4.63 0-2.16-1.4-3.96-3.42-4.73.53-1.326.88-2.745.88-3.978 0-3.195-2.2-5.568-5.32-5.568zm0 2.1c1.92 0 3.22 1.503 3.22 3.468 0 1.13-.34 2.45-.88 3.69-.17.39-.03.85.34 1.07 1.57.94 2.52 2.52 2.52 4.25 0 2.4-1.8 4.35-4.1 4.5-.42.03-.76.35-.8.77-.38 2.61-1.35 5.06-2.8 7.06h-5c-1.45-2-2.42-4.45-2.8-7.06-.04-.42-.38-.74-.8-.77-2.3-.15-4.1-2.1-4.1-4.5 0-1.73.95-3.31 2.52-4.25.37-.22.51-.68.34-1.07-.54-1.24-.88-2.56-.88-3.69 0-1.965 1.3-3.468 3.22-3.468h4.2z"/></svg>`,
+      docker: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186m5.893 2.715h2.118a.186.186 0 00.186-.186V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.186V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.186V9.006a.185.185 0 00-.186-.186h-2.118a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185m-2.928 0h2.119a.185.185 0 00.185-.186V9.006a.185.185 0 00-.185-.186H2.208a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185M23.99 12.01c-.135-.85-.815-1.503-1.634-1.55-.41-.02-.816.09-1.18.31a4.9 4.9 0 00-1.612-1.373c-1.155-.58-2.518-.616-3.71-.1-.137.06-.23.18-.248.33-.018.15.04.3.155.39.814.65 1.488 1.48 1.97 2.43.08.16.24.26.42.24.52-.06 1.05.04 1.51.31.25.14.5.34.65.59.08.13.23.2.38.17.65-.12 1.32.06 1.83.48.15.12.35.13.5.02.16-.11.23-.3.17-.48l-.2-.75zM0 13.52c.2 4.54 3.73 8.16 8.27 8.46 5.86.39 10.9-3.8 11.58-9.61.05-.4-.25-.76-.66-.79-6.38-.49-12.79.03-19.19 1.94z"/></svg>`,
+      flutter: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M14.314 0L2.3 12 6 15.7 21.684.013h-7.37zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z"/></svg>`,
+      dart: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M4.125 0L0 4.125l1.625 9.875L9.875 22.5 14 18.375 19.875 24 24 19.875 18.375 14 22.5 9.875 14 1.625 4.125 0zm5.75 3.375l6.5 6.5-4.125 4.125-6.5-6.5 4.125-4.125z"/></svg>`,
+      laravel: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M23.644 6.18a.747.747 0 00-.354-.47L16.494.618a.754.754 0 00-.77.037L8.91 5.378a.75.75 0 00-.33.626v5.82a.75.75 0 00.373.65l6.814 3.934a.754.754 0 00.748-.002l6.812-3.934a.75.75 0 00.377-.65V6.18zm-8.03 8.354l-5.32-3.072v-4.63l5.32 3.073v4.63zm.75-5.918L11.045 5.54l5.32-3.072 5.32 3.072-5.32 3.076zm6.07 4.63l-5.32 3.072v-4.63l5.32-3.073v4.63zM.71 11.82a.747.747 0 00-.354-.47L.35 11.35v11.642a.75.75 0 00.373.65l6.814 3.934a.754.754 0 00.748-.002l6.812-3.934a.75.75 0 00.377-.65v-5.822a.75.75 0 00-.373-.65l-6.814-3.934a.754.754 0 00-.748.002L.71 11.82zm7.2 12.714l-5.32-3.072v-4.63l5.32 3.073v4.63zm.75-5.918l-5.32-3.076 5.32-3.072 5.32 3.072-5.32 3.076zm6.07 4.63l-5.32 3.072v-4.63l5.32-3.073v4.63z"/></svg>`,
+      figma: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 12a4 4 0 114-4 4 4 0 01-4 4zm-4 4a4 4 0 00-4 4 4 4 0 004 4h4v-8H8zm0-16a4 4 0 000 8h4V0H8zm8 0h-4v8h4a4 4 0 000-8zm-8 8a4 4 0 000 8h4v-8H8z"/></svg>`
+    };
+
+    const container = document.getElementById('switchPlate');
+
+    SKILLS.forEach((skill, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'keycap-sa' + (index === 0 ? ' active' : '');
+      btn.style.setProperty('--bg', skill.bg);
+      btn.style.setProperty('--side', skill.side);
+      btn.style.setProperty('--side-dark', skill.sideDark);
+      btn.title = skill.name;
+
+      let innerContent = '';
+      if (skill.isNextBadge) {
+        innerContent = `
+          <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow">
+            <svg viewBox="0 0 32 32" width="16" height="16" fill="none">
+              <path d="M21.5 24.2l-9.8-12.7v10.9H9.5V9.5h2.8l9.7 12.6V9.5h2.2v14.7h-2.7z" fill="#000000"/>
+            </svg>
+          </div>
+        `;
+      } else if (skill.isGitDiamond) {
+        innerContent = `
+          <div class="w-5 h-5 bg-white rounded-[4px] flex items-center justify-center transform rotate-45 shadow">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="#EF4444" class="transform -rotate-45">
+              <path d="M23.546 10.93L13.067.452a1.74 1.74 0 00-2.463 0L8.625 2.433l3.111 3.112a2.07 2.07 0 012.613 2.613l3.011 3.011a2.07 2.07 0 012.247 2.247 2.07 2.07 0 01-2.928 2.928 2.07 2.07 0 01-2.247-2.247l-2.85-2.85v7.262a2.07 2.07 0 01.597 1.468 2.07 2.07 0 01-4.14 0 2.07 2.07 0 011.468-2.065V8.14a2.07 2.07 0 01-1.127-1.808L6.236 4.19.454 9.972a1.74 1.74 0 000 2.463l10.479 10.478a1.74 1.74 0 002.463 0l10.15-10.15a1.74 1.74 0 000-2.463z"/>
+            </svg>
+          </div>
+        `;
+      } else if (skill.text) {
+        innerContent = `<span class="font-black text-xl tracking-tight text-white ${skill.isItalic ? 'italic' : ''}">${skill.text}</span>`;
+      } else if (skill.icon && ICONS[skill.icon]) {
+        innerContent = ICONS[skill.icon];
+      }
+
+      btn.innerHTML = `
+        <div class="keycap-top">
+          <div class="keycap-dish"></div>
+          <div class="keycap-content">
+            ${innerContent}
+          </div>
+          ${index === 4 ? '<div class="keycap-selected-ring"></div>' : ''}
+        </div>
+      `;
+
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.keycap-selected-ring').forEach(r => r.remove());
+        btn.querySelector('.keycap-top').insertAdjacentHTML('beforeend', '<div class="keycap-selected-ring"></div>');
+        btn.classList.add('pressed');
+        setTimeout(() => btn.classList.remove('pressed'), 140);
+      });
+
+      container.appendChild(btn);
+    });
+  </script>
+</body>
+</html>

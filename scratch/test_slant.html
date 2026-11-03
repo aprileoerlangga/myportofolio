@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slant Orientation Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #0b071a; color: #fff; font-family: sans-serif; }
+    .stage { perspective: 1400px; }
+    .kb {
+      transform-style: preserve-3d;
+      box-shadow: 
+        0 1px 0 rgba(255,255,255,0.2) inset,
+        0 4px 0 #080c14,
+        0 8px 0 #05080e,
+        0 12px 0 #03050a,
+        0 18px 25px rgba(0,0,0,0.9);
+    }
+    .key {
+      box-shadow: 0 4px 0 rgba(0,0,0,0.5), 0 6px 10px rgba(0,0,0,0.6);
+    }
+  </style>
+</head>
+<body class="p-8">
+  <h1 class="text-xl font-bold mb-6 text-center">Tuning: "nyerong dari bawah ke atas kanan"</h1>
+  <div class="grid grid-cols-2 gap-8 max-w-5xl mx-auto">
+    
+    <!-- Option 1: Slanted Positive Z (+36deg, slanting upwards to the right) -->
+    <div class="p-6 bg-white/5 rounded-2xl flex flex-col items-center">
+      <div class="text-sm font-mono text-[#FFD500] mb-2 font-bold">Option 1: rotateX(56deg) rotateY(-8deg) rotateZ(36deg)</div>
+      <div class="text-xs text-slate-400 mb-4">Bottom edge slopes up to top-right</div>
+      <div class="stage h-80 flex items-center justify-center">
+        <div class="kb p-4 rounded-[26px] bg-[#0c101a] border border-white/10 grid grid-cols-6 gap-2" style="transform: rotateX(56deg) rotateY(-8deg) rotateZ(36deg);">
+          <div class="key w-10 h-10 bg-yellow-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">JS</div>
+          <div class="key w-10 h-10 bg-blue-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">TS</div>
+          <div class="key w-10 h-10 bg-cyan-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">⚛</div>
+          <div class="key w-10 h-10 bg-neutral-800 rounded-lg text-white font-bold flex items-center justify-center text-xs">N</div>
+          <div class="key w-10 h-10 bg-orange-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">5</div>
+          <div class="key w-10 h-10 bg-blue-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">3</div>
+
+          <div class="key w-10 h-10 bg-cyan-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">≈</div>
+          <div class="key w-10 h-10 bg-green-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">US</div>
+          <div class="key w-10 h-10 bg-neutral-700 rounded-lg text-white font-bold flex items-center justify-center text-xs">ex</div>
+          <div class="key w-10 h-10 bg-blue-700 rounded-lg text-white font-bold flex items-center justify-center text-xs">Py</div>
+          <div class="key w-10 h-10 bg-red-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">🔺</div>
+          <div class="key w-10 h-10 bg-purple-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">php</div>
+
+          <div class="key w-10 h-10 bg-indigo-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">🐘</div>
+          <div class="key w-10 h-10 bg-teal-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">SQL</div>
+          <div class="key w-10 h-10 bg-emerald-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">🍃</div>
+          <div class="key w-10 h-10 bg-sky-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">🐳</div>
+          <div class="key w-10 h-10 bg-amber-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">🐧</div>
+          <div class="key w-10 h-10 bg-rose-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">⎇</div>
+
+          <div class="key w-10 h-10 bg-neutral-900 rounded-lg text-white font-bold flex items-center justify-center text-xs">🐙</div>
+          <div class="key w-10 h-10 bg-sky-700 rounded-lg text-white font-bold flex items-center justify-center text-xs">💙</div>
+          <div class="key w-10 h-10 bg-blue-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">🎯</div>
+          <div class="key w-10 h-10 bg-orange-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">☕</div>
+          <div class="key w-10 h-10 bg-red-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">❖</div>
+          <div class="key w-10 h-10 bg-red-700 rounded-lg text-white font-bold flex items-center justify-center text-xs">npm</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option 2: Slanted Negative Z (-36deg) -->
+    <div class="p-6 bg-white/5 rounded-2xl flex flex-col items-center">
+      <div class="text-sm font-mono text-[#FFD500] mb-2 font-bold">Option 2: rotateX(56deg) rotateY(8deg) rotateZ(-36deg)</div>
+      <div class="text-xs text-slate-400 mb-4">Left edge slopes up to top-right</div>
+      <div class="stage h-80 flex items-center justify-center">
+        <div class="kb p-4 rounded-[26px] bg-[#0c101a] border border-white/10 grid grid-cols-6 gap-2" style="transform: rotateX(56deg) rotateY(8deg) rotateZ(-36deg);">
+          <div class="key w-10 h-10 bg-yellow-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">JS</div>
+          <div class="key w-10 h-10 bg-blue-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">TS</div>
+          <div class="key w-10 h-10 bg-cyan-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">⚛</div>
+          <div class="key w-10 h-10 bg-neutral-800 rounded-lg text-white font-bold flex items-center justify-center text-xs">N</div>
+          <div class="key w-10 h-10 bg-orange-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">5</div>
+          <div class="key w-10 h-10 bg-blue-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">3</div>
+
+          <div class="key w-10 h-10 bg-cyan-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">≈</div>
+          <div class="key w-10 h-10 bg-green-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">US</div>
+          <div class="key w-10 h-10 bg-neutral-700 rounded-lg text-white font-bold flex items-center justify-center text-xs">ex</div>
+          <div class="key w-10 h-10 bg-blue-700 rounded-lg text-white font-bold flex items-center justify-center text-xs">Py</div>
+          <div class="key w-10 h-10 bg-red-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">🔺</div>
+          <div class="key w-10 h-10 bg-purple-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">php</div>
+
+          <div class="key w-10 h-10 bg-indigo-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">🐘</div>
+          <div class="key w-10 h-10 bg-teal-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">SQL</div>
+          <div class="key w-10 h-10 bg-emerald-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">🍃</div>
+          <div class="key w-10 h-10 bg-sky-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">🐳</div>
+          <div class="key w-10 h-10 bg-amber-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">🐧</div>
+          <div class="key w-10 h-10 bg-rose-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">⎇</div>
+
+          <div class="key w-10 h-10 bg-neutral-900 rounded-lg text-white font-bold flex items-center justify-center text-xs">🐙</div>
+          <div class="key w-10 h-10 bg-sky-700 rounded-lg text-white font-bold flex items-center justify-center text-xs">💙</div>
+          <div class="key w-10 h-10 bg-blue-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">🎯</div>
+          <div class="key w-10 h-10 bg-orange-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">☕</div>
+          <div class="key w-10 h-10 bg-red-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">❖</div>
+          <div class="key w-10 h-10 bg-red-700 rounded-lg text-white font-bold flex items-center justify-center text-xs">npm</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
+

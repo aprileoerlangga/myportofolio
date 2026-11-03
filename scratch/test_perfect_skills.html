@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfect Uniform Skills Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #02040a;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .perspective-stage {
+      perspective: 1200px;
+      perspective-origin: 45% 40%;
+    }
+
+    .macropad-body {
+      transform-style: preserve-3d;
+      transform: rotateX(46deg) rotateY(-6deg) rotateZ(-36deg);
+      background: #07090e;
+      border-radius: 22px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.2) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.95) inset,
+        -1px 2px 0 #05070a,
+        -2px 5px 0 #030407,
+        -4px 9px 0 #020305,
+        -6px 15px 0 #010203,
+        -10px 24px 38px rgba(0,0,0,0.98),
+        -16px 42px 60px rgba(0,0,0,0.95);
+    }
+
+    .switch-plate {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      background: #000002;
+      border-radius: 16px;
+      padding: 6px;
+      box-shadow: inset 0 6px 25px rgba(0, 0, 0, 0.99);
+      transform-style: preserve-3d;
+    }
+
+    /* 
+      AUTHENTIC SA PROFILE UNIFORM MECHANICAL KEYCAP:
+      - Strictly uniform 60px x 60px size
+      - Calibrated 7-layer extrusion that fits precisely inside the gap
+      - Proper z-index layering so shadows never clip or overlap adjacent keys
+    */
+    .keycap-btn {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      padding: 5px;
+      background: linear-gradient(135deg, var(--side) 0%, var(--side-dark) 100%);
+      border: none;
+      outline: none;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.08s cubic-bezier(0.2, 0.8, 0.2, 1);
+      
+      box-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.45) inset,
+        -1px 1px 0 var(--side),
+        -2px 2px 0 var(--side),
+        -3px 3px 0 var(--side-dark),
+        -4px 4px 0 var(--side-dark),
+        -5px 5px 0 #060910,
+        -6px 6px 0 #020306,
+        -8px 9px 12px rgba(0, 0, 0, 0.95),
+        -4px 5px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    .keycap-btn:hover {
+      transform: translate(-1.5px, 1.5px);
+    }
+
+    .keycap-btn:active, .keycap-btn.pressed {
+      transform: translate(-5px, 5px);
+      box-shadow:
+        -1px 1px 0 #020305,
+        -2px 2px 4px rgba(0, 0, 0, 0.9),
+        inset 0 2px 5px rgba(0, 0, 0, 0.7);
+    }
+
+    .keycap-top {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 1.5px 1px rgba(255, 255, 255, 0.55) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.5) inset,
+        -1px 1.5px 2px rgba(0, 0, 0, 0.35);
+    }
+
+    .keycap-dish {
+      position: absolute;
+      inset: 2px;
+      border-radius: 6px;
+      background: radial-gradient(circle at 45% 30%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 65%);
+      box-shadow: inset 0 1.5px 3px rgba(255, 255, 255, 0.4), inset 0 -1.5px 3px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
+
+    .keycap-content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.6));
+    }
+
+    .keycap-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95), 0 0 15px rgba(255, 255, 255, 0.6);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen">
+
+  <div class="perspective-stage">
+    <div class="macropad-body">
+      <div class="switch-plate" id="switchPlate"></div>
+    </div>
+  </div>
+
+  <script>
+    // 24 Keys with official brand colors:
+    const SKILLS = [
+      // ROW 1
+      { id: 'js', name: 'JavaScript', row: 0, col: 0, bg: '#F59E0B', side: '#D97706', sideDark: '#92400E', type: 'text', val: 'JS', textCol: '#FFFFFF' },
+      { id: 'ts', name: 'TypeScript', row: 0, col: 1, bg: '#2563EB', side: '#1D4ED8', sideDark: '#1E3A8A', type: 'text', val: 'TS', textCol: '#FFFFFF' },
+      { id: 'html5', name: 'HTML5', row: 0, col: 2, bg: '#E44D26', side: '#DC2626', sideDark: '#7F1D1D', type: 'html5' },
+      { id: 'css3', name: 'CSS3', row: 0, col: 3, bg: '#7C3AED', side: '#6D28D9', sideDark: '#4C1D95', type: 'css3' },
+      { id: 'react', name: 'React', row: 0, col: 4, bg: '#06B6D4', side: '#0891B2', sideDark: '#155E75', type: 'react' },
+      { id: 'java', name: 'Java', row: 0, col: 5, bg: '#EA580C', side: '#C2410C', sideDark: '#7C2D12', type: 'java' },
+
+      // ROW 2
+      { id: 'nextjs', name: 'Next.js', row: 1, col: 0, bg: '#18181B', side: '#09090B', sideDark: '#000000', type: 'nextjs' },
+      { id: 'tailwind', name: 'Tailwind CSS', row: 1, col: 1, bg: '#06B6D4', side: '#0891B2', sideDark: '#0E7490', type: 'tailwind' },
+      { id: 'nodejs', name: 'Node.js', row: 1, col: 2, bg: '#22C55E', side: '#16A34A', sideDark: '#14532D', type: 'nodejs' },
+      { id: 'express', name: 'Express.js', row: 1, col: 3, bg: '#262626', side: '#171717', sideDark: '#0A0A0A', type: 'text', val: 'ex', isItalic: true, textCol: '#FFFFFF' },
+      { id: 'python', name: 'Python', row: 1, col: 4, bg: '#1E293B', side: '#0F172A', sideDark: '#020617', type: 'python' },
+      { id: 'mongodb', name: 'MongoDB', row: 1, col: 5, bg: '#10B981', side: '#059669', sideDark: '#064E3B', type: 'mongodb' },
+
+      // ROW 3
+      { id: 'git', name: 'Git', row: 2, col: 0, bg: '#EF4444', side: '#DC2626', sideDark: '#7F1D1D', type: 'git' },
+      { id: 'github', name: 'GitHub', row: 2, col: 1, bg: '#18181B', side: '#09090B', sideDark: '#000000', type: 'github' },
+      { id: 'postgres', name: 'PostgreSQL', row: 2, col: 2, bg: '#1E293B', side: '#0F172A', sideDark: '#020617', type: 'postgres' },
+      { id: 'npm', name: 'npm', row: 2, col: 3, bg: '#DC2626', side: '#B91C1C', sideDark: '#7F1D1D', type: 'npm' },
+      { id: 'mysql', name: 'MySQL', row: 2, col: 4, bg: '#F59E0B', side: '#D97706', sideDark: '#92400E', type: 'mysql' },
+      { id: 'php', name: 'PHP', row: 2, col: 5, bg: '#6366F1', side: '#4F46E5', sideDark: '#312E81', type: 'php' },
+
+      // ROW 4
+      { id: 'linux', name: 'Linux', row: 3, col: 0, bg: '#18181B', side: '#09090B', sideDark: '#000000', type: 'linux' },
+      { id: 'docker', name: 'Docker', row: 3, col: 1, bg: '#0284C7', side: '#0369A1', sideDark: '#0C4A6E', type: 'docker' },
+      { id: 'flutter', name: 'Flutter', row: 3, col: 2, bg: '#0284C7', side: '#0369A1', sideDark: '#075985', type: 'flutter' },
+      { id: 'dart', name: 'Dart', row: 3, col: 3, bg: '#0284C7', side: '#0369A1', sideDark: '#075985', type: 'dart' },
+      { id: 'laravel', name: 'Laravel', row: 3, col: 4, bg: '#EF4444', side: '#DC2626', sideDark: '#7F1D1D', type: 'laravel' },
+      { id: 'figma', name: 'Figma', row: 3, col: 5, bg: '#18181B', side: '#09090B', sideDark: '#000000', type: 'figma' },
+    ];
+
+    const ICONS = {
+      html5: `<svg viewBox="0 0 128 128" width="28" height="28" fill="none">
+        <path fill="#E44D26" d="M19 113.9L9 1.7h110l-10 112.2-45 12.5z"/>
+        <path fill="#F16529" d="M64 116.8l36.4-10.1 8.6-95.9H64z"/>
+        <path fill="#EBEBEB" d="M64 52.5H45.8l-1.3-14.1H64V24.6H29.5l.3 3.7 3.4 37.9H64zm0 35.7l-.1.1-15.3-4.2-1-11H33.8l1.9 21.6 28.2 7.8.1-.1z"/>
+        <path fill="#fff" d="M64 52.5v13.8h16.9l-1.6 17.8-15.3 4.2v14.3l28.2-7.8.2-2.3 3.2-36.2.4-3.8zm0-27.9v13.8h33.2l.3-3.1.6-7 .4-3.7z"/>
+      </svg>`,
+      css3: `<svg viewBox="0 0 128 128" width="28" height="28" fill="none">
+        <path fill="#1572B6" d="M18.8 114.1L8.8 1.4h110.4l-10 112.7-45.2 12.5z"/>
+        <path fill="#33A9DC" d="M64 117.1l36.6-10.2 8.6-96.3H64z"/>
+        <path fill="#fff" d="M64 51.4h18.3l1.3-14.1H64V23.4h34.7l-.3 3.7-3.4 38.1H64z"/>
+        <path fill="#EBEBEB" d="M64.1 87.3l-.1.1-15.4-4.2-1-11H33.8l1.9 21.7 28.3 7.8.1-.1z"/>
+        <path fill="#fff" d="M81.1 64.7l-1.7 18.5-15.4 4.2v14.4l28.4-7.9.2-2.3 2.4-26.9z"/>
+        <path fill="#EBEBEB" d="M64 23.4v13.8H30.6l-.3-3.1-.6-7-.3-3.7zm0 28v13.8H48.8l-.3-3.1-.6-7-.3-3.7z"/>
+      </svg>`,
+      react: `<svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+        <ellipse cx="16" cy="16" rx="3.2" ry="3.2" fill="#61DAFB"/>
+        <ellipse cx="16" cy="16" rx="14" ry="5.5" stroke="#61DAFB" stroke-width="1.8" fill="none"/>
+        <ellipse cx="16" cy="16" rx="14" ry="5.5" stroke="#61DAFB" stroke-width="1.8" fill="none" transform="rotate(60 16 16)"/>
+        <ellipse cx="16" cy="16" rx="14" ry="5.5" stroke="#61DAFB" stroke-width="1.8" fill="none" transform="rotate(120 16 16)"/>
+      </svg>`,
+      java: `<svg viewBox="0 0 32 32" width="26" height="26" fill="none">
+        <path d="M12.2 5.5c-1.5 2.2-.4 3.7 1.2 4.9 1.8 1.4 2.4 2.6 1.1 4.5-.4.5-.3.8.2.8.9 0 2.2-1.3 2.2-2.9 0-2.3-1.8-3.4-3.3-4.5-1.1-.8-1.7-1.7-1.4-2.8z" fill="#E76F00"/>
+        <path d="M16.8 2c-1.6 2.3-.3 4.1 1.4 5.4 1.7 1.3 2.1 2.6.9 4.4-.3.4-.2.8.2.8.9 0 2.3-1.4 2.3-3.1 0-2.3-1.9-3.5-3.4-4.6-1.1-.8-1.7-1.7-1.4-2.9z" fill="#EA2D2E"/>
+        <path d="M8.5 9.8c-1.2 1.8-.3 3.1 1 4.1 1.5 1.1 1.9 2.2.9 3.7-.3.4-.2.7.2.7.7 0 1.8-1.1 1.8-2.4 0-1.9-1.5-2.8-2.7-3.7-.9-.7-1.4-1.4-1.2-2.4z" fill="#E76F00"/>
+        <path d="M6 19.5c0 3.2 4.5 4.8 10 4.8s10-1.6 10-4.8H6z" fill="#5382A1"/>
+        <path d="M22.5 18.5c1.8.3 3.5.9 3.5 2 0 1.2-2.1 2-4.5 2.2.4.5.6 1 .7 1.5 3.3-.4 5.8-1.7 5.8-3.7 0-1.8-2.5-3-5.5-3.4v1.4z" fill="#EA2D2E"/>
+      </svg>`,
+      nextjs: `<div class="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow">
+        <svg viewBox="0 0 32 32" width="16" height="16" fill="none">
+          <path d="M21.5 24.2l-9.8-12.7v10.9H9.5V9.5h2.8l9.7 12.6V9.5h2.2v14.7h-2.7z" fill="#000000"/>
+        </svg>
+      </div>`,
+      tailwind: `<svg viewBox="0 0 24 24" width="28" height="28" fill="#38BDF8"><path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"/></svg>`,
+      nodejs: `<svg viewBox="0 0 24 24" width="26" height="26" fill="#5FA04E"><path d="M12 0l10.4 6v12L12 24 1.6 18V6L12 0zm0 2.3L3.6 7.2v9.6L12 21.7l8.4-4.9V7.2L12 2.3z"/></svg>`,
+      python: `<svg viewBox="0 0 110 110" width="26" height="26" fill="none">
+        <path d="M54.5 3C27.5 3 29 14.8 29 14.8L29.1 27.2H55.4V30.9H18.5C18.5 30.9 3 29.1 3 56.4C3 83.7 16.5 82.5 16.5 82.5H24.5V71C24.5 71 24 57.2 38.3 57.2H64.6C64.6 57.2 76.5 57.6 76.5 45.4V14.8C76.5 14.8 79 3 54.5 3ZM40.9 11.8C43.8 11.8 46.1 14.1 46.1 17C46.1 19.9 43.8 22.2 40.9 22.2C38 22.2 35.7 19.9 35.7 17C35.7 14.1 38 11.8 40.9 11.8Z" fill="#3776AB"/>
+        <path d="M55.5 107C82.5 107 81 95.2 81 95.2L80.9 82.8H54.6V79.1H91.5C91.5 79.1 107 80.9 107 53.6C107 26.3 93.5 27.5 93.5 27.5H85.5V39C85.5 39 86 52.8 71.7 52.8H45.4C45.4 52.8 33.5 52.4 33.5 64.6V95.2C33.5 95.2 31 107 55.5 107ZM69.1 98.2C66.2 98.2 63.9 95.9 63.9 93C63.9 90.1 66.2 87.8 69.1 87.8C72 87.8 74.3 90.1 74.3 93C74.3 95.9 72 98.2 69.1 98.2Z" fill="#FFD43B"/>
+      </svg>`,
+      mongodb: `<svg viewBox="0 0 24 24" width="24" height="24" fill="#47A248"><path d="M12 0c-.3 0-.6.2-.7.4C10.5 2 6 9.8 6 15c0 3.3 2.7 6 6 6s6-2.7 6-6c0-5.2-4.5-13-5.3-14.6-.1-.2-.4-.4-.7-.4zm0 2c1.2 2.5 4 8.7 4 13 0 2.2-1.8 4-4 4s-4-1.8-4-4c0-4.3 2.8-10.5 4-13z"/></svg>`,
+      git: `<div class="w-5 h-5 bg-white rounded-[3.5px] flex items-center justify-center transform rotate-45 shadow">
+        <svg viewBox="0 0 32 32" width="14" height="14" fill="#F05032" class="transform -rotate-45">
+          <path d="M30.4 14.5L17.5 1.6c-.8-.8-2.2-.8-3 0L11.6 4.5l3.8 3.8c.9-.3 1.9-.1 2.6.6.7.7.9 1.7.6 2.6l3.6 3.6c.9-.3 1.9-.1 2.6.6 1 1 1 2.7 0 3.7-1 1-2.7 1-3.7 0-.8-.8-1-2-.5-3l-3.4-3.4v8.8c.3.2.6.4.8.7 1 1 1 2.7 0 3.7-1 1-2.7 1-3.7 0-1-1-1-2.7 0-3.7.3-.3.6-.5.9-.7V9.7c-.3-.2-.6-.4-.9-.7-1-1-1-2.7 0-3.7.8-.8 2-.9 3-.5L10 1.6 1.6 10c-.8.8-.8 2.2 0 3l12.9 12.9c.8.8 2.2.8 3 0l12.9-12.9c.8-.8.8-2.2 0-3z"/>
+        </svg>
+      </div>`,
+      github: `<svg viewBox="0 0 24 24" width="26" height="26" fill="#FFFFFF"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>`,
+      postgres: `<svg viewBox="0 0 24 24" width="26" height="26" fill="#336791"><path d="M12.001 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3.896 17.652c-.672.436-1.55.728-2.61.859-1.232.152-2.32-.089-3.168-.692-.619-.441-1.077-1.095-1.341-1.916-.363-1.127-.291-2.482.208-3.924.32-.924.8-1.782 1.41-2.522.846-1.026 1.942-1.745 3.183-2.091 1.054-.294 2.13-.244 3.109.146 1.066.425 1.879 1.258 2.302 2.361.352.919.414 1.936.177 2.932-.295 1.242-1.074 2.348-2.227 3.197-.334.246-.689.46-1.043.65z"/></svg>`,
+      npm: `<svg viewBox="0 0 24 24" width="28" height="28" fill="#FFFFFF"><path d="M0 7.334v9.332h24V7.334H0zm18.666 6.668H16V10h-2.666v4.002H8V10H5.334v4.002H2.666V8.666h16v5.336z"/></svg>`,
+      mysql: `<svg viewBox="0 0 128 128" width="28" height="28" fill="none">
+        <path fill="#00758F" d="M117.7 98.2c-7-.2-12.3.5-16.9 2.4-1.3.5-3.4.6-3.6 2.2.7.7.8 1.9 1.4 2.8 1.1 1.8 2.9 4.1 4.6 5.4 1.8 1.3 3.6 2.8 5.6 4 3.4 2.1 7.2 3.3 10.5 5.4 1.9 1.2 3.9 2.8 5.8 4.2.9.7 1.6 1.8 2.8 2.2v-.2c-.6-.8-.8-1.9-1.4-2.8l-2.6-2.6c-2.5-3.3-5.7-6.3-9.1-8.7-2.7-1.9-8.8-4.6-9.9-7.7l-.2-.2c1.9-.2 4.2-.9 5.9-1.4 3-.8 5.6-.6 8.7-1.4l4.2-1.2v-.8c-1.6-1.6-2.7-3.7-4.4-5.2-4.4-3.8-9.3-7.6-14.3-10.7-2.8-1.7-6.2-2.9-9.1-4.4-1-.5-2.7-.8-3.4-1.6-1.5-2-2.4-4.4-3.6-6.7-2.5-4.8-4.9-10-7.1-15.1-1.5-3.4-2.5-6.8-4.4-9.9-9-14.8-18.7-23.7-33.7-32.5-3.2-1.9-7-2.6-11.1-3.6l-6.5-.4c-1.3-.6-2.7-2.2-4-3C17 3.5 4.2-3.3.5 5.7c-2.3 5.7 3.5 11.2 5.6 14.1 1.5 2 3.3 4.3 4.4 6.5.7 1.5.8 3 1.4 4.6 1.4 3.9 2.7 8.1 4.6 11.7.9 1.8 2 3.7 3.2 5.4.7 1 2 1.4 2.2 3-1.2 1.7-1.3 4.4-2 6.5-3.1 9.8-1.9 21.9 2.6 29.1 1.4 2.2 4.6 7 9.1 5.2 3.9-1.6 3-6.5 4.2-10.9.3-1 .1-1.7.6-2.4v.2l3.6 7.1c2.6 4.3 7.3 8.7 11.3 11.7 2.1 1.6 3.7 4.2 6.3 5.2v-.2h-.2c-.5-.8-1.3-1.1-2-1.8-1.6-1.5-3.3-3.4-4.6-5.2-3.6-4.9-6.8-10.3-9.7-15.9-1.4-2.7-2.6-5.6-3.8-8.3-.5-1-.4-2.6-1.4-3.2-1.3 2-3.2 3.6-4.2 5.9-1.6 3.8-1.8 8.3-2.4 13.1-.3.1-.2 0-.4.2-2.8-.7-3.7-3.5-4.8-5.9-2.6-6.2-3.1-16.1-.8-23.2.6-1.8 3.3-7.6 2.2-9.3-.5-1.7-2.2-2.7-3.2-4-1.2-1.6-2.4-3.7-3.2-5.6-2.1-4.8-3.1-10.2-5.4-15.1-1.1-2.3-2.9-4.7-4.4-6.7-1.6-2.3-3.5-4-4.8-6.7-.5-1-1.1-2.6-.4-3.6.2-.7.5-1 1.2-1.2 1.1-.9 4.4.3 5.5.8 3.2 1.3 5.8 2.6 8.5 4.4 1.3.9 2.6 2.5 4.2 3h1.8c2.8.6 5.9.2 8.5 1 4.6 1.4 8.7 3.6 12.5 5.9 11.4 7.2 20.8 17.5 27.2 29.7 1 2 1.5 3.9 2.4 5.9 1.8 4.2 4.1 8.6 5.9 12.7 1.8 4.1 3.6 8.3 6.1 11.7 1.3 1.8 6.6 2.8 8.9 3.8 1.7.7 4.4 1.4 5.9 2.4 3 1.8 5.9 4 8.7 5.9 1.4 1 5.7 3.2 5.9 5z"/>
+        <circle cx="8" cy="18" r="2.2" fill="#F29111"/>
+      </svg>`,
+      php: `<svg viewBox="0 0 24 24" width="28" height="28" fill="#FFFFFF"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-4.5 13.5H6l1.5-7h2.25c1.24 0 2.25 1.01 2.25 2.25S11 13 9.75 13H8.25l-.75 2.5zm7 0H13l1.5-7h2.25c1.24 0 2.25 1.01 2.25 2.25S18 13 16.75 13h-1.5l-.75 2.5z"/></svg>`,
+      linux: `<svg viewBox="0 0 24 24" width="26" height="26" fill="none">
+        <path d="M12 2c-2.8 0-4.8 2.1-4.8 5 0 1.1.3 2.3.8 3.5-1.8.7-3 2.3-3 4.2 0 1.8 1.1 3.4 2.7 4.1-.4 1.1-.6 2.3-.6 3.5 0 .5.4.9.9.9h7.8c.5 0 .9-.4.9-.9 0-1.2-.2-2.4-.6-3.5 1.6-.7 2.7-2.3 2.7-4.1 0-1.9-1.2-3.5-3-4.2.5-1.2.8-2.4.8-3.5 0-2.9-2-5-4.7-5z" fill="#000000"/>
+        <path d="M12 3.5c1.7 0 2.8 1.3 2.8 3.1 0 1-.3 2.2-.8 3.3-.2.3 0 .8.3.9 1.4.8 2.2 2.2 2.2 3.8 0 2.1-1.6 3.9-3.6 4-.4 0-.7.3-.7.7-.3 2.3-1.2 4.5-2.5 6.3h-4.4c-1.3-1.8-2.1-4-2.5-6.3 0-.4-.3-.7-.7-.7-2-.1-3.6-1.9-3.6-4 0-1.5.8-3 2.2-3.8.3-.2.5-.6.3-.9-.5-1.1-.8-2.3-.8-3.3 0-1.7 1.1-3.1 2.8-3.1h4.2z" fill="#FFFFFF"/>
+        <ellipse cx="10" cy="6.5" rx="0.8" ry="1.2" fill="#000"/>
+        <ellipse cx="14" cy="6.5" rx="0.8" ry="1.2" fill="#000"/>
+        <path d="M10 8.5c1 1.2 3 1.2 4 0l-2 1.5z" fill="#FCC624"/>
+        <path d="M8 21.5c-1 0-2 .5-2 1.5h4c0-1-1-1.5-2-1.5zm8 0c-1 0-2 .5-2 1.5h4c0-1-1-1.5-2-1.5z" fill="#FCC624"/>
+      </svg>`,
+      docker: `<svg viewBox="0 0 24 24" width="28" height="28" fill="#FFFFFF"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186m5.893 2.715h2.118a.186.186 0 00.186-.186V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.186V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.186V9.006a.185.185 0 00-.186-.186h-2.118a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185m-2.928 0h2.119a.185.185 0 00.185-.186V9.006a.185.185 0 00-.185-.186H2.208a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185M23.99 12.01c-.135-.85-.815-1.503-1.634-1.55-.41-.02-.816.09-1.18.31a4.9 4.9 0 00-1.612-1.373c-1.155-.58-2.518-.616-3.71-.1-.137.06-.23.18-.248.33-.018.15.04.3.155.39.814.65 1.488 1.48 1.97 2.43.08.16.24.26.42.24.52-.06 1.05.04 1.51.31.25.14.5.34.65.59.08.13.23.2.38.17.65-.12 1.32.06 1.83.48.15.12.35.13.5.02.16-.11.23-.3.17-.48l-.2-.75zM0 13.52c.2 4.54 3.73 8.16 8.27 8.46 5.86.39 10.9-3.8 11.58-9.61.05-.4-.25-.76-.66-.79-6.38-.49-12.79.03-19.19 1.94z"/></svg>`,
+      flutter: `<svg viewBox="0 0 128 128" width="28" height="28" fill="none">
+        <path fill="#3FB6D3" d="M12.3 64.2L76.3 0h39.4L32.1 83.6zM76.3 128h39.4L81.6 93.9l34.1-34.8H76.3L42.2 93.5z"/>
+        <path fill="#27AACD" d="M81.6 93.9l-20-20-19.4 19.6 19.4 19.6z"/>
+        <path fill="#19599A" d="M115.7 128L81.6 93.9l-20 19.2L76.3 128z"/>
+      </svg>`,
+      dart: `<svg viewBox="0 0 24 24" width="26" height="26" fill="none">
+        <path d="M4.125 0L0 4.125l1.625 9.875L9.875 22.5 14 18.375 19.875 24 24 19.875 18.375 14 22.5 9.875 14 1.625 4.125 0z" fill="#0175C2"/>
+        <path d="M9.875 3.375l6.5 6.5-4.125 4.125-6.5-6.5 4.125-4.125z" fill="#00B4AB"/>
+      </svg>`,
+      laravel: `<svg viewBox="0 0 24 24" width="26" height="26" fill="#FFFFFF"><path d="M23.644 6.18a.747.747 0 00-.354-.47L16.494.618a.754.754 0 00-.77.037L8.91 5.378a.75.75 0 00-.33.626v5.82a.75.75 0 00.373.65l6.814 3.934a.754.754 0 00.748-.002l6.812-3.934a.75.75 0 00.377-.65V6.18zm-8.03 8.354l-5.32-3.072v-4.63l5.32 3.073v4.63zm.75-5.918L11.045 5.54l5.32-3.072 5.32 3.072-5.32 3.076zm6.07 4.63l-5.32 3.072v-4.63l5.32-3.073v4.63zM.71 11.82a.747.747 0 00-.354-.47L.35 11.35v11.642a.75.75 0 00.373.65l6.814 3.934a.754.754 0 00.748-.002l6.812-3.934a.75.75 0 00.377-.65v-5.822a.75.75 0 00-.373-.65l-6.814-3.934a.754.754 0 00-.748.002L.71 11.82zm7.2 12.714l-5.32-3.072v-4.63l5.32 3.073v4.63zm.75-5.918l-5.32-3.076 5.32-3.072 5.32 3.072-5.32 3.076zm6.07 4.63l-5.32 3.072v-4.63l5.32-3.073v4.63z"/></svg>`,
+      figma: `<svg viewBox="0 0 38 57" width="22" height="30" fill="none">
+        <path d="M19 28.5C19 23.3 23.3 19 28.5 19s9.5 4.3 9.5 9.5-4.3 9.5-9.5 9.5S19 33.7 19 28.5Z" fill="#1ABCFE"/>
+        <path d="M0 47.5C0 42.3 4.3 38 9.5 38H19v9.5c0 5.2-4.3 9.5-9.5 9.5S0 52.7 0 47.5Z" fill="#0ACF83"/>
+        <path d="M19 0v19h9.5c5.2 0 9.5-4.3 9.5-9.5S33.7 0 28.5 0H19Z" fill="#FF7262"/>
+        <path d="M0 9.5C0 14.7 4.3 19 9.5 19H19V0H9.5C4.3 0 0 4.3 0 9.5Z" fill="#F24E1E"/>
+        <path d="M0 28.5C0 33.7 4.3 38 9.5 38H19V19H9.5C4.3 19 0 23.3 0 28.5Z" fill="#A259FF"/>
+      </svg>`
+    };
+
+    const container = document.getElementById('switchPlate');
+
+    SKILLS.forEach((skill, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'keycap-btn' + (index === 4 ? ' active' : '');
+      btn.style.setProperty('--bg', skill.bg);
+      btn.style.setProperty('--side', skill.side);
+      btn.style.setProperty('--side-dark', skill.sideDark);
+      
+      // PERFECT STACKING: rows further down (closer) and columns to the left (closer) render on top
+      const zIndex = (skill.row * 10) + (6 - skill.col);
+      btn.style.zIndex = zIndex;
+      btn.title = skill.name;
+
+      let inner = '';
+      if (skill.type === 'text') {
+        inner = `<span class="font-black text-xl tracking-tight leading-none ${skill.isItalic ? 'italic' : ''}" style="color: ${skill.textCol}">${skill.val}</span>`;
+      } else if (ICONS[skill.type]) {
+        inner = ICONS[skill.type];
+      }
+
+      btn.innerHTML = `
+        <div class="keycap-top">
+          <div class="keycap-dish"></div>
+          <div class="keycap-content">${inner}</div>
+          ${index === 4 ? '<div class="keycap-ring"></div>' : ''}
+        </div>
+      `;
+
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.keycap-ring').forEach(r => r.remove());
+        btn.querySelector('.keycap-top').insertAdjacentHTML('beforeend', '<div class="keycap-ring"></div>');
+        btn.classList.add('pressed');
+        btn.style.zIndex = 100;
+        setTimeout(() => {
+          btn.classList.remove('pressed');
+          btn.style.zIndex = zIndex;
+        }, 140);
+      });
+
+      container.appendChild(btn);
+    });
+  </script>
+</body>
+</html>

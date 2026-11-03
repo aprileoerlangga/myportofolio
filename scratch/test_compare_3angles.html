@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Compare Angle Variations</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #030305;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .perspective-stage {
+      perspective: 1200px;
+      perspective-origin: 50% 35%;
+    }
+
+    .keycap-item {
+      position: relative;
+      transform-style: preserve-3d;
+      border-radius: 14px;
+      box-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.45) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.4) inset,
+        0 1px 0 var(--dark),
+        0 2px 0 var(--dark),
+        0 3px 0 var(--dark),
+        0 4px 0 var(--dark),
+        0 5px 0 var(--dark),
+        0 6px 0 var(--dark),
+        0 7px 0 var(--dark),
+        0 8px 0 var(--dark),
+        0 9px 0 #06080d,
+        0 14px 20px -2px rgba(0, 0, 0, 0.85);
+    }
+
+    .base-chassis {
+      background: #080b12;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.1) inset,
+        0 4px 0 #04060a,
+        0 8px 0 #020305,
+        0 16px 32px rgba(0,0,0,0.95);
+    }
+  </style>
+</head>
+<body class="p-6 flex flex-col items-center justify-center min-h-screen">
+
+  <div class="grid grid-cols-3 gap-8 w-full max-w-7xl">
+    
+    <!-- VAR 1: rotateX(55deg) rotateZ(-35deg) -->
+    <div class="flex flex-col items-center">
+      <h3 class="text-xs font-mono text-amber-400 mb-2">VAR 1: X(55deg) Y(0deg) Z(-35deg)</h3>
+      <div class="perspective-stage">
+        <div class="base-chassis p-2 rounded-[20px] border border-white/5" style="transform-style: preserve-3d; transform: rotateX(55deg) rotateY(0deg) rotateZ(-35deg);">
+          <div class="grid grid-cols-6 gap-2">
+            <!-- Row 1 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-black text-sm" style="background: #F7DF1E; --dark: #BFA80A;">JS</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #3178C6; --dark: #1E4E85;">TS</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #E34F26; --dark: #9C2E11;">5</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #6A38B3; --dark: #451F78;">3</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-black text-sm" style="background: #61DAFB; --dark: #2E8DA8;">⚛</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #10B981; --dark: #07734E;">V</div>
+            <!-- Row 2 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #181818; --dark: #0A0A0A;">N</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-black text-sm" style="background: #38BDF8; --dark: #1F7C9E;">≈</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #5FA04E; --dark: #376E2A;">Node</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #2A2A2A; --dark: #121212;">ex</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #336791; --dark: #1B3E5C;">Pr</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #47A248; --dark: #266928;">Mo</div>
+            <!-- Row 3 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #F05032; --dark: #9E2B16;">Git</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #181717; --dark: #080808;">GH</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #336791; --dark: #1B3E5C;">PG</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #CB3837; --dark: #801E1D;">npm</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #E48E00; --dark: #915A00;">SQL</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #0073EC; --dark: #004696;">AWS</div>
+            <!-- Row 4 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #141720; --dark: #080A0F;">Tux</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #2496ED; --dark: #1063A3;">Dock</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #02569B; --dark: #01345E;">Flut</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #0175C2; --dark: #004675;">Dart</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #FF2D20; --dark: #9E170E;">Lara</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #000000; --dark: #000000;">▲</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAR 2: rotateX(52deg) rotateY(-8deg) rotateZ(-38deg) (Steeper row climb, more dynamic angle) -->
+    <div class="flex flex-col items-center">
+      <h3 class="text-xs font-mono text-emerald-400 mb-2">VAR 2: X(52deg) Y(-8deg) Z(-38deg)</h3>
+      <div class="perspective-stage">
+        <div class="base-chassis p-2 rounded-[20px] border border-white/5" style="transform-style: preserve-3d; transform: rotateX(52deg) rotateY(-8deg) rotateZ(-38deg);">
+          <div class="grid grid-cols-6 gap-2">
+            <!-- Row 1 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-black text-sm" style="background: #F7DF1E; --dark: #BFA80A;">JS</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #3178C6; --dark: #1E4E85;">TS</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #E34F26; --dark: #9C2E11;">5</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #6A38B3; --dark: #451F78;">3</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-black text-sm" style="background: #61DAFB; --dark: #2E8DA8;">⚛</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #10B981; --dark: #07734E;">V</div>
+            <!-- Row 2 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #181818; --dark: #0A0A0A;">N</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-black text-sm" style="background: #38BDF8; --dark: #1F7C9E;">≈</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #5FA04E; --dark: #376E2A;">Node</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #2A2A2A; --dark: #121212;">ex</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #336791; --dark: #1B3E5C;">Pr</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #47A248; --dark: #266928;">Mo</div>
+            <!-- Row 3 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #F05032; --dark: #9E2B16;">Git</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #181717; --dark: #080808;">GH</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #336791; --dark: #1B3E5C;">PG</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #CB3837; --dark: #801E1D;">npm</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #E48E00; --dark: #915A00;">SQL</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #0073EC; --dark: #004696;">AWS</div>
+            <!-- Row 4 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #141720; --dark: #080A0F;">Tux</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #2496ED; --dark: #1063A3;">Dock</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #02569B; --dark: #01345E;">Flut</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #0175C2; --dark: #004675;">Dart</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #FF2D20; --dark: #9E170E;">Lara</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #000000; --dark: #000000;">▲</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAR 3: rotateX(48deg) rotateY(-12deg) rotateZ(-36deg) -->
+    <div class="flex flex-col items-center">
+      <h3 class="text-xs font-mono text-cyan-400 mb-2">VAR 3: X(48deg) Y(-12deg) Z(-36deg)</h3>
+      <div class="perspective-stage">
+        <div class="base-chassis p-2 rounded-[20px] border border-white/5" style="transform-style: preserve-3d; transform: rotateX(48deg) rotateY(-12deg) rotateZ(-36deg);">
+          <div class="grid grid-cols-6 gap-2">
+            <!-- Row 1 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-black text-sm" style="background: #F7DF1E; --dark: #BFA80A;">JS</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #3178C6; --dark: #1E4E85;">TS</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #E34F26; --dark: #9C2E11;">5</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #6A38B3; --dark: #451F78;">3</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-black text-sm" style="background: #61DAFB; --dark: #2E8DA8;">⚛</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #10B981; --dark: #07734E;">V</div>
+            <!-- Row 2 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #181818; --dark: #0A0A0A;">N</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-black text-sm" style="background: #38BDF8; --dark: #1F7C9E;">≈</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #5FA04E; --dark: #376E2A;">Node</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #2A2A2A; --dark: #121212;">ex</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #336791; --dark: #1B3E5C;">Pr</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #47A248; --dark: #266928;">Mo</div>
+            <!-- Row 3 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #F05032; --dark: #9E2B16;">Git</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #181717; --dark: #080808;">GH</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #336791; --dark: #1B3E5C;">PG</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #CB3837; --dark: #801E1D;">npm</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #E48E00; --dark: #915A00;">SQL</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #0073EC; --dark: #004696;">AWS</div>
+            <!-- Row 4 -->
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #141720; --dark: #080A0F;">Tux</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #2496ED; --dark: #1063A3;">Dock</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #02569B; --dark: #01345E;">Flut</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #0175C2; --dark: #004675;">Dart</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #FF2D20; --dark: #9E170E;">Lara</div>
+            <div class="keycap-item w-11 h-11 flex items-center justify-center font-bold text-white text-sm" style="background: #000000; --dark: #000000;">▲</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
+

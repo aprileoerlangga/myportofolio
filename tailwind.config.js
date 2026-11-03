@@ -14,6 +14,7 @@ export default {
         poppins: ['"Plus Jakarta Sans"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
         jetbrains: ['"JetBrains Mono"', 'monospace'],
+        pixel: ['"Arcadepix"', 'monospace'],
       },
     },
   },

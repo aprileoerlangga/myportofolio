@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tapered Skirt & Deep Crevice Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #030407;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .perspective-stage {
+      perspective: 1200px;
+      perspective-origin: 45% 40%;
+    }
+
+    .macropad-body {
+      transform-style: preserve-3d;
+      transform: rotateX(46deg) rotateY(-6deg) rotateZ(-36deg);
+      background: #06070a;
+      border-radius: 18px;
+      padding: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.15) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.9) inset,
+        -1px 2px 0 #050608,
+        -2px 5px 0 #030405,
+        -3px 8px 0 #020304,
+        -4px 12px 0 #010203,
+        -8px 20px 30px rgba(0,0,0,0.95),
+        -14px 35px 50px rgba(0,0,0,0.9);
+    }
+
+    .switch-plate {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 3px;
+      background: #010203;
+      border-radius: 14px;
+      padding: 4px;
+      box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.98);
+      transform-style: preserve-3d;
+    }
+
+    /* 
+      AUTHENTIC KEYCAP BASE (The 3D Tapered Pyramid Skirt):
+      Has the wider base dimensions and angled 3D side skirts
+    */
+    .keycap-item {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      border-radius: 11px;
+      padding: 4.5px;
+      background: linear-gradient(135deg, var(--side) 0%, var(--side-dark) 100%);
+      border: none;
+      outline: none;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.08s cubic-bezier(0.2, 0.8, 0.2, 1);
+      
+      /* 
+        Solid 3D extrusion to the switch plate:
+        Projects both left (-X) and down (+Y)
+      */
+      box-shadow:
+        -1px 1px 0 var(--side-dark),
+        -2px 2px 0 var(--side-dark),
+        -3px 3px 0 #050608,
+        -4px 5px 0 #030405,
+        -6px 8px 12px rgba(0, 0, 0, 0.92),
+        -3px 4px 6px rgba(0, 0, 0, 0.7);
+    }
+
+    .keycap-item:hover {
+      transform: translate(-1px, 1px);
+    }
+
+    /* When pressed: travels deep into switch plate! */
+    .keycap-item:active, .keycap-item.pressed {
+      transform: translate(-3.5px, 4.5px);
+      box-shadow:
+        -1px 1px 0 #050608,
+        -2px 2px 4px rgba(0, 0, 0, 0.85);
+    }
+
+    /* 
+      KEYCAP TOP FACE:
+      The smaller rounded top surface with dish scoop and crisp icon!
+    */
+    .keycap-top-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 7.5px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 1.5px 1px rgba(255, 255, 255, 0.5) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.45) inset,
+        -1px 1.5px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Concave dish scoop */
+    .keycap-scoop {
+      position: absolute;
+      inset: 2px;
+      border-radius: 6px;
+      background: radial-gradient(circle at 45% 30%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 65%);
+      box-shadow: 
+        inset 0 1.5px 3px rgba(255, 255, 255, 0.4),
+        inset 0 -1.5px 3px rgba(0, 0, 0, 0.5);
+      pointer-events-none;
+    }
+
+    .key-glyph {
+      position: relative;
+      z-index: 10;
+      color: #ffffff;
+      filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.6));
+      pointer-events-none;
+    }
+  </style>
+</head>
+<body class="p-12 flex flex-col items-center justify-center min-h-screen">
+
+  <div class="text-center mb-8">
+    <h2 class="text-5xl font-black tracking-widest text-white uppercase drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+      SKILLS
+    </h2>
+    <div class="text-slate-400 text-sm font-mono mt-1">(hint: press a key)</div>
+  </div>
+
+  <div class="flex items-center justify-center gap-16 max-w-6xl w-full">
+
+    <div class="w-80 flex flex-col justify-center">
+      <h3 class="text-6xl font-black text-white tracking-tight" style="text-shadow: 1px 1px 0 #cbd5e1, 2px 2px 0 #94a3b8, 3px 3px 0 #64748b, 4px 4px 0 #475569, 6px 6px 14px rgba(0,0,0,0.9);">
+        JavaScript
+      </h3>
+      <p class="mt-3 text-lg text-slate-300 font-normal leading-relaxed">
+        the versatile engine of the modern web — asynchronous, dynamic, and powering everything everywhere.
+      </p>
+    </div>
+
+    <div class="perspective-stage">
+      <div class="macropad-body">
+        <div class="switch-plate">
+
+          <!-- ROW 1 -->
+          <!-- 1: JS -->
+          <button type="button" class="keycap-item" style="--bg: #F59E0B; --side: #C67D00; --side-dark: #7A4500;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-xl">JS</span>
+            </div>
+          </button>
+          <!-- 2: TS -->
+          <button type="button" class="keycap-item" style="--bg: #2563EB; --side: #1D4ED8; --side-dark: #0F326E;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-xl">TS</span>
+            </div>
+          </button>
+          <!-- 3: HTML5 -->
+          <button type="button" class="keycap-item" style="--bg: #E44D26; --side: #B33010; --side-dark: #5A1402;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-xl">5</span>
+            </div>
+          </button>
+          <!-- 4: CSS3 -->
+          <button type="button" class="keycap-item" style="--bg: #7C3AED; --side: #6B21A8; --side-dark: #2E0550;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-xl">3</span>
+            </div>
+          </button>
+          <!-- 5: React (Cyan) -->
+          <button type="button" class="keycap-item" style="--bg: #06B6D4; --side: #0891B2; --side-dark: #0E485C;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-7 h-7 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="12" r="2.2" />
+                <ellipse cx="12" cy="12" rx="10" ry="4.2" fill="none" stroke="currentColor" stroke-width="1.8" />
+                <ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(60 12 12)" fill="none" stroke="currentColor" stroke-width="1.8" />
+                <ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(120 12 12)" fill="none" stroke="currentColor" stroke-width="1.8" />
+              </svg>
+            </div>
+          </button>
+          <!-- 6: Next.js (V) -->
+          <button type="button" class="keycap-item" style="--bg: #10B981; --side: #047857; --side-dark: #04382A;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-xl">V</span>
+            </div>
+          </button>
+
+          <!-- ROW 2 -->
+          <!-- 7: Python (Notice prominent left skirt!) -->
+          <button type="button" class="keycap-item" style="--bg: #18181B; --side: #101014; --side-dark: #000000; border: 1px solid rgba(255,255,255,0.12);">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.006 2.75h5.82v.825H3.832S0 5.766 0 11.898c0 6.133 3.344 5.926 3.344 5.926h1.996v-2.793s-.108-3.344 3.28-3.344h5.637s3.176.05 3.176-3.078V3.078S17.973 0 11.914 0zM8.707 1.836a1.082 1.082 0 110 2.164 1.082 1.082 0 010-2.164z"/>
+                <path d="M12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.006-2.75h-5.82v-.825h8.194S24 18.234 24 12.102c0-6.133-3.344-5.926-3.344-5.926h-1.996v2.793s.108 3.344-3.28 3.344H9.743s-3.176-.05-3.176 3.078v5.539S6.027 24 12.086 24zm3.207-1.836a1.082 1.082 0 110-2.164 1.082 1.082 0 010 2.164z"/>
+              </svg>
+            </div>
+          </button>
+          <!-- 8: Tailwind (≈) -->
+          <button type="button" class="keycap-item" style="--bg: #06B6D4; --side: #0891B2; --side-dark: #075985;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-xl">≈</span>
+            </div>
+          </button>
+          <!-- 9: Node.js (⬢) -->
+          <button type="button" class="keycap-item" style="--bg: #22C55E; --side: #15803D; --side-dark: #0D401C;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-xl">⬢</span>
+            </div>
+          </button>
+          <!-- 10: Express (ex) -->
+          <button type="button" class="keycap-item" style="--bg: #262626; --side: #171717; --side-dark: #050505; border: 1px solid rgba(255,255,255,0.08);">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black italic text-xl">ex</span>
+            </div>
+          </button>
+          <!-- 11: PHP -->
+          <button type="button" class="keycap-item" style="--bg: #E11D48; --side: #9F1239; --side-dark: #3F0314;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-lg">PHP</span>
+            </div>
+          </button>
+          <!-- 12: MongoDB (Leaf) -->
+          <button type="button" class="keycap-item" style="--bg: #10B981; --side: #047857; --side-dark: #04382A;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0s-3.7 4.14-3.7 9.8c0 4.15 2.13 7.84 3.7 10.2 1.57-2.36 3.7-6.05 3.7-10.2C15.7 4.14 12 0 12 0z"/>
+              </svg>
+            </div>
+          </button>
+
+          <!-- ROW 3 -->
+          <!-- 13: Git -->
+          <button type="button" class="keycap-item" style="--bg: #EF4444; --side: #B91C1C; --side-dark: #580B0B;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <div class="w-5 h-5 bg-white rounded-[4px] flex items-center justify-center transform rotate-45 shadow">
+                <svg class="w-3 h-3 text-[#EF4444] transform -rotate-45" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23.6 10.9L13.1.4c-.5-.5-1.4-.5-1.9 0l-2.6 2.6 3.3 3.3c.6-.2 1.3-.1 1.8.4.5.5.6 1.3.4 1.9l3.2 3.2c.6-.2 1.4-.1 1.9.4.7.7.7 1.9 0 2.6-.7.7-1.9.7-2.6 0-.6-.6-.7-1.4-.3-2.1l-3-3v7.3c.2.2.4.4.4.8 0 1-.8 1.8-1.8 1.8s-1.8-.8-1.8-1.8c0-.6.3-1.1.7-1.5V9.4c-.4-.4-.7-.9-.7-1.5 0-.7.4-1.3 1-1.6L8.4 3 .4 11c-.5.5-.5 1.4 0 1.9l10.5 10.5c.5.5 1.4.5 1.9 0l10.8-10.6c.5-.5.5-1.4 0-1.9z"/>
+                </svg>
+              </div>
+            </div>
+          </button>
+          <!-- 14: GitHub -->
+          <button type="button" class="keycap-item" style="--bg: #18181B; --side: #101014; --side-dark: #000000; border: 1px solid rgba(255,255,255,0.12);">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+            </div>
+          </button>
+          <!-- 15: PostgreSQL -->
+          <button type="button" class="keycap-item" style="--bg: #1E293B; --side: #0F172A; --side-dark: #00040A; border: 1px solid rgba(255,255,255,0.08);">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-xl">P</span>
+            </div>
+          </button>
+          <!-- 16: npm -->
+          <button type="button" class="keycap-item" style="--bg: #DC2626; --side: #991B1B; --side-dark: #3F0505;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-base">npm</span>
+            </div>
+          </button>
+          <!-- 17: MySQL -->
+          <button type="button" class="keycap-item" style="--bg: #F59E0B; --side: #B45309; --side-dark: #522405;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <span class="key-glyph font-black text-base">SQL</span>
+            </div>
+          </button>
+          <!-- 18: Java -->
+          <button type="button" class="keycap-item" style="--bg: #EA580C; --side: #C2410C; --side-dark: #581C02;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8.851 18.56s-.917.534.667.714c2.391.246 3.867.202 6.54-.265 0 0 .834.502 1.701.907-5.91 2.37-12.062.148-8.908-1.356zm-.49-3.742s-1.026.702.484.908c2.614.343 5.485.347 8.55-.23 0 0 .571.432 1.335.71-6.883 2.115-13.627.48-10.369-1.388zm-.405-3.696s-1.222.812.518 1.054c3.218.428 6.942.365 10.434-.236 0 0 .408.455 1.002.736-7.854 2.05-15.656.402-11.954-1.554z"/>
+                <path d="M14.078 0s3.216 3.064-1.996 7.424c-4.225 3.528-1.066 5.568-.002 8.016-2.222-2.52-3.83-4.752-.668-7.056 3.65-2.664 3.79-5.112 2.666-8.384z"/>
+              </svg>
+            </div>
+          </button>
+
+          <!-- ROW 4 -->
+          <!-- 19: Linux -->
+          <button type="button" class="keycap-item" style="--bg: #18181B; --side: #101014; --side-dark: #000000; border: 1px solid rgba(255,255,255,0.12);">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.003 2c-2.457 0-4.003 1.914-4.003 4.286 0 .88.243 1.969.578 2.857-.84.717-1.42 1.83-1.42 3.095 0 .526.113 1.026.31 1.482-.942.868-1.468 2.073-1.468 3.423 0 2.678 2.016 4.857 4.503 4.857.72 0 1.402-.18 2-.5 1.13.604 2.502.5 3.503 0 .598.32 1.28.5 2 .5 2.487 0 4.503-2.179 4.503-4.857 0-1.35-.526-2.555-1.468-3.423.197-.456.31-.956.31-1.482 0-1.265-.58-2.378-1.42-3.095.335-.888.578-1.977.578-2.857 0-2.372-1.546-4.286-4.003-4.286z"/>
+              </svg>
+            </div>
+          </button>
+          <!-- 20: Docker -->
+          <button type="button" class="keycap-item" style="--bg: #0284C7; --side: #0369A1; --side-dark: #063A58;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.929 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186h-2.12a.185.185 0 00-.184.186v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186h-2.12a.186.186 0 00-.185.186v1.888c0 .102.084.185.186.185m-2.928 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H2.207a.186.186 0 00-.185.186v1.888c0 .102.083.185.185.185M23.71 9.89c-.465-.333-1.57-.45-2.395-.246-.14-.492-.41-.938-.813-1.284-.666-.57-1.637-.733-2.584-.424a5.534 5.534 0 00-.414-.686c-.525-.7-1.34-1.12-2.22-1.144H.185A.186.186 0 000 6.29v5.986c0 4.195 3.398 7.594 7.594 7.594 6.828 0 12.395-4.464 14.156-10.74 1.15.112 2.09-.434 2.21-.49a.186.186 0 00-.25-.75"/>
+              </svg>
+            </div>
+          </button>
+          <!-- 21: Flutter -->
+          <button type="button" class="keycap-item" style="--bg: #E11D48; --side: #9F1239; --side-dark: #3F0314;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14.314 0L2.3 12 6 15.7 21.684.013h-7.37zM6.028 15.694l3.687 3.69 4.315-4.314-3.687-3.69-4.315 4.314zm8.629 3.69l3.687-3.69 3.356 3.357-3.687 3.686-3.356-3.354z"/>
+              </svg>
+            </div>
+          </button>
+          <!-- 22: Dart -->
+          <button type="button" class="keycap-item" style="--bg: #0284C7; --side: #0369A1; --side-dark: #063A58;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4.125 0L0 4.125l13.5 13.5 4.125-4.125L4.125 0zm6.375 0L6.375 4.125l13.5 13.5 4.125-4.125L10.5 0zM19.875 19.875L24 15.75l-4.125-4.125-4.125 4.125 4.125 4.125z"/>
+              </svg>
+            </div>
+          </button>
+          <!-- 23: Laravel -->
+          <button type="button" class="keycap-item" style="--bg: #EF4444; --side: #B91C1C; --side-dark: #580B0B;">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8.7 1.25a.8.8 0 00-.77.53L4.08 11.5a.8.8 0 00.32.93l9.04 5.9a.8.8 0 00.88 0l5.6-3.65a.8.8 0 00.36-.67V2.05a.8.8 0 00-.36-.67l-5.6-3.65a.8.8 0 00-.88 0L8.7 1.25z"/>
+              </svg>
+            </div>
+          </button>
+          <!-- 24: Figma (Pressed sample) -->
+          <button type="button" class="keycap-item pressed" style="--bg: #18181B; --side: #101014; --side-dark: #000000; border: 1px solid rgba(255,255,255,0.12);">
+            <div class="keycap-top-face">
+              <div class="keycap-scoop"></div>
+              <svg class="w-6 h-6 key-glyph" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12a4 4 0 11-8 0 4 4 0 018 0zm0 0a4 4 0 108 0 4 4 0 00-8 0zm0 0v8a4 4 0 11-8 0v-8h8zm0-8a4 4 0 108 0 4 4 0 00-8 0zm0 0H4a4 4 0 100 8h8V4z"/>
+              </svg>
+            </div>
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
+

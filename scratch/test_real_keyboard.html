@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real 3D Mechanical Macropad</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #000000;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .perspective-stage {
+      perspective: 1000px;
+      perspective-origin: 45% 40%;
+    }
+
+    /* 
+      AUTHENTIC CNC MACROPAD CHASSIS:
+      Tilted with the exact isometric angle of the reference:
+      rotateX(52deg) rotateY(-6deg) rotateZ(-36deg)
+    */
+    .macropad-chassis {
+      transform-style: preserve-3d;
+      transform: rotateX(50deg) rotateY(-6deg) rotateZ(-36deg);
+      background: linear-gradient(145deg, #181c26 0%, #0d1017 60%, #06080d 100%);
+      border-radius: 28px;
+      padding: 18px 18px 24px 18px;
+      position: relative;
+      /* Realistic 3D CNC beveled chassis sides and ambient occlusion cast shadow */
+      box-shadow:
+        /* Top edge specular bevel */
+        0 1px 0 rgba(255, 255, 255, 0.25) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.8) inset,
+        /* 3D Chassis extruded side thickness (angled down & right) */
+        1px 2px 0 #12151e,
+        2px 4px 0 #0f121a,
+        3px 6px 0 #0b0e14,
+        4px 8px 0 #080a0f,
+        5px 11px 0 #06080b,
+        6px 14px 0 #040508,
+        8px 18px 0 #020305,
+        10px 22px 0 #010203,
+        /* Soft contact & ambient floor shadow */
+        12px 28px 40px rgba(0, 0, 0, 0.95),
+        20px 45px 60px rgba(0, 0, 0, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Recessed switch mounting plate */
+    .switch-plate {
+      background: #06080c;
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: 
+        inset 0 3px 8px rgba(0, 0, 0, 0.95),
+        inset 0 0 2px rgba(0, 0, 0, 0.8),
+        0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    /* 
+      AUTHENTIC CHERRY / OEM PROFILE 3D KEYCAP:
+      - Slanted draft angles: The top surface is smaller, sides taper outwards
+      - Distinct 3-facet directional lighting (Top = illuminated with concave dish, Left/Front = midtone, Right/Bottom = deep shadow)
+      - Height extrusion: stands ~12px proud of the switch plate
+    */
+    .real-keycap {
+      position: relative;
+      transform-style: preserve-3d;
+      width: 58px;
+      height: 58px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.08s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.08s ease;
+    }
+
+    /* The main keycap body with tapered profile illusion & high-relief 3D sides */
+    .keycap-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* 
+        Multi-layer shadows recreate the authentic 3D extruded keycap facets:
+        - Light comes from top-left
+        - Right and bottom sides are dark vertical skirts
+        - Deep drop shadow falls to the bottom-right on the switch plate
+      */
+      box-shadow:
+        /* Top edge specular rim */
+        0 1.5px 1px rgba(255, 255, 255, 0.6) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.45) inset,
+        /* Keycap 3D vertical sidewalls */
+        0 1px 0 var(--dark),
+        0 2px 0 var(--dark),
+        0 3px 0 var(--dark),
+        0 4px 0 var(--dark),
+        0 5px 0 var(--dark),
+        0 6px 0 var(--dark),
+        0 7px 0 var(--dark),
+        0 8px 0 var(--dark),
+        0 9px 0 var(--dark-shadow),
+        0 10px 0 #050608,
+        /* Keycap ambient cast shadow on plate */
+        0 14px 18px -2px rgba(0, 0, 0, 0.9),
+        0 20px 28px -4px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Spherical finger dish / scoop on the top surface */
+    .keycap-dish {
+      position: absolute;
+      inset: 4px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 45% 35%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 65%);
+      box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+      pointer-events-none;
+    }
+
+    .real-keycap:hover .keycap-inner {
+      transform: translateY(-2px);
+    }
+
+    .real-keycap:active .keycap-inner {
+      transform: translateY(6px);
+      box-shadow:
+        0 1px 0 var(--dark),
+        0 2px 0 var(--dark),
+        0 3px 0 #050608,
+        0 6px 10px rgba(0, 0, 0, 0.8),
+        inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body class="p-10 flex flex-col items-center justify-center min-h-screen">
+
+  <div class="text-center mb-10">
+    <h2 class="text-6xl font-black tracking-widest text-white uppercase drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+      SKILLS
+    </h2>
+    <div class="text-slate-400 text-sm font-mono mt-1">(hint: press a key)</div>
+  </div>
+
+  <div class="flex items-center justify-center gap-16 max-w-6xl w-full">
+
+    <!-- Active Skill Inspector (Ref: Prettier) -->
+    <div class="w-80 flex flex-col justify-center">
+      <h3 class="text-6xl font-black text-white tracking-tight" style="text-shadow: 2px 2px 0 #94a3b8, 4px 4px 0 #475569, 6px 6px 14px rgba(0,0,0,0.9);">
+        ttier
+      </h3>
+      <p class="mt-3 text-lg text-slate-300 font-normal leading-relaxed">
+        fixing your code not a whole mess, thank u next
+      </p>
+    </div>
+
+    <!-- The 3D Mechanical Macropad Keyboard -->
+    <div class="perspective-stage">
+      <div class="macropad-chassis">
+        <div class="switch-plate">
+          <div class="grid grid-cols-6 gap-3">
+
+            <!-- ROW 1 (Left to Top-Right) -->
+            <!-- JS (Orange/Gold) -->
+            <div class="real-keycap" style="--dark: #C67D00; --dark-shadow: #8A5500;">
+              <div class="keycap-inner bg-[#F59E0B] text-black">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">JS</span>
+              </div>
+            </div>
+            <!-- TS (Blue) -->
+            <div class="real-keycap" style="--dark: #1E4E85; --dark-shadow: #12345C;">
+              <div class="keycap-inner bg-[#2563EB] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">TS</span>
+              </div>
+            </div>
+            <!-- HTML5 (Red) -->
+            <div class="real-keycap" style="--dark: #9E2208; --dark-shadow: #691504;">
+              <div class="keycap-inner bg-[#E11D48] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-2xl z-10">5</span>
+              </div>
+            </div>
+            <!-- CSS3 (Purple) -->
+            <div class="real-keycap" style="--dark: #581C87; --dark-shadow: #3B0764;">
+              <div class="keycap-inner bg-[#7C3AED] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-2xl z-10">3</span>
+              </div>
+            </div>
+            <!-- React (Cyan) -->
+            <div class="real-keycap" style="--dark: #0891B2; --dark-shadow: #164E63;">
+              <div class="keycap-inner bg-[#06B6D4] text-white">
+                <div class="keycap-dish"></div>
+                <svg class="w-8 h-8 z-10 drop-shadow" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 9a3 3 0 100 6 3 3 0 000-6zm0-7C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                </svg>
+              </div>
+            </div>
+            <!-- Vite (Green) -->
+            <div class="real-keycap" style="--dark: #047857; --dark-shadow: #064E3B;">
+              <div class="keycap-inner bg-[#10B981] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-2xl z-10">V</span>
+              </div>
+            </div>
+
+            <!-- ROW 2 -->
+            <!-- Next (Dark) -->
+            <div class="real-keycap" style="--dark: #09090B; --dark-shadow: #000000;">
+              <div class="keycap-inner bg-[#18181B] text-white border border-white/10">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">N</span>
+              </div>
+            </div>
+            <!-- Tailwind (Cyan) -->
+            <div class="real-keycap" style="--dark: #0284C7; --dark-shadow: #075985;">
+              <div class="keycap-inner bg-[#38BDF8] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-2xl z-10">≈</span>
+              </div>
+            </div>
+            <!-- Node (Green) -->
+            <div class="real-keycap" style="--dark: #15803D; --dark-shadow: #14532D;">
+              <div class="keycap-inner bg-[#22C55E] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-lg z-10">⬢</span>
+              </div>
+            </div>
+            <!-- Express (Dark) -->
+            <div class="real-keycap" style="--dark: #171717; --dark-shadow: #0A0A0A;">
+              <div class="keycap-inner bg-[#262626] text-white border border-white/10">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-lg z-10">ex</span>
+              </div>
+            </div>
+            <!-- Nest/PHP (Red) -->
+            <div class="real-keycap" style="--dark: #9F1239; --dark-shadow: #4C0519;">
+              <div class="keycap-inner bg-[#E11D48] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-lg z-10">PHP</span>
+              </div>
+            </div>
+            <!-- Mongo (Green) -->
+            <div class="real-keycap" style="--dark: #047857; --dark-shadow: #064E3B;">
+              <div class="keycap-inner bg-[#10B981] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">🍃</span>
+              </div>
+            </div>
+
+            <!-- ROW 3 -->
+            <!-- Git (Red) -->
+            <div class="real-keycap" style="--dark: #B91C1C; --dark-shadow: #7F1D1D;">
+              <div class="keycap-inner bg-[#EF4444] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">⎇</span>
+              </div>
+            </div>
+            <!-- GitHub (Black) -->
+            <div class="real-keycap" style="--dark: #000000; --dark-shadow: #000000;">
+              <div class="keycap-inner bg-[#09090B] text-white border border-white/15">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">🐙</span>
+              </div>
+            </div>
+            <!-- Postgres (Dark Slate) -->
+            <div class="real-keycap" style="--dark: #1E293B; --dark-shadow: #0F172A;">
+              <div class="keycap-inner bg-[#334155] text-white border border-white/10">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">P</span>
+              </div>
+            </div>
+            <!-- npm (Red) -->
+            <div class="real-keycap" style="--dark: #991B1B; --dark-shadow: #450A0A;">
+              <div class="keycap-inner bg-[#DC2626] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-sm z-10">npm</span>
+              </div>
+            </div>
+            <!-- MySQL (Amber) -->
+            <div class="real-keycap" style="--dark: #B45309; --dark-shadow: #78350F;">
+              <div class="keycap-inner bg-[#F59E0B] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xs z-10">SQL</span>
+              </div>
+            </div>
+            <!-- AWS (Orange) -->
+            <div class="real-keycap" style="--dark: #C2410C; --dark-shadow: #7C2D12;">
+              <div class="keycap-inner bg-[#EA580C] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xs z-10">aws</span>
+              </div>
+            </div>
+
+            <!-- ROW 4 -->
+            <!-- Linux (Dark Tux) -->
+            <div class="real-keycap" style="--dark: #000000; --dark-shadow: #000000;">
+              <div class="keycap-inner bg-[#09090B] text-white border border-white/15">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">🐧</span>
+              </div>
+            </div>
+            <!-- Docker (Blue) -->
+            <div class="real-keycap" style="--dark: #0369A1; --dark-shadow: #0C4A6E;">
+              <div class="keycap-inner bg-[#0284C7] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">🐳</span>
+              </div>
+            </div>
+            <!-- Flutter (Blue) -->
+            <div class="real-keycap" style="--dark: #1D4ED8; --dark-shadow: #1E3A8A;">
+              <div class="keycap-inner bg-[#2563EB] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-xl z-10">💙</span>
+              </div>
+            </div>
+            <!-- Dart (Blue) -->
+            <div class="real-keycap" style="--dark: #0284C7; --dark-shadow: #075985;">
+              <div class="keycap-inner bg-[#0284C7] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-sm z-10">Dart</span>
+              </div>
+            </div>
+            <!-- Laravel (Red) -->
+            <div class="real-keycap" style="--dark: #B91C1C; --dark-shadow: #7F1D1D;">
+              <div class="keycap-inner bg-[#EF4444] text-white">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-sm z-10">Lara</span>
+              </div>
+            </div>
+            <!-- Figma (Dark) -->
+            <div class="real-keycap" style="--dark: #000000; --dark-shadow: #000000;">
+              <div class="keycap-inner bg-[#000000] text-white border border-white/10">
+                <div class="keycap-dish"></div>
+                <span class="font-black text-lg z-10">▲</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
+

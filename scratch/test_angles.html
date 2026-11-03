@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Angle Variations Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #0b071a; color: #fff; font-family: sans-serif; }
+    .stage { perspective: 1200px; }
+    .kb {
+      transform-style: preserve-3d;
+      box-shadow: -10px 20px 30px rgba(0,0,0,0.8);
+    }
+    .key {
+      box-shadow: 0 4px 0 #555, 0 6px 8px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body class="p-8">
+  <h1 class="text-2xl font-bold mb-6 text-center">Comparing 4 Isometric Slant Angles</h1>
+  <div class="grid grid-cols-2 gap-8">
+    
+    <!-- VAR 1: rotateX(55deg) rotateZ(45deg) -->
+    <div class="p-6 bg-white/5 rounded-2xl flex flex-col items-center">
+      <div class="text-sm font-mono text-[#FFD500] mb-4">Var 1: rotateX(55deg) rotateZ(45deg)</div>
+      <div class="stage h-64 flex items-center justify-center">
+        <div class="kb p-4 rounded-2xl bg-[#0f1422] grid grid-cols-4 gap-2" style="transform: rotateX(55deg) rotateZ(45deg);">
+          <div class="key w-10 h-10 bg-yellow-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">JS</div>
+          <div class="key w-10 h-10 bg-blue-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">TS</div>
+          <div class="key w-10 h-10 bg-cyan-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">⚛</div>
+          <div class="key w-10 h-10 bg-red-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">5</div>
+          <div class="key w-10 h-10 bg-blue-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">3</div>
+          <div class="key w-10 h-10 bg-green-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">US</div>
+          <div class="key w-10 h-10 bg-purple-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">ex</div>
+          <div class="key w-10 h-10 bg-orange-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Py</div>
+          <div class="key w-10 h-10 bg-emerald-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Go</div>
+          <div class="key w-10 h-10 bg-indigo-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Db</div>
+          <div class="key w-10 h-10 bg-pink-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Git</div>
+          <div class="key w-10 h-10 bg-amber-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">npm</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAR 2: rotateX(55deg) rotateZ(-45deg) -->
+    <div class="p-6 bg-white/5 rounded-2xl flex flex-col items-center">
+      <div class="text-sm font-mono text-[#FFD500] mb-4">Var 2: rotateX(55deg) rotateZ(-45deg)</div>
+      <div class="stage h-64 flex items-center justify-center">
+        <div class="kb p-4 rounded-2xl bg-[#0f1422] grid grid-cols-4 gap-2" style="transform: rotateX(55deg) rotateZ(-45deg);">
+          <div class="key w-10 h-10 bg-yellow-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">JS</div>
+          <div class="key w-10 h-10 bg-blue-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">TS</div>
+          <div class="key w-10 h-10 bg-cyan-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">⚛</div>
+          <div class="key w-10 h-10 bg-red-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">5</div>
+          <div class="key w-10 h-10 bg-blue-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">3</div>
+          <div class="key w-10 h-10 bg-green-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">US</div>
+          <div class="key w-10 h-10 bg-purple-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">ex</div>
+          <div class="key w-10 h-10 bg-orange-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Py</div>
+          <div class="key w-10 h-10 bg-emerald-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Go</div>
+          <div class="key w-10 h-10 bg-indigo-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Db</div>
+          <div class="key w-10 h-10 bg-pink-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Git</div>
+          <div class="key w-10 h-10 bg-amber-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">npm</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAR 3: rotateX(55deg) rotateY(-20deg) rotateZ(35deg) -->
+    <div class="p-6 bg-white/5 rounded-2xl flex flex-col items-center">
+      <div class="text-sm font-mono text-[#FFD500] mb-4">Var 3: rotateX(55deg) rotateY(-20deg) rotateZ(35deg)</div>
+      <div class="stage h-64 flex items-center justify-center">
+        <div class="kb p-4 rounded-2xl bg-[#0f1422] grid grid-cols-4 gap-2" style="transform: rotateX(55deg) rotateY(-20deg) rotateZ(35deg);">
+          <div class="key w-10 h-10 bg-yellow-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">JS</div>
+          <div class="key w-10 h-10 bg-blue-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">TS</div>
+          <div class="key w-10 h-10 bg-cyan-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">⚛</div>
+          <div class="key w-10 h-10 bg-red-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">5</div>
+          <div class="key w-10 h-10 bg-blue-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">3</div>
+          <div class="key w-10 h-10 bg-green-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">US</div>
+          <div class="key w-10 h-10 bg-purple-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">ex</div>
+          <div class="key w-10 h-10 bg-orange-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Py</div>
+          <div class="key w-10 h-10 bg-emerald-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Go</div>
+          <div class="key w-10 h-10 bg-indigo-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Db</div>
+          <div class="key w-10 h-10 bg-pink-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Git</div>
+          <div class="key w-10 h-10 bg-amber-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">npm</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAR 4: rotateX(55deg) rotateY(20deg) rotateZ(-35deg) -->
+    <div class="p-6 bg-white/5 rounded-2xl flex flex-col items-center">
+      <div class="text-sm font-mono text-[#FFD500] mb-4">Var 4: rotateX(55deg) rotateY(20deg) rotateZ(-35deg)</div>
+      <div class="stage h-64 flex items-center justify-center">
+        <div class="kb p-4 rounded-2xl bg-[#0f1422] grid grid-cols-4 gap-2" style="transform: rotateX(55deg) rotateY(20deg) rotateZ(-35deg);">
+          <div class="key w-10 h-10 bg-yellow-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">JS</div>
+          <div class="key w-10 h-10 bg-blue-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">TS</div>
+          <div class="key w-10 h-10 bg-cyan-400 rounded-lg text-black font-bold flex items-center justify-center text-xs">⚛</div>
+          <div class="key w-10 h-10 bg-red-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">5</div>
+          <div class="key w-10 h-10 bg-blue-600 rounded-lg text-white font-bold flex items-center justify-center text-xs">3</div>
+          <div class="key w-10 h-10 bg-green-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">US</div>
+          <div class="key w-10 h-10 bg-purple-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">ex</div>
+          <div class="key w-10 h-10 bg-orange-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Py</div>
+          <div class="key w-10 h-10 bg-emerald-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Go</div>
+          <div class="key w-10 h-10 bg-indigo-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Db</div>
+          <div class="key w-10 h-10 bg-pink-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">Git</div>
+          <div class="key w-10 h-10 bg-amber-500 rounded-lg text-white font-bold flex items-center justify-center text-xs">npm</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
+

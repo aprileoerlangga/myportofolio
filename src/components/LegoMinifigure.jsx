@@ -1,10 +1,11 @@
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
   OrbitControls, Float,
   RoundedBox,
 } from '@react-three/drei';
 import { useRef, useMemo, useState, useEffect, Suspense } from 'react';
 import * as THREE from 'three';
+import { LegoBrick3D } from './Lego3DComponents';
 
 
 
@@ -47,23 +48,96 @@ function Stud({ position, color, scale = 1 }) {
 /* ═══════════════════════════════════════════════════════════════
    LEGO HEAD — accurate classic cylinder
    ═══════════════════════════════════════════════════════════════ */
-function LegoHead({ color = '#FFD000' }) {
+function LegoHead({ color = '#FFD000', animRef }) {
   const headRef = useRef();
-  const leftEyeRef = useRef();
-  const rightEyeRef = useRef();
-  const smileRef = useRef();
-  const blinkState = useRef({ next: 2.5, blinking: false, timer: 0 });
+  const blinkState = useRef({ next: 2.5, blinking: false, timer: 0, lastScale: 1.0 });
 
-  // Create a U-shaped smile curve (guaranteed correct orientation)
-  const smileCurve = useMemo(() => {
-    const points = [];
-    for (let i = 0; i <= 20; i++) {
-      const t = (i / 20) * Math.PI; // 0 to PI
-      const x = Math.cos(t) * 0.15;  // width of smile
-      const y = -Math.sin(t) * 0.06;  // depth of smile curve (negative = U shape)
-      points.push(new THREE.Vector3(x, y, 0));
-    }
-    return new THREE.CatmullRomCurve3(points);
+  // 1. Dynamic Face Canvas Texture — pad-printed directly onto the curved cylinder surface
+  const faceTextureInfo = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 1024;
+    const ctx = canvas.getContext('2d');
+
+    const drawFace = (blinkScale = 1.0) => {
+      ctx.clearRect(0, 0, 1024, 1024);
+
+      const eyeY = 450;
+      const leftEyeX = 292;
+      const rightEyeX = 732;
+      const eyeRadiusX = 64;
+      const eyeRadiusY = Math.max(2, 64 * blinkScale);
+
+      // Eyebrows — classic Lego arched brows
+      ctx.strokeStyle = '#3a1805';
+      ctx.lineWidth = 14;
+      ctx.lineCap = 'round';
+
+      // Left eyebrow
+      ctx.beginPath();
+      ctx.moveTo(235, 325);
+      ctx.quadraticCurveTo(292, 305, 345, 332);
+      ctx.stroke();
+
+      // Right eyebrow
+      ctx.beginPath();
+      ctx.moveTo(679, 332);
+      ctx.quadraticCurveTo(732, 305, 789, 325);
+      ctx.stroke();
+
+      // Eyes with crisp specular catchlight
+      const drawEye = (cx, cy) => {
+        ctx.fillStyle = '#111111';
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, eyeRadiusX, eyeRadiusY, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // White specular catchlight dot
+        if (blinkScale > 0.35) {
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(cx + 20, cy - 20 * blinkScale, 18 * blinkScale, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      };
+      drawEye(leftEyeX, eyeY);
+      drawEye(rightEyeX, eyeY);
+
+      // Classic Lego Smile — warm, friendly U-curve
+      ctx.strokeStyle = '#111111';
+      ctx.lineWidth = 26;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      ctx.beginPath();
+      ctx.moveTo(335, 670);
+      ctx.bezierCurveTo(400, 755, 624, 755, 689, 670);
+      ctx.stroke();
+
+      // Smile corner dimples
+      ctx.lineWidth = 16;
+      ctx.beginPath();
+      ctx.moveTo(330, 680);
+      ctx.lineTo(345, 655);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(694, 680);
+      ctx.lineTo(679, 655);
+      ctx.stroke();
+    };
+
+    drawFace(1.0);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.anisotropy = 8;
+    return { texture, drawFace };
+  }, []);
+
+  // 2. Curved Decal Geometry matching exact cylinder taper and contour
+  const faceDecalGeometry = useMemo(() => {
+    const thetaLength = Math.PI * 0.44;
+    const thetaStart = -thetaLength / 2;
+    return new THREE.CylinderGeometry(0.6208, 0.6008, 0.82, 32, 1, true, thetaStart, thetaLength);
   }, []);
 
   useFrame((_, delta) => {
@@ -71,16 +145,33 @@ function LegoHead({ color = '#FFD000' }) {
 
     // Friendly, curious welcoming head acting looking towards visitors
     if (headRef.current) {
-      const targetRotZ = 0.04 + Math.sin(t * 1.0) * 0.02;
-      const targetRotY = Math.sin(t * 1.2) * 0.05;
-      const targetRotX = Math.sin(t * 1.6) * 0.02;
+      let targetRotZ = 0.04 + Math.sin(t * 1.0) * 0.02;
+      let targetRotY = Math.sin(t * 1.2) * 0.05;
+      let targetRotX = Math.sin(t * 1.6) * 0.02;
 
-      headRef.current.rotation.x = damp(headRef.current.rotation.x, targetRotX, 3.5, delta);
-      headRef.current.rotation.y = damp(headRef.current.rotation.y, targetRotY, 3.5, delta);
-      headRef.current.rotation.z = damp(headRef.current.rotation.z, targetRotZ, 3.5, delta);
+      const a = animRef?.current;
+      if (a && a.isThrowing && a.throwStartTime) {
+        targetRotX = -0.06;
+        targetRotY = 0.08;
+        targetRotZ = -0.04;
+      } else if (a && a.isWalking) {
+        // Looking ahead in direction of walk with slight confident head tilt
+        targetRotY = 0.12;
+        targetRotX = 0.05;
+        targetRotZ = -0.02;
+      } else if (a && a.isIntroWave) {
+        // Friendly greeting tilt while waving
+        targetRotZ = 0.06 + Math.sin(t * 3.0) * 0.02;
+        targetRotY = -0.05;
+        targetRotX = -0.04;
+      }
+
+      headRef.current.rotation.x = damp(headRef.current.rotation.x, targetRotX, 4.0, delta);
+      headRef.current.rotation.y = damp(headRef.current.rotation.y, targetRotY, 4.0, delta);
+      headRef.current.rotation.z = damp(headRef.current.rotation.z, targetRotZ, 4.0, delta);
     }
 
-    // Natural blink
+    // Natural blink animation
     const bs = blinkState.current;
     bs.timer += delta;
     let blink = 1;
@@ -90,13 +181,10 @@ function LegoHead({ color = '#FFD000' }) {
       else if (p < 0.14) blink = Math.min(1, (p - 0.07) / 0.07);
       else { bs.timer = 0; bs.next = 2 + Math.random() * 3; }
     }
-    [leftEyeRef, rightEyeRef].forEach(r => {
-      if (r.current) r.current.scale.y = damp(r.current.scale.y, blink, 20, delta);
-    });
-
-    // Subtle smile animation
-    if (smileRef.current) {
-      smileRef.current.scale.x = damp(smileRef.current.scale.x, 1 + Math.sin(t * 0.8) * 0.03, 5, delta);
+    if (Math.abs(bs.lastScale - blink) > 0.02) {
+      bs.lastScale = blink;
+      faceTextureInfo.drawFace(blink);
+      faceTextureInfo.texture.needsUpdate = true;
     }
   });
 
@@ -129,63 +217,16 @@ function LegoHead({ color = '#FFD000' }) {
       {/* Hair attached directly to head — sways and moves with head */}
       <LegoHair color="#0e0e0e" />
 
-      {/* ========= FACE — matching classic minifigure reference ========= */}
-      {/* All features at Z=0.63 to sit CLEARLY in front of cylinder surface */}
-
-      {/* Left Eye — black pupil with crisp white highlight dot */}
-      <group ref={leftEyeRef} position={[-0.18, 0.05, 0.63]}>
-        <mesh>
-          <circleGeometry args={[0.052, 24]} />
-          <meshBasicMaterial color="#111111" />
-        </mesh>
-        {/* Specular catchlight matching reference image */}
-        <mesh position={[0.016, 0.016, 0.001]}>
-          <circleGeometry args={[0.015, 16]} />
-          <meshBasicMaterial color="#ffffff" />
-        </mesh>
-      </group>
-
-      {/* Right Eye — black pupil with crisp white highlight dot */}
-      <group ref={rightEyeRef} position={[0.18, 0.05, 0.63]}>
-        <mesh>
-          <circleGeometry args={[0.052, 24]} />
-          <meshBasicMaterial color="#111111" />
-        </mesh>
-        {/* Specular catchlight matching reference image */}
-        <mesh position={[0.016, 0.016, 0.001]}>
-          <circleGeometry args={[0.015, 16]} />
-          <meshBasicMaterial color="#ffffff" />
-        </mesh>
-      </group>
-
-      {/* Left Eyebrow — subtle arched line */}
-      <mesh position={[-0.18, 0.155, 0.631]} rotation={[0, 0, 0.08]}>
-        <planeGeometry args={[0.085, 0.014]} />
-        <meshBasicMaterial color="#4a2010" />
+      {/* Curved Face Decal — 100% conforms to cylinder surface with ZERO air gap or floating */}
+      <mesh geometry={faceDecalGeometry}>
+        <meshBasicMaterial
+          map={faceTextureInfo.texture}
+          transparent
+          depthWrite={false}
+          polygonOffset
+          polygonOffsetFactor={-1}
+        />
       </mesh>
-
-      {/* Right Eyebrow — subtle arched line */}
-      <mesh position={[0.18, 0.155, 0.631]} rotation={[0, 0, -0.08]}>
-        <planeGeometry args={[0.085, 0.014]} />
-        <meshBasicMaterial color="#4a2010" />
-      </mesh>
-
-      {/* Classic Smile — U-shape using TubeGeometry following a CatmullRom curve */}
-      <group ref={smileRef} position={[0, -0.13, 0.63]}>
-        <mesh>
-          <tubeGeometry args={[smileCurve, 20, 0.013, 8, false]} />
-          <meshBasicMaterial color="#111111" />
-        </mesh>
-        {/* Smile corner dimple ticks */}
-        <mesh position={[-0.15, 0.005, 0]} rotation={[0, 0, 0.5]}>
-          <planeGeometry args={[0.012, 0.032]} />
-          <meshBasicMaterial color="#111111" />
-        </mesh>
-        <mesh position={[0.15, 0.005, 0]} rotation={[0, 0, -0.5]}>
-          <planeGeometry args={[0.012, 0.032]} />
-          <meshBasicMaterial color="#111111" />
-        </mesh>
-      </group>
     </group>
   );
 }
@@ -429,12 +470,12 @@ function LegoHair({ color = '#0f0f0f' }) {
    ═══════════════════════════════════════════════════════════════ */
 function createTorsoGeometry() {
   const shape = new THREE.Shape();
-  const topW = 0.44; // top shoulders width = 0.88
+  const topW = 0.46; // top shoulders width = 0.92
   const botW = 0.63; // bottom waist width = 1.26 (flush with hips & legs!)
-  const h = 1.06;    // authentic torso height
-  const r = 0.08;    // smooth shoulder corner rounding
+  const h = 1.10;    // authentic torso height
+  const r = 0.09;    // smooth shoulder corner rounding
 
-  // Draw continuous uninterrupted perimeter from bottom-left corner
+  // Draw continuous perimeter from bottom-left corner
   shape.moveTo(-botW, -h / 2);
   shape.lineTo(botW, -h / 2);
   shape.lineTo(topW, h / 2 - r);
@@ -443,13 +484,14 @@ function createTorsoGeometry() {
   shape.quadraticCurveTo(-topW, h / 2, -topW, h / 2 - r);
   shape.lineTo(-botW, -h / 2);
 
+  // Chunky, deep 3D torso matching authentic The Lego Movie minifigures
   const geom = new THREE.ExtrudeGeometry(shape, {
-    depth: 0.48,
+    depth: 0.72, // Substantial 3D depth (was 0.48, eliminates the flat/gepeng look completely!)
     bevelEnabled: true,
     bevelSegments: 4,
     steps: 1,
-    bevelSize: 0.024,
-    bevelThickness: 0.024,
+    bevelSize: 0.035,
+    bevelThickness: 0.035,
   });
   geom.center();
   geom.computeVertexNormals();
@@ -505,14 +547,14 @@ function createArmGeometry(side) {
   const sign = side === 'right' ? -1 : 1;
   // Spline points modeled with guaranteed body clearance along torso and hips
   const points = [
-    new THREE.Vector3(0, 0, 0),                           // Shoulder pivot [±0.48, 2.31, 0]
-    new THREE.Vector3(sign * 0.18, -0.22, 0.03),          // Slopes down alongside torso bevel
-    new THREE.Vector3(sign * 0.28, -0.44, 0.08),          // Elbow curves outward with clean air gap past torso bottom
-    new THREE.Vector3(sign * 0.28, -0.62, 0.14),          // Forearm maintains solid air gap from hips
-    new THREE.Vector3(sign * 0.27, -0.74, 0.18),          // Wrist terminates cleanly in front/beside thigh
+    new THREE.Vector3(0, 0, 0),                           // Shoulder pivot
+    new THREE.Vector3(sign * 0.18, -0.22, 0.04),          // Slopes down alongside torso bevel
+    new THREE.Vector3(sign * 0.29, -0.44, 0.10),          // Elbow curves outward with clean air gap past torso bottom
+    new THREE.Vector3(sign * 0.29, -0.62, 0.18),          // Forearm maintains solid air gap from hips
+    new THREE.Vector3(sign * 0.28, -0.74, 0.24),          // Wrist terminates cleanly in front/beside thigh
   ];
   const curve = new THREE.CatmullRomCurve3(points);
-  const geom = new THREE.TubeGeometry(curve, 24, 0.112, 18, false);
+  const geom = new THREE.TubeGeometry(curve, 24, 0.134, 18, false);
   const wristPos = points[4].clone();
   const wristTangent = curve.getTangentAt(1.0).normalize();
   
@@ -533,14 +575,15 @@ function getArmGeometry(side) {
   return cachedArmGeom[side];
 }
 
-function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000' }) {
+function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000', animRef }) {
   // Minifigure faces +Z (towards camera).
-  // Minifigure's RIGHT arm: located at x = -0.48 (viewer's left).
-  // Minifigure's LEFT arm: located at x = 0.48 (viewer's right).
-  const x = side === 'right' ? -0.48 : 0.48;
+  // Minifigure's RIGHT arm: located at x = -0.50 (viewer's left).
+  // Minifigure's LEFT arm: located at x = 0.50 (viewer's right).
+  const x = side === 'right' ? -0.50 : 0.50;
   const sign = side === 'right' ? -1 : 1;
   const armRef = useRef();
   const handRef = useRef();
+  const heldBrickRef = useRef();
   const sv = useRef({ ax: 0, az: 0, ay: 0, hx: 0, hy: 0, hz: 0 });
 
   const { geom: armGeom, wristPos, wristQuat } = useMemo(() => getArmGeometry(side), [side]);
@@ -557,7 +600,103 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000' }
     let targetHy = 0;
     let targetHz = 0;
 
-    if (side === 'right') {
+    const a = animRef?.current;
+
+    // Toggle held brick inside right C-claw: visible strictly from snatch completion (0.34s) to release (0.88s)
+    if (heldBrickRef.current) {
+      if (a && a.isThrowing && side === 'right' && a.throwStartTime) {
+        const elapsed = (performance.now() / 1000) - a.throwStartTime;
+        heldBrickRef.current.visible = (elapsed >= 0.34 && elapsed < 0.88);
+      } else {
+        heldBrickRef.current.visible = false;
+      }
+    }
+
+    if (a && a.isThrowing && side === 'right' && a.throwStartTime) {
+      // DYNAMIC OVERHEAD THROW ANIMATION — SNATCHES RED BRICK & PITCHES OVERHEAD
+      const elapsed = (performance.now() / 1000) - a.throwStartTime;
+      if (elapsed < 0.34) {
+        // Phase 1: Reaches high up forward to snatch floating red Lego brick
+        const p = elapsed / 0.34;
+        const ease = Math.sin((p * Math.PI) / 2);
+        targetX = THREE.MathUtils.lerp(0.04, -1.95, ease); // reaches high up forward
+        targetZ = THREE.MathUtils.lerp(-0.04, -0.26, ease);
+        targetY = THREE.MathUtils.lerp(0, 0.18, ease);
+        targetHx = THREE.MathUtils.lerp(0, 0.45, ease); // open C-hand grasping
+      } else if (elapsed < 0.70) {
+        // Phase 2: High overhead wind-up! Arm cocks back above head
+        const p = (elapsed - 0.34) / 0.36;
+        const ease = Math.sin((p * Math.PI) / 2);
+        targetX = THREE.MathUtils.lerp(-1.95, -2.70, ease); // cocks high overhead and back!
+        targetZ = THREE.MathUtils.lerp(-0.26, -0.34, ease); // clear head with solid clearance
+        targetY = THREE.MathUtils.lerp(0.18, 0.24, ease);
+        targetHx = THREE.MathUtils.lerp(0.45, 0.30, ease); // secure clamp
+      } else if (elapsed < 0.88) {
+        // Phase 3: High overhead power pitch forward whip & release!
+        const p = (elapsed - 0.70) / 0.18;
+        const ease = Math.sin((p * Math.PI) / 2);
+        targetX = THREE.MathUtils.lerp(-2.70, -1.25, ease); // overhead whip forward & release!
+        targetZ = THREE.MathUtils.lerp(-0.34, -0.12, ease);
+        targetY = THREE.MathUtils.lerp(0.24, -0.16, ease);
+        targetHx = THREE.MathUtils.lerp(0.30, -0.55, ease); // forward wrist snap!
+      } else {
+        // Phase 4: Follow-through pointing towards screen
+        targetX = -1.15;
+        targetZ = -0.10;
+        targetY = -0.15;
+        targetHx = -0.55;
+      }
+    } else if (a && a.isThrowing && side === 'left' && a.throwStartTime) {
+      // Left arm balances athletically during pitch
+      const elapsed = (performance.now() / 1000) - a.throwStartTime;
+      if (elapsed < 0.70) {
+        // Balances up and forward during windup
+        const p = Math.min(1.0, elapsed / 0.70);
+        const ease = Math.sin((p * Math.PI) / 2);
+        targetX = THREE.MathUtils.lerp(0, -0.80, ease);
+        targetZ = THREE.MathUtils.lerp(0, 0.28, ease);
+        targetY = THREE.MathUtils.lerp(0, -0.12, ease);
+      } else {
+        // Pulls back as right arm pitches forward
+        const p = Math.min(1.0, (elapsed - 0.70) / 0.18);
+        const ease = Math.sin((p * Math.PI) / 2);
+        targetX = THREE.MathUtils.lerp(-0.80, 0.45, ease);
+        targetZ = THREE.MathUtils.lerp(0.28, 0.10, ease);
+        targetY = THREE.MathUtils.lerp(-0.12, 0, ease);
+      }
+    } else if (a && a.isWalking) {
+      // WALK CYCLE ARM SWINGS (opposite of leg swings)
+      if (side === 'left') {
+        targetX = a.leftArmAngle;
+        targetZ = 0.04;
+        targetY = 0;
+      } else {
+        targetX = a.rightArmAngle;
+        targetZ = -0.04;
+        targetY = 0;
+      }
+    } else if (a && a.isIntroWave && side === 'right') {
+      // IMMEDIATE GREETING WAVE WHEN ARRIVING AT BASEPLATE
+      const lift = a.introWaveLift;
+      const waveT = a.introWaveProgress;
+      const waveMotion = Math.sin(waveT * 6.5);
+
+      const restX = 0.04;
+      const restZ = -0.04;
+      const restY = 0;
+
+      const waveX = -2.40 + Math.sin(waveT * 3.0) * 0.04;
+      const waveZ = -0.42 - waveMotion * 0.18;
+      const waveY = -0.22 - waveMotion * 0.08;
+
+      targetX = THREE.MathUtils.lerp(restX, waveX, lift);
+      targetZ = THREE.MathUtils.lerp(restZ, waveZ, lift);
+      targetY = THREE.MathUtils.lerp(restY, waveY, lift);
+
+      targetHx = THREE.MathUtils.lerp(0, 0.25 + Math.sin(waveT * 6.5) * 0.14, lift);
+      targetHy = THREE.MathUtils.lerp(0, Math.cos(waveT * 6.5) * 0.40, lift);
+      targetHz = THREE.MathUtils.lerp(0, Math.sin(waveT * 6.5) * 0.14, lift);
+    } else if (side === 'right') {
       // TANGAN KANAN: Mengangkat ke atas-depan, melambai ramah, lalu turun kembali secara berkala (hidup & tidak kaku)
       const cycleDuration = 5.5; // Total siklus animasi dalam detik
       const cycle = t % cycleDuration;
@@ -609,13 +748,15 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000' }
       targetHz = 0;
     }
 
-    // Smooth physics damping
-    s.ax = damp(s.ax, targetX, 5.0, delta);
-    s.az = damp(s.az, targetZ, 5.0, delta);
-    s.ay = damp(s.ay, targetY, 5.0, delta);
-    s.hx = damp(s.hx, targetHx, 5.5, delta);
-    s.hy = damp(s.hy, targetHy, 5.5, delta);
-    s.hz = damp(s.hz, targetHz, 5.5, delta);
+    // Smooth physics damping (fast responsiveness during athletic throw)
+    const armDamp = (a && a.isThrowing) ? 26.0 : 5.0;
+    const handDamp = (a && a.isThrowing) ? 26.0 : 5.5;
+    s.ax = damp(s.ax, targetX, armDamp, delta);
+    s.az = damp(s.az, targetZ, armDamp, delta);
+    s.ay = damp(s.ay, targetY, armDamp, delta);
+    s.hx = damp(s.hx, targetHx, handDamp, delta);
+    s.hy = damp(s.hy, targetHy, handDamp, delta);
+    s.hz = damp(s.hz, targetHz, handDamp, delta);
 
     if (armRef.current) {
       armRef.current.rotation.x = s.ax;
@@ -634,7 +775,7 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000' }
       <group ref={armRef}>
         {/* Shoulder spherical cap — snug against torso socket */}
         <mesh position={[0, 0, 0]} castShadow>
-          <sphereGeometry args={[0.16, 24, 20]} />
+          <sphereGeometry args={[0.19, 24, 20]} />
           <meshPhysicalMaterial
             color={armColor}
             roughness={0.16}
@@ -697,6 +838,19 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000' }
                 envMapIntensity={1.0}
               />
             </mesh>
+
+            {/* Held 2x2 Lego Brick firmly gripped inside right C-claw */}
+            {side === 'right' && (
+              <group 
+                ref={heldBrickRef} 
+                visible={false} 
+                position={[0, -0.135, 0.028]} 
+                rotation={[0.15, -Math.PI / 2 + 0.35, 0]} 
+                scale={0.20}
+              >
+                <LegoBrick3D type="2x2" color="#E3000B" />
+              </group>
+            )}
           </group>
         </group>
       </group>
@@ -710,9 +864,9 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000' }
 function HipPiece({ color = '#0040B8' }) {
   return (
     <group position={[0, 1.44, 0]}>
-      {/* Upper waist band — width 1.26 sits EXACTLY flush with bottom of torso */}
+      {/* Upper waist band — width 1.26, depth 0.78 flush with authentic chunky torso */}
       <mesh castShadow receiveShadow>
-        <RoundedBox args={[1.26, 0.18, 0.50]} radius={0.02} smoothness={2}>
+        <RoundedBox args={[1.26, 0.18, 0.78]} radius={0.03} smoothness={3}>
           <meshPhysicalMaterial
             color={color}
             roughness={0.16}
@@ -725,7 +879,7 @@ function HipPiece({ color = '#0040B8' }) {
 
       {/* Center vertical crotch post between legs */}
       <mesh position={[0, -0.16, 0]} castShadow>
-        <RoundedBox args={[0.10, 0.38, 0.46]} radius={0.02} smoothness={2}>
+        <RoundedBox args={[0.12, 0.38, 0.74]} radius={0.03} smoothness={3}>
           <meshPhysicalMaterial
             color={color}
             roughness={0.16}
@@ -736,7 +890,7 @@ function HipPiece({ color = '#0040B8' }) {
 
       {/* Horizontal pivot hinge cylinders */}
       <mesh position={[0, -0.06, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
-        <cylinderGeometry args={[0.175, 0.175, 1.22, 24]} />
+        <cylinderGeometry args={[0.22, 0.22, 1.22, 24]} />
         <meshPhysicalMaterial
           color={color}
           roughness={0.16}
@@ -750,25 +904,46 @@ function HipPiece({ color = '#0040B8' }) {
 /* ═══════════════════════════════════════════════════════════════
    LEGO LEG — authentic legs matching reference image (width 0.58 each, outer width 1.26 flush)
    ═══════════════════════════════════════════════════════════════ */
-function LegoLeg({ side = 'left', color = '#0040B8' }) {
-  const x = side === 'left' ? -0.34 : 0.34;
-  const phase = side === 'left' ? Math.PI : 0;
+function LegoLeg({ side = 'right', color = '#0040B8', animRef }) {
+  const x = side === 'right' ? -0.34 : 0.34;
+  const phase = side === 'right' ? 0 : Math.PI;
   const ref = useRef();
   const sx = useRef(0);
 
   useFrame((_, delta) => {
     const t = performance.now() / 1000;
-    // Gentle natural idle sway matching the waving character's stance
-    const target = Math.sin(t * 0.8 + phase) * 0.03;
-    sx.current = damp(sx.current, target, 4, delta);
+    const a = animRef?.current;
+    let target = 0;
+    if (a && a.isThrowing && a.throwStartTime) {
+      // DYNAMIC LEG STRIDE: Right leg swings boldly forward while throwing!
+      const elapsed = (performance.now() / 1000) - a.throwStartTime;
+      if (elapsed < 0.34) {
+        // Phase 1: Standing steady to snatch red brick
+        target = 0;
+      } else if (elapsed < 0.70) {
+        // Phase 2: Wind-up: right leg lifts back loading weight
+        target = side === 'right' ? 0.32 : -0.05;
+      } else {
+        // Phase 3 & 4: Pitch & Stride: right leg swings dynamically FORWARD!
+        target = side === 'right' ? -0.88 : 0.45;
+      }
+      sx.current = damp(sx.current, target, 16, delta);
+    } else if (a && a.isWalking) {
+      target = side === 'right' ? a.rightLegAngle : a.leftLegAngle;
+      sx.current = damp(sx.current, target, 14, delta);
+    } else {
+      // Gentle natural idle sway matching the waving character's stance
+      target = Math.sin(t * 0.8 + phase) * 0.03;
+      sx.current = damp(sx.current, target, 4, delta);
+    }
     if (ref.current) ref.current.rotation.x = sx.current;
   });
 
   return (
     <group ref={ref} position={[x, 1.01, 0]}>
-      {/* Top rounded hip joint cylinder — prominent glossy horizontal highlight matching reference */}
+      {/* Top rounded hip joint cylinder */}
       <mesh position={[0, 0.37, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
-        <cylinderGeometry args={[0.18, 0.18, 0.56, 24]} />
+        <cylinderGeometry args={[0.22, 0.22, 0.56, 24]} />
         <meshPhysicalMaterial
           color={color}
           roughness={0.16}
@@ -778,9 +953,9 @@ function LegoLeg({ side = 'left', color = '#0040B8' }) {
         />
       </mesh>
 
-      {/* Main shin column — width 0.56 */}
+      {/* Main shin column — depth 0.76 for solid authentic Lego proportions */}
       <mesh position={[0, -0.06, 0]} castShadow receiveShadow>
-        <RoundedBox args={[0.56, 0.84, 0.48]} radius={0.025} smoothness={3}>
+        <RoundedBox args={[0.56, 0.84, 0.76]} radius={0.03} smoothness={3}>
           <meshPhysicalMaterial
             color={color}
             roughness={0.16}
@@ -791,9 +966,9 @@ function LegoLeg({ side = 'left', color = '#0040B8' }) {
         </RoundedBox>
       </mesh>
 
-      {/* Foot toe step extension */}
-      <mesh position={[0, -0.38, 0.08]} castShadow>
-        <RoundedBox args={[0.56, 0.14, 0.64]} radius={0.02} smoothness={2}>
+      {/* Foot toe step extension — iconic Lego foot projecting forward */}
+      <mesh position={[0, -0.38, 0.10]} castShadow>
+        <RoundedBox args={[0.56, 0.14, 0.96]} radius={0.025} smoothness={3}>
           <meshPhysicalMaterial
             color={color}
             roughness={0.16}
@@ -1006,22 +1181,199 @@ function LegoCoffeeMug({ position = [0, 0, 0], color = '#E3000B' }) {
 /* ═══════════════════════════════════════════════════════════════
    FULL MINIFIGURE & WORKSTATION — assembled with developer props
    ═══════════════════════════════════════════════════════════════ */
-function Minifigure() {
+function Minifigure({ animRef, isIntroActive = false }) {
+  const characterRef = useRef();
+
+  useFrame((_, delta) => {
+    const a = animRef?.current;
+    if (!a) return;
+
+    if (isIntroActive) {
+      a.startTime = null;
+      a.isWalking = true;
+      a.isIntroWave = false;
+      a.isIdle = false;
+      a.x = a.startLocalX || -9.5;
+      a.y = -0.14;
+      a.rotY = Math.PI * 0.32;
+      a.rotZ = 0;
+      a.leftLegAngle = 0;
+      a.rightLegAngle = 0;
+      a.leftArmAngle = 0;
+      a.rightArmAngle = 0;
+      if (characterRef.current) {
+        characterRef.current.position.x = a.x;
+        characterRef.current.position.y = a.y;
+        characterRef.current.rotation.y = a.rotY;
+        characterRef.current.rotation.z = a.rotZ;
+      }
+      return;
+    }
+
+    const now = performance.now() / 1000;
+    if (a.startTime === null) {
+      a.startTime = now;
+    }
+
+    const elapsed = now - a.startTime;
+    const START_X = a.startLocalX || -6.5;
+    const WALK_DURATION = 3.4;
+    const WAVE_START = 3.4;
+    const WAVE_END = 6.0;
+
+    if (a.isThrowing && a.throwStartTime) {
+      a.isWalking = false;
+      a.isIntroWave = false;
+      a.isIdle = false;
+      a.x = 0;
+      a.y = 0;
+      const tThrow = now - a.throwStartTime;
+      const BASE_LEFT_ROT = -0.46; // Tetap konsisten menghadap rada ke kiri (~-26.4 deg) sama seperti idle
+      if (tThrow < 0.34) {
+        // Phase 1: Torso tetap menghadap rada ke kiri saat menyambar balok merah
+        a.rotY = damp(a.rotY, BASE_LEFT_ROT, 18, delta);
+        a.rotZ = damp(a.rotZ, 0, 18, delta);
+      } else if (tThrow < 0.70) {
+        // Phase 2: Overhead wind-up di atas kepala dengan badan tetap konsisten menghadap ke kiri
+        const p = (tThrow - 0.34) / 0.36;
+        const ease = Math.sin((p * Math.PI) / 2);
+        a.rotY = THREE.MathUtils.lerp(BASE_LEFT_ROT, -0.38, ease); // sedikit coiling tapi tetap tegas menghadap kiri
+        a.rotZ = THREE.MathUtils.lerp(0, 0.04, ease);
+      } else if (tThrow < 0.88) {
+        // Phase 3: Badan mendorong maju ke depan-kiri saat mencambuk lemparan overhead & melangkah
+        const p = (tThrow - 0.70) / 0.18;
+        const ease = Math.sin((p * Math.PI) / 2);
+        a.rotY = THREE.MathUtils.lerp(-0.38, -0.56, ease); // dorongan mantap menghadap kiri
+        a.rotZ = THREE.MathUtils.lerp(0.04, -0.06, ease);
+      } else {
+        // Phase 4: Follow-through tetap menghadap kiri
+        a.rotY = -0.56;
+        a.rotZ = -0.06;
+      }
+    } else if (elapsed < WALK_DURATION) {
+      a.isWalking = true;
+      a.isIntroWave = false;
+      a.isIdle = false;
+
+      const p = Math.min(elapsed / WALK_DURATION, 1.0);
+
+      // Smooth custom ease-out: brisk stride, gentle deceleration onto stand
+      const ease = 1 - Math.pow(1 - p, 1.75);
+      a.x = START_X * (1 - ease);
+
+      // Angled at ~32 degrees towards camera: showcases the full 3D volume, thick torso, and solid limbs
+      const turnStart = 0.76;
+      const IDLE_ROT_Y = -0.46; // Menghadap rada ke kiri (~-26.4 deg) agar terlihat dinamis 3D menghadap headline
+      if (p < turnStart) {
+        a.rotY = Math.PI * 0.32;
+      } else {
+        const turnP = (p - turnStart) / (1 - turnStart);
+        const turnEase = (1 - Math.cos(turnP * Math.PI)) / 2;
+        a.rotY = THREE.MathUtils.lerp(Math.PI * 0.32, IDLE_ROT_Y, turnEase);
+      }
+
+      // Walk swing amplitude reduces smoothly as he arrives
+      a.walkWeight = p < 0.84 ? 1.0 : (1.0 - (p - 0.84) / 0.16);
+
+      // Walk frequency: 11.2 rad/s (~1.78 steps/second)
+      a.walkPhase = elapsed * 11.2;
+
+      // Authentic Lego Minifigure Walk Cycle:
+      a.leftLegAngle = Math.sin(a.walkPhase) * 0.58 * a.walkWeight;
+      a.rightLegAngle = -Math.sin(a.walkPhase) * 0.58 * a.walkWeight;
+
+      // Opposite arm swings
+      a.leftArmAngle = -Math.sin(a.walkPhase) * 0.44 * a.walkWeight;
+      a.rightArmAngle = Math.sin(a.walkPhase) * 0.44 * a.walkWeight;
+
+      // Step up onto the baseplate (baseplate edge is around x = -1.70)
+      let stepUp = 0;
+      if (a.x < -1.75) {
+        stepUp = -0.14; // on studio floor before baseplate
+      } else if (a.x < -1.40) {
+        const stepP = (a.x - (-1.75)) / 0.35;
+        stepUp = THREE.MathUtils.lerp(-0.14, 0, (1 - Math.cos(stepP * Math.PI)) / 2);
+      } else {
+        stepUp = 0; // on top of baseplate
+      }
+
+      // Minifigure body bobbing (bounces slightly with each footstep)
+      a.y = stepUp + Math.abs(Math.sin(a.walkPhase)) * 0.065 * a.walkWeight;
+
+      // Subtle side-to-side waddle as weight shifts between legs
+      a.rotZ = Math.sin(a.walkPhase) * 0.03 * a.walkWeight;
+
+      a.introWaveLift = 0;
+    } else if (elapsed < WAVE_END) {
+      // Arrival & Greeting Wave Phase
+      const IDLE_ROT_Y = -0.46;
+      a.isWalking = false;
+      a.isIntroWave = true;
+      a.isIdle = false;
+
+      a.x = 0;
+      a.y = 0;
+      a.rotY = IDLE_ROT_Y;
+      a.rotZ = 0;
+      a.leftLegAngle = 0;
+      a.rightLegAngle = 0;
+      a.leftArmAngle = 0;
+
+      const waveElapsed = elapsed - WAVE_START;
+
+      // Arm wave envelope: raise in 0.5s, wave for 1.7s, lower in 0.6s
+      if (waveElapsed < 0.5) {
+        a.introWaveLift = (1 - Math.cos((waveElapsed / 0.5) * Math.PI)) / 2;
+      } else if (waveElapsed < 2.2) {
+        a.introWaveLift = 1.0;
+      } else {
+        const downP = (waveElapsed - 2.2) / 0.6;
+        a.introWaveLift = (1 + Math.cos(downP * Math.PI)) / 2;
+      }
+
+      a.introWaveProgress = waveElapsed;
+    } else {
+      // Idle Phase
+      const IDLE_ROT_Y = -0.46;
+      a.isWalking = false;
+      a.isIntroWave = false;
+      a.isIdle = true;
+
+      a.x = 0;
+      a.y = 0;
+      a.rotY = IDLE_ROT_Y;
+      a.rotZ = 0;
+      a.leftLegAngle = 0;
+      a.rightLegAngle = 0;
+      a.leftArmAngle = 0;
+      a.introWaveLift = 0;
+    }
+
+    if (characterRef.current) {
+      characterRef.current.position.x = a.x;
+      characterRef.current.position.y = a.y;
+      characterRef.current.rotation.y = a.rotY;
+      characterRef.current.rotation.z = a.rotZ;
+    }
+  });
+
   return (
     <group>
-      {/* Minifigure character */}
-      <LegoHead color="#FFD000" />
-      <LegoTorso bodyColor="#ffffff" />
-      <LegoArm side="left" armColor="#0040B8" handColor="#FFD000" />
-      <LegoArm side="right" armColor="#0040B8" handColor="#FFD000" />
-      <HipPiece color="#0040B8" />
-      <LegoLeg side="left" color="#0040B8" />
-      <LegoLeg side="right" color="#0040B8" />
-
-      {/* Developer Workstation Elements */}
+      {/* 1. Stationary Workstation: Baseplate Pedestal, Laptop, Coffee Mug */}
       <LegoBaseplate />
       <LegoLaptop position={[1.15, 0.53, 0.22]} rotation={[0, -0.32, 0]} />
       <LegoCoffeeMug position={[1.10, 0.53, -0.42]} color="#E3000B" />
+
+      {/* 2. Animated Character Minifigure: walks in from left across screen onto baseplate */}
+      <group ref={characterRef}>
+        <LegoHead color="#FFD000" animRef={animRef} />
+        <LegoTorso bodyColor="#ffffff" />
+        <LegoArm side="left" armColor="#0040B8" handColor="#FFD000" animRef={animRef} />
+        <LegoArm side="right" armColor="#0040B8" handColor="#FFD000" animRef={animRef} />
+        <HipPiece color="#0040B8" />
+        <LegoLeg side="left" color="#0040B8" animRef={animRef} />
+        <LegoLeg side="right" color="#0040B8" animRef={animRef} />
+      </group>
     </group>
   );
 }
@@ -1070,25 +1422,133 @@ function LegoBrick({ type = '2x2', color = '#E3000B' }) {
   );
 }
 
-function FloatingBricks() {
+/* ═══════════════════════════════════════════════════════════════
+   THROWN LEGO BRICK — Cinematic 3D Brick Throw Transition into /about
+   ═══════════════════════════════════════════════════════════════ */
+function ThrownLegoBrick({ animRef, onComplete, stationPosRef }) {
+  const brickRef = useRef();
+
+  useFrame(() => {
+    if (!animRef?.current) return;
+    const a = animRef.current;
+    if (!a.isThrowing || !a.throwStartTime) {
+      if (brickRef.current) brickRef.current.visible = false;
+      return;
+    }
+
+    const now = performance.now() / 1000;
+    const elapsed = now - a.throwStartTime;
+    const RELEASE_TIME = 0.88;
+    const IMPACT_TIME = 1.28;
+    const FLIGHT_DURATION = IMPACT_TIME - RELEASE_TIME;
+
+    const stX = stationPosRef.current ? stationPosRef.current.x : 0;
+    const stY = stationPosRef.current ? stationPosRef.current.y : -2.02;
+
+    if (elapsed < RELEASE_TIME) {
+      // Balok masih digenggam kuat di tangan kanan (LegoArm heldBrickRef)
+      if (brickRef.current) brickRef.current.visible = false;
+    } else if (elapsed <= IMPACT_TIME + 0.04) {
+      // Balok dilepas dari tangan dan melesat ke arah layar kamera!
+      if (brickRef.current) {
+        brickRef.current.visible = true;
+        const flightT = Math.min(1.0, (elapsed - RELEASE_TIME) / FLIGHT_DURATION);
+        const ease = Math.pow(flightT, 1.35);
+
+        // Posisi rilis persis dari tangan kanan yang mencambuk ke depan
+        const startX = stX - 0.72;
+        const startY = stY + 2.45;
+        const startZ = 1.15;
+
+        // Target kamera di tengah layar pada z = 10.15 (menutup pandangan lensa kamera tepat sebelum pecah)
+        const currX = THREE.MathUtils.lerp(startX, 0, ease);
+        const currY = THREE.MathUtils.lerp(startY, 0.15, ease) + Math.sin(flightT * Math.PI) * 0.20;
+        const currZ = THREE.MathUtils.lerp(startZ, 10.15, ease);
+
+        brickRef.current.position.set(currX, currY, currZ);
+
+        // Dynamic 3D tumble & spin
+        brickRef.current.rotation.x = flightT * Math.PI * 4.2;
+        brickRef.current.rotation.y = -0.36 + flightT * Math.PI * 4.8;
+        brickRef.current.rotation.z = flightT * Math.PI * 3.2;
+
+        // Skala membesar saat mendekati kamera hingga menutup layar tepat sebelum meledak pecah menjadi balok-balok kecil 3D
+        const scale = THREE.MathUtils.lerp(0.20, 2.2, Math.pow(flightT, 1.6));
+        brickRef.current.scale.set(scale, scale, scale);
+
+        // Pecah saat menghantam layar kamera: pemicu transisi ledakan balok 3D
+        if (flightT >= 0.97 && !a.hasCompletedThrow) {
+          a.hasCompletedThrow = true;
+          if (onComplete) onComplete();
+        }
+      }
+    } else {
+      // Failsafe guarantee
+      if (!a.hasCompletedThrow) {
+        a.hasCompletedThrow = true;
+        if (onComplete) onComplete();
+      }
+      if (brickRef.current) brickRef.current.visible = false;
+    }
+  });
+
+  return (
+    <group ref={brickRef} visible={false}>
+      <LegoBrick3D type="2x2" color="#E3000B" />
+    </group>
+  );
+}
+
+function FloatingBricks({ animRef }) {
   const orbitRef = useRef();
+  const redBrickRef = useRef();
 
   // Aktif memutar orbit balok-balok LEGO mengelilingi karakter (360 derajat)
   useFrame((_, delta) => {
     if (orbitRef.current) {
       orbitRef.current.rotation.y += delta * 0.42;
     }
+
+    if (redBrickRef.current) {
+      const a = animRef?.current;
+      if (a && a.isThrowing && a.throwStartTime) {
+        const elapsed = (performance.now() / 1000) - a.throwStartTime;
+        if (elapsed < 0.34) {
+          // Balok merah meluncur mulus dari orbit ke tangan kanan yang meraihnya
+          redBrickRef.current.visible = true;
+          const p = elapsed / 0.34;
+          const ease = p * p * (3 - 2 * p); // smoothstep curve
+          const startX = -1.65;
+          const startY = 2.85;
+          const startZ = 1.35;
+          const handX = -0.72;
+          const handY = 2.52;
+          const handZ = 0.82;
+          redBrickRef.current.position.set(
+            THREE.MathUtils.lerp(startX, handX, ease),
+            THREE.MathUtils.lerp(startY, handY, ease),
+            THREE.MathUtils.lerp(startZ, handZ, ease)
+          );
+          redBrickRef.current.scale.setScalar(THREE.MathUtils.lerp(0.28, 0.20, ease));
+        } else {
+          // Setelah t >= 0.34s, balok sudah berada di tangan kanan (heldBrickRef)
+          redBrickRef.current.visible = false;
+        }
+      } else {
+        redBrickRef.current.visible = true;
+      }
+    }
   });
 
   const bricks = useMemo(() => {
-    // 5 balok LEGO warna-warni yang mengitari karakter di berbagai ketinggian dan sudut
+    // 5 balok LEGO warna-warni yang mengitari karakter setinggi torso, bahu, dan kepala
     const count = 5;
     const items = [
-      { color: '#E3000B', type: '2x2', y: 1.1, r: 2.15, scale: 0.28, speed: 1.4 },
-      { color: '#FFD500', type: '2x4', y: 0.3, r: 2.30, scale: 0.26, speed: 1.2 },
-      { color: '#0055BF', type: '2x2', y: -0.5, r: 2.10, scale: 0.28, speed: 1.5 },
-      { color: '#00852B', type: '2x4', y: 0.7, r: 2.25, scale: 0.25, speed: 1.1 },
-      { color: '#FE8A18', type: '2x2', y: -0.2, r: 2.05, scale: 0.27, speed: 1.3 },
+      { id: 'red', color: '#E3000B', type: '2x4', y: 2.7, r: 2.50, scale: 0.28, speed: 1.4 },
+      { id: 'yellow', color: '#FFD500', type: '2x4', y: 1.9, r: 2.65, scale: 0.26, speed: 1.2 },
+      { id: 'blue', color: '#0055BF', type: '2x2', y: 1.2, r: 2.45, scale: 0.28, speed: 1.5 },
+      { id: 'green', color: '#00852B', type: '2x4', y: 3.1, r: 2.60, scale: 0.25, speed: 1.1 },
+      { id: 'orange', color: '#FE8A18', type: '2x2', y: 2.2, r: 2.50, scale: 0.27, speed: 1.3 },
     ];
 
     return items.map((item, i) => {
@@ -1110,8 +1570,13 @@ function FloatingBricks() {
           floatIntensity={0.6}
           rotationIntensity={0.8}
         >
-          <group position={b.pos} rotation={b.rot} scale={b.scale}>
-            <LegoBrick type={b.type} color={b.color} />
+          <group 
+            ref={b.id === 'red' ? redBrickRef : undefined}
+            position={b.pos} 
+            rotation={b.rot} 
+            scale={b.scale}
+          >
+            <LegoBrick3D type={b.type} color={b.color} />
           </group>
         </Float>
       ))}
@@ -1179,7 +1644,35 @@ function getGroundShadowTexture() {
   return cachedGroundShadowTexture;
 }
 
-function GroundShadow({ position = [0, -2.14, 0] }) {
+function WalkingContactShadow({ animRef }) {
+  const shadowRef = useRef();
+  const texture = useMemo(() => getGroundShadowTexture(), []);
+
+  useFrame(() => {
+    if (shadowRef.current && animRef?.current) {
+      const a = animRef.current;
+      shadowRef.current.position.x = a.x;
+      if (a.isWalking && a.x < -1.5) {
+        shadowRef.current.visible = true;
+        const scale = Math.max(0.6, 1.0 - (a.y + 0.14) * 1.5);
+        shadowRef.current.scale.set(scale, scale, scale);
+      } else {
+        shadowRef.current.visible = false;
+      }
+    }
+  });
+
+  return (
+    <group ref={shadowRef} position={[-6.5, -0.14, 0]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.5, 1.0]} />
+        <meshBasicMaterial map={texture} transparent opacity={0.55} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function GroundShadow({ position = [0, -0.34, 0] }) {
   const texture = useMemo(() => getGroundShadowTexture(), []);
 
   return (
@@ -1212,48 +1705,149 @@ function RenderNotifier({ onRendered }) {
   return null;
 }
 
-function Scene({ onRendered }) {
+function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete, onInteractionReady }) {
+  const stationGroupRef = useRef();
+  const { viewport, size } = useThree();
+
+  const isDesktop = size.width >= 1024;
+  const initialX = isDesktop ? Math.min(3.2, Math.max(1.8, viewport.width * 0.26)) : 0;
+  const initialY = isDesktop ? -2.02 : -viewport.height * 0.35;
+  const stationPosRef = useRef({ x: initialX, y: initialY });
+
+  // Smooth rotation interaction
+  const rotTarget = useRef({ x: 0, y: 0 });
+  const rotCurrent = useRef({ x: 0, y: 0 });
+  const isDragging = useRef(false);
+  const prevPointer = useRef({ x: 0, y: 0 });
+  const reportedReady = useRef(false);
+
+  useEffect(() => {
+    if (!domElement) return;
+
+    const onDown = (e) => {
+      // ONLY allow dragging if minifigure has completed walk-in and is settled into idle, and not throwing!
+      if (!animRef?.current || !animRef.current.isIdle || animRef.current.isThrowing) return;
+      isDragging.current = true;
+      prevPointer.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const onMove = (e) => {
+      if (!isDragging.current) return;
+      if (!animRef?.current || !animRef.current.isIdle || animRef.current.isThrowing) {
+        isDragging.current = false;
+        return;
+      }
+      const dx = e.clientX - prevPointer.current.x;
+      const dy = e.clientY - prevPointer.current.y;
+      prevPointer.current = { x: e.clientX, y: e.clientY };
+
+      rotTarget.current.y += dx * 0.008;
+      rotTarget.current.x = Math.max(-0.25, Math.min(0.35, rotTarget.current.x + dy * 0.006));
+    };
+
+    const onUp = () => {
+      isDragging.current = false;
+    };
+
+    domElement.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+
+    return () => {
+      domElement.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+    };
+  }, [domElement]);
+
+  useFrame((_, delta) => {
+    const isDesktop = size.width >= 1024;
+    let targetX = isDesktop ? Math.min(3.2, Math.max(1.8, viewport.width * 0.26)) : 0;
+    let targetY = isDesktop ? -2.02 : -viewport.height * 0.35;
+
+    if (domElement) {
+      const rect = domElement.getBoundingClientRect();
+      const px = rect.left + rect.width / 2;
+      const py = rect.top + rect.height / 2;
+      const ndcX = (px / size.width) * 2 - 1;
+      const ndcY = -(py / size.height) * 2 + 1;
+      targetX = (ndcX * viewport.width) / 2;
+      targetY = (ndcY * viewport.height) / 2 - 2.02;
+    }
+
+    stationPosRef.current = { x: targetX, y: targetY };
+
+    // Automatically snap back to facing front when throwing, otherwise smoothly track drag rotation
+    if (animRef?.current?.isThrowing) {
+      rotTarget.current.x = 0;
+      rotTarget.current.y = 0;
+      isDragging.current = false;
+      rotCurrent.current.x = damp(rotCurrent.current.x, 0, 18, delta);
+      rotCurrent.current.y = damp(rotCurrent.current.y, 0, 18, delta);
+    } else {
+      rotCurrent.current.x = damp(rotCurrent.current.x, rotTarget.current.x, 8, delta);
+      rotCurrent.current.y = damp(rotCurrent.current.y, rotTarget.current.y, 8, delta);
+    }
+
+    // Notify parent when minifigure is in idle and ready for interaction
+    if (animRef?.current?.isIdle && !reportedReady.current) {
+      reportedReady.current = true;
+      if (onInteractionReady) onInteractionReady(true);
+    }
+
+    if (stationGroupRef.current) {
+      stationGroupRef.current.position.x = targetX;
+      stationGroupRef.current.position.y = targetY;
+      stationGroupRef.current.rotation.x = rotCurrent.current.x;
+      stationGroupRef.current.rotation.y = rotCurrent.current.y;
+    }
+
+    // Dynamic start position starting off the far left edge of the screen
+    if (animRef?.current) {
+      const worldLeftEdge = -viewport.width / 2 - 1.5;
+      animRef.current.startLocalX = worldLeftEdge - targetX;
+      if (animRef.current.startTime === null) {
+        animRef.current.x = animRef.current.startLocalX;
+      }
+    }
+  });
+
   return (
     <>
       <RenderNotifier onRendered={onRendered} />
       {/* High-Performance Instant Studio Lighting — Zero Network Latency */}
       <hemisphereLight args={['#ffffff', '#181e2e', 0.65]} />
       <directionalLight
-        position={[4, 7, 5]}
-        intensity={1.45}
+        position={[5, 9, 6]}
+        intensity={1.55}
         castShadow
         shadow-mapSize={[512, 512]}
         shadow-bias={-0.0008}
         color="#ffffff"
       />
-      <directionalLight position={[-4, 3, 2]} intensity={0.65} color="#93c5fd" />
-      <directionalLight position={[0, 5, -5]} intensity={0.9} color="#ffffff" />
-      <pointLight position={[0, -0.5, 2.5]} intensity={0.4} color="#ffd500" />
+      <directionalLight position={[-5, 4, 3]} intensity={0.7} color="#93c5fd" />
+      <directionalLight position={[0, 6, -6]} intensity={0.9} color="#ffffff" />
+      <pointLight position={[0, -0.5, 3.0]} intensity={0.4} color="#ffd500" />
       <ambientLight intensity={0.45} color="#ffffff" />
 
-      {/* Character — stable on ground, only rotates when dragged by user */}
-      <group position={[0, -1.8, 0]}>
-        <Minifigure />
+      {/* Unified 3D Workstation & Character Group */}
+      <group ref={stationGroupRef} position={[initialX, initialY, 0]}>
+        <Minifigure animRef={animRef} isIntroActive={isIntroActive} />
+        {/* Decor — only the bricks float and tumble */}
+        <FloatingBricks animRef={animRef} />
+        {/* Walking contact shadow follows character as he walks across floor */}
+        <WalkingContactShadow animRef={animRef} />
+        {/* Soft Procedural Ground Contact Shadow under workstation stand */}
+        <GroundShadow position={[0, -0.34, 0]} />
       </group>
 
-      {/* Decor — only the bricks float and tumble */}
-      <FloatingBricks />
+      {/* 3D Thrown Lego Brick hurtling straight into camera lens on Discover More click */}
+      <ThrownLegoBrick animRef={animRef} onComplete={onThrowComplete} stationPosRef={stationPosRef} />
+
+      {/* Ambient background particles */}
       <Particles />
-
-      {/* Soft Procedural Ground Contact Shadow (100% stable, zero white-flash glitch) */}
-      <GroundShadow position={[0, -2.14, 0]} />
-
-      {/* Controls — No auto-rotation, only rotates on manual drag */}
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        autoRotate={false}
-        target={[0, 0.3, 0]}
-        minPolarAngle={Math.PI / 4}
-        maxPolarAngle={Math.PI / 1.8}
-        enableDamping
-        dampingFactor={0.05}
-      />
     </>
   );
 }
@@ -1261,11 +1855,60 @@ function Scene({ onRendered }) {
 /* ═══════════════════════════════════════════════════════════════
    EXPORT — Robust WebGL with Auto-Recovery & Interactive Poses
    ═══════════════════════════════════════════════════════════════ */
-export default function LegoMinifigure() {
+export default function LegoMinifigure({ domTarget, isIntroActive = false, isThrowing = false, onThrowComplete, onInteractionReady }) {
   const glRef = useRef(null);
   const [contextLost, setContextLost] = useState(false);
   const [canvasKey, setCanvasKey] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // Central animation state coordinator for walk-in sequence & brick throw
+  const animRef = useRef({
+    startTime: null,
+    isWalking: true,
+    isIntroWave: false,
+    isIdle: false,
+    isThrowing: false,
+    throwStartTime: null,
+    hasCompletedThrow: false,
+    startLocalX: -6.5,
+    x: -6.5,
+    y: 0,
+    rotY: Math.PI * 0.32,
+    rotZ: 0,
+    walkPhase: 0,
+    walkWeight: 1,
+    leftLegAngle: 0,
+    rightLegAngle: 0,
+    leftArmAngle: 0,
+    rightArmAngle: 0,
+    introWaveLift: 0,
+    introWaveProgress: 0,
+  });
+
+  // Trigger throw sequence when isThrowing becomes true
+  useEffect(() => {
+    if (isThrowing && animRef.current && !animRef.current.isThrowing) {
+      animRef.current.isThrowing = true;
+      animRef.current.throwStartTime = performance.now() / 1000;
+      animRef.current.hasCompletedThrow = false;
+    }
+  }, [isThrowing]);
+
+  // Automatically start walk-in sequence as soon as airplane intro curtain reveals the screen
+  useEffect(() => {
+    if (!isIntroActive && animRef.current) {
+      const t = setTimeout(() => {
+        if (animRef.current) {
+          animRef.current.startTime = performance.now() / 1000;
+          animRef.current.isWalking = true;
+          animRef.current.isIntroWave = false;
+          animRef.current.isIdle = false;
+          animRef.current.x = animRef.current.startLocalX || -9.5;
+        }
+      }, 100);
+      return () => clearTimeout(t);
+    }
+  }, [isIntroActive]);
 
   // Cleanly handle browser tab close without destroying active context during client-side route navigation
   useEffect(() => {
@@ -1286,69 +1929,71 @@ export default function LegoMinifigure() {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col items-center bg-transparent">
-      <div 
-        className="w-full h-full relative bg-transparent transition-opacity duration-500 ease-out"
-        style={{ opacity: isLoaded ? 1 : 0 }}
-      >
-        {contextLost && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#0B0C10]/60 backdrop-blur-xs">
-            <div className="w-8 h-8 border-2 border-[#FFD500]/20 border-t-[#FFD500] rounded-full animate-spin" />
-          </div>
-        )}
-        <Canvas
-          key={canvasKey}
-          shadows
-          camera={{ position: [0, 1.2, 6], fov: 36 }}
-          dpr={[1, 1.5]}
-          gl={{
-            antialias: true,
-            alpha: true,
-            powerPreference: 'high-performance',
-            stencil: false,
-            depth: true,
-            toneMapping: THREE.ACESFilmicToneMapping,
-            toneMappingExposure: 1.0,
-          }}
-          onCreated={({ gl, scene, camera }) => {
-            glRef.current = gl;
-            gl.setClearColor(0x000000, 0);
-            gl.clear();
-            gl.domElement.style.backgroundColor = 'transparent';
-            try {
-              gl.compile(scene, camera);
-            } catch {
-              // ignore
-            }
-            requestAnimationFrame(() => {
-              setIsLoaded(true);
-            });
+    <div className="w-full h-full relative bg-transparent transition-opacity duration-500 ease-out" style={{ opacity: isLoaded ? 1 : 0 }}>
+      {contextLost && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#0B0C10]/60 backdrop-blur-xs">
+          <div className="w-8 h-8 border-2 border-[#FFD500]/20 border-t-[#FFD500] rounded-full animate-spin" />
+        </div>
+      )}
+      <Canvas
+        key={canvasKey}
+        shadows
+        camera={{ position: [0, 0.2, 10.8], fov: 28 }}
+        dpr={[1, 1.5]}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance',
+          stencil: false,
+          depth: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.0,
+        }}
+        onCreated={({ gl, scene, camera }) => {
+          glRef.current = gl;
+          gl.setClearColor(0x000000, 0);
+          gl.clear();
+          gl.domElement.style.backgroundColor = 'transparent';
+          try {
+            gl.compile(scene, camera);
+          } catch {
+            // ignore
+          }
+          requestAnimationFrame(() => {
+            setIsLoaded(true);
+          });
 
-            const canvasEl = gl.domElement;
-            const handleContextLost = (event) => {
-              event.preventDefault();
-              setContextLost(true);
-              console.warn('WebGL context lost. Restoring cleanly...');
-              setTimeout(() => {
-                setCanvasKey(prev => prev + 1);
-                setContextLost(false);
-              }, 100);
-            };
-
-            const handleContextRestored = () => {
+          const canvasEl = gl.domElement;
+          const handleContextLost = (event) => {
+            event.preventDefault();
+            setContextLost(true);
+            console.warn('WebGL context lost. Restoring cleanly...');
+            setTimeout(() => {
+              setCanvasKey(prev => prev + 1);
               setContextLost(false);
-            };
+            }, 100);
+          };
 
-            canvasEl.addEventListener('webglcontextlost', handleContextLost, false);
-            canvasEl.addEventListener('webglcontextrestored', handleContextRestored, false);
-          }}
-          style={{ background: 'transparent' }}
-        >
-          <Suspense fallback={null}>
-            <Scene onRendered={() => setIsLoaded(true)} />
-          </Suspense>
-        </Canvas>
-      </div>
+          const handleContextRestored = () => {
+            setContextLost(false);
+          };
+
+          canvasEl.addEventListener('webglcontextlost', handleContextLost, false);
+          canvasEl.addEventListener('webglcontextrestored', handleContextRestored, false);
+        }}
+        style={{ width: '100%', height: '100%', background: 'transparent', pointerEvents: 'none' }}
+      >
+        <Suspense fallback={null}>
+          <Scene 
+            onRendered={() => setIsLoaded(true)} 
+            animRef={animRef} 
+            domElement={domTarget} 
+            isIntroActive={isIntroActive} 
+            onThrowComplete={onThrowComplete}
+            onInteractionReady={onInteractionReady}
+          />
+        </Suspense>
+      </Canvas>
     </div>
   );
 }

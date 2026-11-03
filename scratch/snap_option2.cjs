@@ -1,34 +1,49 @@
 const { spawn } = require('child_process');
 const http = require('http');
+const path = require('path');
+const os = require('os');
 const fs = require('fs');
 
-async function main() {
+async function snapOption2() {
   const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-  const port = 9288;
-  const userDataDir = 'C:\\Users\\APRILEOERLANGGA\\my-portofolio\\scratch\\chrome_user_data_opt2';
+  const port = 9599;
+  const userDataDir = path.join(os.tmpdir(), 'chrome_cdp_opt2_' + Date.now());
+
   const chrome = spawn(chromePath, [
     '--headless=new',
     `--remote-debugging-port=${port}`,
     '--window-size=1440,900',
     '--disable-gpu',
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows',
+    '--disable-renderer-backgrounding',
     `--user-data-dir=${userDataDir}`
   ]);
 
-  await new Promise(r => setTimeout(r, 2000));
-
-  function getVersion() {
-    return new Promise((resolve, reject) => {
-      http.get(`http://127.0.0.1:${port}/json/version`, res => {
-        let d = '';
-        res.on('data', c => d += c);
-        res.on('end', () => resolve(JSON.parse(d)));
-      }).on('error', reject);
-    });
+  let ver;
+  for (let i = 0; i < 30; i++) {
+    try {
+      ver = await new Promise((res, rej) => {
+        const req = http.get(`http://127.0.0.1:${port}/json/version`, r => {
+          let d = ''; r.on('data', c => d += c); r.on('end', () => res(JSON.parse(d)));
+        });
+        req.on('error', rej);
+        req.setTimeout(500, () => req.destroy());
+      });
+      if (ver) break;
+    } catch {
+      await new Promise(r => setTimeout(r, 200));
+    }
   }
 
-  const ver = await getVersion();
-  const ws = new WebSocket(ver.webSocketDebuggerUrl);
+  const targets = await new Promise((res, rej) => {
+    http.get(`http://127.0.0.1:${port}/json/list`, r => {
+      let d = ''; r.on('data', c => d += c); r.on('end', () => res(JSON.parse(d)));
+    }).on('error', rej);
+  });
+  const pageTarget = targets.find(t => t.type === 'page') || targets[0];
 
+  const ws = new WebSocket(pageTarget.webSocketDebuggerUrl);
   let id = 1;
   const pending = new Map();
   ws.onmessage = e => {
@@ -38,72 +53,72 @@ async function main() {
       pending.delete(msg.id);
     }
   };
-
   function send(method, params = {}) {
-    return new Promise((resolve) => {
+    return new Promise(res => {
       const msgId = id++;
-      pending.set(msgId, resolve);
+      pending.set(msgId, res);
       ws.send(JSON.stringify({ id: msgId, method, params }));
     });
   }
 
   await new Promise(r => ws.onopen = r);
+  await send('Page.enable');
+  await send('Runtime.enable');
+  await send('Emulation.setDeviceMetricsOverride', {
+    width: 1440,
+    height: 900,
+    deviceScaleFactor: 1,
+    mobile: false
+  });
 
-  const newTarget = await send('Target.createTarget', { url: 'about:blank' });
-  const targetId = newTarget.result.targetId;
-  const attach = await send('Target.attachToTarget', { targetId, flatten: true });
-  const sessionId = attach.result.sessionId;
+  console.log('Navigating to http://localhost:5174/ ...');
+  await send('Page.navigate', { url: 'http://localhost:5174/' });
 
-  function sendSession(method, params = {}) {
-    return new Promise(resolve => {
-      const msgId = id++;
-      pending.set(msgId, resolve);
-      ws.send(JSON.stringify({ id: msgId, sessionId, method, params }));
-    });
+  console.log('Waiting for idle (8.5s)...');
+  await new Promise(r => setTimeout(r, 8500));
+
+  // Click Discover More
+  console.log('Clicking Discover More button...');
+  await send('Runtime.evaluate', {
+    expression: `(() => {
+      const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Discover More'));
+      if (btn) btn.click();
+    })()`
+  });
+
+  // Wait 2500ms for full settle
+  console.log('Waiting 2500ms for full settle on /about ...');
+  await new Promise(r => setTimeout(r, 2500));
+
+  async function screenshot(name) {
+    const res = await send('Page.captureScreenshot', { format: 'png' });
+    const buffer = Buffer.from(res.result.data, 'base64');
+    const targetPath = path.join('C:\\Users\\APRILEOERLANGGA\\.gemini\\antigravity\\brain\\b483387a-7d2c-424b-95f6-cfff3297c331', name);
+    fs.writeFileSync(targetPath, buffer);
+    console.log('Saved screenshot:', targetPath);
   }
 
-  await sendSession('Page.enable');
-  await sendSession('Page.navigate', { url: 'http://localhost:5173/projects' });
-  // wait for intro
-  await new Promise(r => setTimeout(r, 6500));
+  await screenshot('option2_about_top.png');
 
-  // Snap 1: Start (scroll 0)
-  let snap = await sendSession('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync('scratch/opt2_scroll_start.png', Buffer.from(snap.result.data, 'base64'));
-  console.log('Captured opt2_scroll_start.png');
-
-  // Scroll to 35% of runway
-  await sendSession('Runtime.evaluate', {
-    expression: `window.scrollTo({ top: 600, behavior: 'instant' })`
+  // Scroll down 400px
+  console.log('Scrolling down 400px...');
+  await send('Runtime.evaluate', {
+    expression: `window.scrollBy({ top: 400, behavior: 'instant' });`
   });
-  await new Promise(r => setTimeout(r, 800));
-  snap = await sendSession('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync('scratch/opt2_scroll_mid.png', Buffer.from(snap.result.data, 'base64'));
-  console.log('Captured opt2_scroll_mid.png');
+  await new Promise(r => setTimeout(r, 600));
+  await screenshot('option2_about_mid.png');
 
-  // Scroll to 75% of runway
-  await sendSession('Runtime.evaluate', {
-    expression: `window.scrollTo({ top: 1250, behavior: 'instant' })`
+  // Scroll down 300px more to bottom
+  console.log('Scrolling down to bottom...');
+  await send('Runtime.evaluate', {
+    expression: `window.scrollBy({ top: 300, behavior: 'instant' });`
   });
-  await new Promise(r => setTimeout(r, 800));
-  snap = await sendSession('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync('scratch/opt2_scroll_end.png', Buffer.from(snap.result.data, 'base64'));
-  console.log('Captured opt2_scroll_end.png');
-
-  // Scroll to footer
-  await sendSession('Runtime.evaluate', {
-    expression: `window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' })`
-  });
-  await new Promise(r => setTimeout(r, 800));
-  snap = await sendSession('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync('scratch/opt2_scroll_footer.png', Buffer.from(snap.result.data, 'base64'));
-  console.log('Captured opt2_scroll_footer.png');
+  await new Promise(r => setTimeout(r, 600));
+  await screenshot('option2_about_bottom.png');
 
   chrome.kill();
-  process.exit(0);
+  console.log('Option 2 captures finished successfully!');
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+snapOption2().catch(console.error);
+
