@@ -16,19 +16,19 @@ import AboutShatteredBackground from './AboutShatteredBackground';
 function AboutPage() {
   const { scrollYProgress } = useScroll();
 
-  // Zone 1: Active at top, smoothly dissolves as user scrolls into mid
-  const bgZone1Opacity = useTransform(scrollYProgress, [0.08, 0.32], [1, 0]);
+  // Zone 1: Active at top hero, smoothly dissolves as user scrolls into mid
+  const bgZone1Opacity = useTransform(scrollYProgress, [0.12, 0.25], [1, 0]);
 
-  // Zone 2: Highly visible Cosmic Dawn & Solar Amber Horizon - peaks around 0.32 to 0.64
-  const bgZone2Opacity = useTransform(scrollYProgress, [0.15, 0.32, 0.62, 0.78], [0, 1, 1, 0]);
+  // Zone 2: Cosmic Dawn & Solar Amber Horizon - peaks around Act 2 (Builder Creed Quotes 1, 2 & 3)
+  const bgZone2Opacity = useTransform(scrollYProgress, [0.16, 0.26, 0.76, 0.86], [0, 1, 1, 0]);
 
-  // Zone 3: High-contrast Lunar Command Deck & Cyber Grid - takes over from 0.64 to 1.0
-  const bgZone3Opacity = useTransform(scrollYProgress, [0.64, 0.82], [0, 1]);
+  // Zone 3: Lunar Command Deck & Cyber Grid - takes over seamlessly at Act 3 (Tech Stack) through to Footer
+  const bgZone3Opacity = useTransform(scrollYProgress, [0.76, 0.88], [0, 1]);
 
-  // Planet Parallax: Smoothly recedes and dims into the distance as user scrolls down
-  const planetY = useTransform(scrollYProgress, [0, 1], [0, 260]);
-  const planetScale = useTransform(scrollYProgress, [0, 1], [1, 0.70]);
-  const planetOpacity = useTransform(scrollYProgress, [0, 0.45, 0.85], [0.90, 0.40, 0.05]);
+  // Planet Parallax: Smoothly recedes and dims into the distance as user leaves Hero into Creed
+  const planetY = useTransform(scrollYProgress, [0, 0.6], [0, 220]);
+  const planetScale = useTransform(scrollYProgress, [0, 0.6], [1, 0.75]);
+  const planetOpacity = useTransform(scrollYProgress, [0, 0.22, 0.45], [0.90, 0.25, 0.0]);
 
   return (
     <div className="text-white min-h-screen relative bg-[#060a17] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
@@ -131,19 +131,21 @@ function AboutPage() {
         }}
       />
 
-      {/* Stylized Classic Space Celestial Planet with Parallax Descent */}
+      {/* Stylized Classic Space Celestial Planet with Parallax Descent (Hardware Isolated) */}
       <motion.div 
         className="fixed top-8 -right-20 md:right-4 w-72 h-72 md:w-96 md:h-96 rounded-full pointer-events-none z-0"
         style={{
           y: planetY,
           scale: planetScale,
           opacity: planetOpacity,
+          willChange: 'transform, opacity',
+          transform: 'translateZ(0)',
           background: 'radial-gradient(circle at 35% 35%, rgba(0, 240, 255, 0.85) 0%, rgba(0, 85, 191, 0.8) 45%, rgba(121, 40, 202, 0.85) 75%, rgba(255, 0, 128, 0.7) 100%)',
-          boxShadow: '0 0 90px rgba(0, 240, 255, 0.35), inset -20px -20px 50px rgba(0, 0, 0, 0.85), inset 15px 15px 40px rgba(255, 255, 255, 0.35)'
+          boxShadow: '0 0 50px rgba(0, 240, 255, 0.3), inset -20px -20px 40px rgba(0, 0, 0, 0.85), inset 15px 15px 30px rgba(255, 255, 255, 0.35)'
         }}
       >
         <div 
-          className="absolute inset-0 rounded-full opacity-40 mix-blend-overlay"
+          className="absolute inset-0 rounded-full opacity-30"
           style={{
             background: 'radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.8) 0%, transparent 60%)'
           }}

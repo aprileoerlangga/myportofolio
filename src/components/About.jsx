@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion, useMotionValue, useTransform, useScroll } from 'framer-motion';
-import fotoProfil from '../assets/fotoku.jpg';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import EditorialParallaxPortrait from './EditorialParallaxPortrait';
 import SkillsKeyboard from './SkillsKeyboard';
 import MotivationalQuotes from './MotivationalQuotes';
 import { FaFilePdf, FaDownload } from 'react-icons/fa';
@@ -9,32 +9,25 @@ function About() {
   // Window scroll tracking normalized across all viewports
   const { scrollYProgress } = useScroll();
 
-  // Hardware-accelerated direct physical parallax transforms on scroll (120 FPS, zero spring-drag)
-  const polaroidScrollY = useTransform(scrollYProgress, [0, 0.6], [0, 75]);
-  const polaroidScrollRotate = useTransform(scrollYProgress, [0, 0.6], [-2, 4]);
-  const bioScrollY = useTransform(scrollYProgress, [0, 0.6], [0, -25]);
-
-  // Interactive mouse tilt for Polaroid Photo
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const polaroidRotateX = useTransform(mouseY, [-100, 100], [8, -8]);
-  const polaroidRotateY = useTransform(mouseX, [-100, 100], [-8, 8]);
+  // Subtle storytelling typography parallax
+  const bioScrollY = useTransform(scrollYProgress, [0, 0.45], [0, -20]);
 
   return (
-    <section id="about" className="min-h-screen pt-16 sm:pt-20 pb-24 bg-transparent text-slate-200 overflow-x-clip relative">
+    <section id="about" className="bg-transparent text-slate-200 overflow-x-clip relative">
 
-      <div className="max-w-5xl mx-auto px-6 sm:px-10 lg:px-12 w-full">
+      {/* ============================================================ */}
+      {/* ACT 1: MASTER BUILDER PROFILE (Full Initial Viewport Hero)   */}
+      {/* ============================================================ */}
+      <div className="min-h-[calc(100vh-4.5rem)] flex flex-col justify-center max-w-5xl mx-auto px-6 sm:px-10 lg:px-12 w-full pt-16 sm:pt-20 pb-12 sm:pb-16 relative z-20">
         
-        {/* ============================================================ */}
-        {/* HEADER: MASTER BUILDER PROFILE (CLASSIC SPACE RETRO-FUTURE AESTHETIC) */}
+        {/* Header Title */}
         <motion.div 
-          initial={{ opacity: 0, y: -28 }}
+          initial={{ opacity: 0, y: -24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="flex items-center justify-center mb-7"
+          className="flex items-center justify-center mb-8 sm:mb-10 text-center"
         >
-          {/* Header Title */}
           <div className="flex flex-col items-center justify-center group cursor-pointer text-center" title="Aprileo Erlangga // Classic Space">
             <h2 
               className="font-pixel text-4xl sm:text-5xl md:text-6xl font-normal tracking-wider text-white uppercase select-none"
@@ -45,21 +38,18 @@ function About() {
           </div>
         </motion.div>
 
-        {/* ============================================================ */}
-        {/* BORDERLESS EDITORIAL BIO (YAAS ENERGY x LEGO CLASSIC SPACE)  */}
-        {/* ============================================================ */}
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14 mb-32 lg:mb-44 relative z-20">
+        {/* Bio & Polaroid Photo Grid */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14 relative z-20">
           
           {/* SISI KIRI: BORDERLESS STORYTELLING TYPOGRAPHY */}
           <motion.div 
             className="w-full lg:w-7/12 flex flex-col justify-center relative"
-            style={{ y: bioScrollY }}
+            style={{ y: bioScrollY, willChange: 'transform' }}
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: false, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-
             {/* Clean Flowing Paragraphs */}
             <div className="space-y-3.5 text-slate-300 leading-relaxed text-sm sm:text-base font-normal">
               <p className="text-base sm:text-[17px] text-white font-normal leading-relaxed">
@@ -88,89 +78,34 @@ function About() {
             </div>
           </motion.div>
 
-          {/* SISI KANAN: BORDERLESS ORGANIC FLOATING PHOTO WITH LEGO ACCENTS */}
+          {/* SISI KANAN: EDITORIAL PARALLAX PORTRAIT WITH FLOATING 3D LEGO BRICKS */}
           <motion.div 
             className="w-full lg:w-5/12 flex flex-col items-center justify-center relative"
-            style={{ y: polaroidScrollY }}
             initial={{ opacity: 0, x: 30, scale: 0.95 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
-            viewport={{ once: false, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* The Photo Container (Clean rounded organic silhouette, zero heavy dark boxes) */}
-            <motion.div
-              className="relative w-full max-w-[320px] sm:max-w-[340px] cursor-pointer group select-none"
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                mouseX.set(e.clientX - rect.left - rect.width / 2);
-                mouseY.set(e.clientY - rect.top - rect.height / 2);
-              }}
-              onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
-              style={{
-                transformStyle: "preserve-3d",
-                rotateX: polaroidRotateX,
-                rotateY: polaroidRotateY,
-                rotateZ: polaroidScrollRotate,
-              }}
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            >
-              {/* Floating Top-Left Classic Space Red Badge (Elongated) */}
-              <div className="absolute -top-3 -left-3 z-30 pointer-events-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.7)] transform -rotate-3 group-hover:rotate-0 transition-transform duration-300">
-                <div className="inline-flex items-center justify-center gap-2.5 w-14 sm:w-16 h-5 sm:h-6 rounded bg-[#E3000B] shadow-md border-t border-white/40">
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#FFD500] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6),0_1px_2px_rgba(0,0,0,0.3)]" />
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#FFD500] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6),0_1px_2px_rgba(0,0,0,0.3)]" />
-                </div>
-              </div>
-
-              {/* Clean Photo Silhouette (Border-Free, Soft Deep Shadow) */}
-              <div className="relative w-full h-[320px] sm:h-[350px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(0,85,191,0.25)] bg-[#090d1a]">
-                <img
-                  src={fotoProfil}
-                  alt="Aprileo Erlangga - Fullstack Developer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                {/* Subtle Starlight Specular Glare */}
-                <div 
-                  className="absolute inset-0 pointer-events-none opacity-20 group-hover:opacity-35 transition-opacity duration-300"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 45%, rgba(0,240,255,0.15) 75%, transparent 100%)'
-                  }}
-                />
-                {/* Subtle Bottom Vignette */}
-                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#090d1a]/85 to-transparent pointer-events-none" />
-              </div>
-
-              {/* Minimalist Borderless Caption under Photo */}
-              <div className="mt-3.5 px-1 flex items-center justify-between">
-                <div>
-                  <div className="font-pixel text-white text-base tracking-wider uppercase drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]" style={{ fontFamily: "'Arcadepix', monospace" }}>
-                    Aprileo Erlangga
-                  </div>
-                  <div className="text-[#FFD500] font-mono text-[11px] font-semibold tracking-wider uppercase mt-0.5">
-                    Fullstack Developer // 2026
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+            <EditorialParallaxPortrait scrollYProgress={scrollYProgress} />
           </motion.div>
         </div>
-
-        {/* ============================================================ */}
-        {/* MOTIVATIONAL QUOTES (BUILDER CREED TRANSITIONING)            */}
-        {/* ============================================================ */}
-        <div className="relative z-20 my-16 sm:my-20">
-          <MotivationalQuotes />
-        </div>
-
-        {/* ============================================================ */}
-        {/* SKILLS SECTION: 3D MECHANICAL KEYBOARD MATRIX                */}
-        {/* ============================================================ */}
-        <div className="mt-16 sm:mt-24 relative z-20">
-          <SkillsKeyboard />
-        </div>
       </div>
-      </section>
+
+      {/* ============================================================ */}
+      {/* ACT 2: MOTIVATIONAL QUOTES (SCROLL-DRIVEN EDITORIAL CREED)  */}
+      {/* ============================================================ */}
+      <div id="quotes-section" className="relative z-20 w-full">
+        <MotivationalQuotes />
+      </div>
+
+      {/* ============================================================ */}
+      {/* ACT 3: SKILLS SECTION: 3D MECHANICAL KEYBOARD MATRIX          */}
+      {/* ============================================================ */}
+      <div className="relative z-20 pt-12 sm:pt-20 pb-20 sm:pb-28">
+        <SkillsKeyboard />
+      </div>
+
+    </section>
   );
 }
 

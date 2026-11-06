@@ -1,260 +1,346 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 export const MOTIVATIONAL_QUOTES = [
   {
     id: 1,
     tag: "ARCHITECTURE",
-    lead: "THE MASTER BUILDER CREED",
     line1: "GREAT DIGITAL SYSTEMS",
     line2: "ARE CONSTRUCTED",
     highlight: "BRICK BY BRICK.",
     body: "Relentless craft, curiosity, and patience — every complex digital reality begins with foundational blocks placed with intentional purpose.",
-    author: "APRILEO // CREED 01",
   },
   {
     id: 2,
-    tag: "CRAFTSMANSHIP",
-    lead: "FULLSTACK PHILOSOPHY",
+    tag: "SIMPLICITY",
     line1: "SIMPLICITY IS PREREQUISITE",
     line2: "FOR LONG-TERM",
     highlight: "REAL RELIABILITY.",
     body: "Design cleanly, build boldly, and refactor with care. True elegance in code isn't when there is nothing left to add, but when nothing left can be removed.",
-    author: "APRILEO // CREED 02",
   },
   {
     id: 3,
-    tag: "INITIATION",
-    lead: "DEVELOPER JOURNEY",
+    tag: "MASTER BUILDER",
     line1: "EVERY MASTER BUILDER",
     line2: "BEGAN ON A",
     highlight: "BLANK BASEPLATE.",
     body: "Never fear the first line of code or the vast unknown ahead. Massive digital architectures are just thousands of simple, solid steps compounded.",
-    author: "APRILEO // CREED 03",
-  },
-  {
-    id: 4,
-    tag: "MODULARITY",
-    lead: "SYSTEMS THINKING",
-    line1: "CODE IS LIKE LEGO:",
-    line2: "INFINITE WORLDS FROM",
-    highlight: "FOUNDATIONAL LOGIC.",
-    body: "When modular primitives are engineered with clarity and discipline, they snap together seamlessly to power delightful, enduring human experiences.",
-    author: "APRILEO // CREED 04",
-  },
-  {
-    id: 5,
-    tag: "MOMENTUM",
-    lead: "GROWTH MINDSET",
-    line1: "MOMENTUM IS PLACING",
-    line2: "ONE SOLID BRICK",
-    highlight: "EVERY SINGLE DAY.",
-    body: "Consistency beats frantic intensity. Lasting software isn't built in a single overnight rush; it is forged through intentional daily craftsmanship.",
-    author: "APRILEO // CREED 05",
   },
 ];
 
 export default function MotivationalQuotes() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(1); // 1 = next, -1 = prev
-  const [isPaused, setIsPaused] = useState(false);
-
   const containerRef = useRef(null);
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // YAAS ENERGY SCROLL-DRIVEN KINETIC TEXT TRANSITIONS
-  // Words physically glide, converge, and assemble into place as user scrolls!
-  // ══════════════════════════════════════════════════════════════════════════
+  // Track continuous scroll through the 260vh sticky editorial stage
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 85%", "center 50%"]
+    offset: ["start start", "end end"]
   });
 
-  // Line 1 drifts in from left with subtle tilt:
-  const line1X = useTransform(scrollYProgress, [0, 1], [-48, 0]);
-  const line1Rotate = useTransform(scrollYProgress, [0, 1], [-2.5, 0]);
+  // Physics-smoothed scroll progress for organic liquid inertia
+  const smoothProgress = useSpring(scrollYProgress, { 
+    stiffness: 90, 
+    damping: 22, 
+    mass: 0.7,
+    restDelta: 0.0001
+  });
 
-  // Line 2 drifts in from right with contrasting tilt:
-  const line2X = useTransform(scrollYProgress, [0, 1], [48, 0]);
-  const line2Rotate = useTransform(scrollYProgress, [0, 1], [2.5, 0]);
+  // ======================================================================
+  // QUOTE 1 (Range: 0.00 -> 0.32)
+  // Signature Asymmetrical Converging Entrance:
+  // Line 1: from left with -2.5deg tilt | Line 2: from right with +2.5deg tilt
+  // Line 3: scale 0.88 -> 1 with golden bloom
+  // ======================================================================
+  const q1Line1X = useTransform(smoothProgress, [0.00, 0.08, 0.24, 0.32], [-48, 0, 0, 0]);
+  const q1Line1Rot = useTransform(smoothProgress, [0.00, 0.08, 0.24, 0.32], [-2.5, 0, 0, 0]);
+  const q1Line1Opacity = useTransform(smoothProgress, [0.00, 0.07, 0.24, 0.32], [0, 1, 1, 0]);
 
-  // Highlight line scales up with luminous bloom:
-  const highlightScale = useTransform(scrollYProgress, [0, 1], [0.88, 1]);
-  const highlightY = useTransform(scrollYProgress, [0, 1], [22, 0]);
+  const q1Line2X = useTransform(smoothProgress, [0.00, 0.08, 0.24, 0.32], [48, 0, 0, 0]);
+  const q1Line2Rot = useTransform(smoothProgress, [0.00, 0.08, 0.24, 0.32], [2.5, 0, 0, 0]);
+  const q1Line2Opacity = useTransform(smoothProgress, [0.00, 0.07, 0.24, 0.32], [0, 1, 1, 0]);
 
-  // Overall text entry opacity & drift:
-  const textOpacity = useTransform(scrollYProgress, [0, 0.35, 1], [0.35, 0.75, 1]);
-  const narrativeY = useTransform(scrollYProgress, [0, 1], [18, 0]);
+  const q1HighlightScale = useTransform(smoothProgress, [0.00, 0.08, 0.24, 0.32], [0.88, 1, 1, 1.03]);
+  const q1HighlightY = useTransform(smoothProgress, [0.00, 0.08, 0.24, 0.32], [24, 0, 0, -45]);
+  const q1HighlightOpacity = useTransform(smoothProgress, [0.00, 0.07, 0.24, 0.32], [0, 1, 1, 0]);
 
-  // Auto-cycle quotes every 7 seconds, pause on hover
-  useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
-      setDirection(1);
-      setCurrentIndex((prev) => (prev + 1) % MOTIVATIONAL_QUOTES.length);
-    }, 7000);
-    return () => clearInterval(interval);
-  }, [isPaused]);
+  const q1BodyY = useTransform(smoothProgress, [0.01, 0.09, 0.24, 0.32], [20, 0, 0, -35]);
+  const q1BodyOpacity = useTransform(smoothProgress, [0.01, 0.08, 0.24, 0.32], [0, 1, 1, 0]);
 
-  const activeQuote = MOTIVATIONAL_QUOTES[currentIndex];
+  const q1ExitY = useTransform(smoothProgress, [0.24, 0.32], [0, -50]);
+  const q1ExitBlur = useTransform(smoothProgress, [0.24, 0.32], ['blur(0px)', 'blur(8px)']);
 
-  const handleNext = () => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % MOTIVATIONAL_QUOTES.length);
-  };
+  // ======================================================================
+  // QUOTE 2 (Range: 0.28 -> 0.66)
+  // ======================================================================
+  const q2Line1X = useTransform(smoothProgress, [0.28, 0.36, 0.58, 0.66], [-48, 0, 0, 0]);
+  const q2Line1Rot = useTransform(smoothProgress, [0.28, 0.36, 0.58, 0.66], [-2.5, 0, 0, 0]);
+  const q2Line1Opacity = useTransform(smoothProgress, [0.28, 0.35, 0.58, 0.66], [0, 1, 1, 0]);
 
-  const handlePrev = () => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + MOTIVATIONAL_QUOTES.length) % MOTIVATIONAL_QUOTES.length);
-  };
+  const q2Line2X = useTransform(smoothProgress, [0.28, 0.36, 0.58, 0.66], [48, 0, 0, 0]);
+  const q2Line2Rot = useTransform(smoothProgress, [0.28, 0.36, 0.58, 0.66], [2.5, 0, 0, 0]);
+  const q2Line2Opacity = useTransform(smoothProgress, [0.28, 0.35, 0.58, 0.66], [0, 1, 1, 0]);
+
+  const q2HighlightScale = useTransform(smoothProgress, [0.28, 0.36, 0.58, 0.66], [0.88, 1, 1, 1.03]);
+  const q2HighlightY = useTransform(smoothProgress, [0.28, 0.36, 0.58, 0.66], [24, 0, 0, -45]);
+  const q2HighlightOpacity = useTransform(smoothProgress, [0.28, 0.35, 0.58, 0.66], [0, 1, 1, 0]);
+
+  const q2BodyY = useTransform(smoothProgress, [0.29, 0.37, 0.58, 0.66], [20, 0, 0, -35]);
+  const q2BodyOpacity = useTransform(smoothProgress, [0.29, 0.36, 0.58, 0.66], [0, 1, 1, 0]);
+
+  const q2ExitY = useTransform(smoothProgress, [0.58, 0.66], [0, -50]);
+  const q2ExitBlur = useTransform(smoothProgress, [0.58, 0.66], ['blur(0px)', 'blur(8px)']);
+
+  // ======================================================================
+  // QUOTE 3 (Range: 0.62 -> 1.00)
+  // ======================================================================
+  const q3Line1X = useTransform(smoothProgress, [0.62, 0.70, 0.90, 1.00], [-48, 0, 0, 0]);
+  const q3Line1Rot = useTransform(smoothProgress, [0.62, 0.70, 0.90, 1.00], [-2.5, 0, 0, 0]);
+  const q3Line1Opacity = useTransform(smoothProgress, [0.62, 0.69, 0.90, 1.00], [0, 1, 1, 0]);
+
+  const q3Line2X = useTransform(smoothProgress, [0.62, 0.70, 0.90, 1.00], [48, 0, 0, 0]);
+  const q3Line2Rot = useTransform(smoothProgress, [0.62, 0.70, 0.90, 1.00], [2.5, 0, 0, 0]);
+  const q3Line2Opacity = useTransform(smoothProgress, [0.62, 0.69, 0.90, 1.00], [0, 1, 1, 0]);
+
+  const q3HighlightScale = useTransform(smoothProgress, [0.62, 0.70, 0.90, 1.00], [0.88, 1, 1, 1.03]);
+  const q3HighlightY = useTransform(smoothProgress, [0.62, 0.70, 0.90, 1.00], [24, 0, 0, -45]);
+  const q3HighlightOpacity = useTransform(smoothProgress, [0.62, 0.69, 0.90, 1.00], [0, 1, 1, 0]);
+
+  const q3BodyY = useTransform(smoothProgress, [0.63, 0.71, 0.90, 1.00], [20, 0, 0, -35]);
+  const q3BodyOpacity = useTransform(smoothProgress, [0.63, 0.70, 0.90, 1.00], [0, 1, 1, 0]);
+
+  const q3ExitY = useTransform(smoothProgress, [0.90, 1.00], [0, -50]);
+  const q3ExitBlur = useTransform(smoothProgress, [0.90, 1.00], ['blur(0px)', 'blur(8px)']);
+
+  // Dynamic ambient glow
+  const glowOpacity = useTransform(smoothProgress, [0, 0.5, 1], [0.18, 0.36, 0.18]);
+  const glowScale = useTransform(smoothProgress, [0, 0.5, 1], [0.9, 1.15, 0.9]);
 
   return (
     <div 
       ref={containerRef}
-      className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 my-20 sm:my-32 select-none"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      className="relative w-full h-[260vh] select-none"
     >
       {/* 
-        AESTHETIC BORDERLESS EDITORIAL PRESENTATION
-        (Inspired by YAAS Energy kinetic scroll typography & Lego Classic Space #creator)
+        Sticky Viewport Stage:
+        Locks in viewport center, text gracefully transitions on scroll without any button clutter!
       */}
-      <div className="relative flex flex-col items-center text-center">
+      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 overflow-hidden">
         
-        {/* Subtle Ambient Starlight Flare */}
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[320px] rounded-full pointer-events-none opacity-25"
-          style={{
-            background: 'radial-gradient(ellipse at center, rgba(255, 213, 0, 0.28) 0%, rgba(121, 40, 202, 0.18) 50%, transparent 72%)'
-          }}
-        />
-
-        {/* Dynamic Transitioning Text Stage */}
+        {/* Soft Dynamic Ambient Backlight Glow */}
         <motion.div 
-          style={{ opacity: textOpacity }}
-          className="relative w-full min-h-[220px] sm:min-h-[260px] flex flex-col items-center justify-center"
+          className="absolute inset-0 pointer-events-none flex items-center justify-center"
+          style={{
+            opacity: glowOpacity,
+            scale: glowScale,
+          }}
         >
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={activeQuote.id}
-              custom={direction}
-              initial={{ 
-                opacity: 0, 
-                y: direction > 0 ? 18 : -18,
-              }}
-              animate={{ 
-                opacity: 1, 
-                y: 0,
-              }}
-              exit={{ 
-                opacity: 0, 
-                y: direction > 0 ? -18 : 18,
-              }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col items-center text-center w-full"
-            >
-              {/* 
-                YAAS Energy Scroll-Driven Kinetic Assembly Headline
-                Line 1, Line 2, and Highlight converge and lock together on scroll!
-              */}
-              <div 
-                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[2.75rem] uppercase tracking-tight text-white max-w-2xl lg:max-w-3xl leading-[1.14] select-none flex flex-col items-center"
-                style={{
-                  fontFamily: "'Syne', -apple-system, sans-serif",
-                  fontWeight: 900,
-                  letterSpacing: '-0.02em',
-                }}
-              >
-                {/* Line 1: Glides from Left on Scroll */}
-                <motion.span 
-                  style={{ x: line1X, rotate: line1Rotate }} 
-                  className="inline-block"
-                >
-                  {activeQuote.line1}
-                </motion.span>
-
-                {/* Line 2: Glides from Right on Scroll */}
-                <motion.span 
-                  style={{ x: line2X, rotate: line2Rotate }} 
-                  className="inline-block"
-                >
-                  {activeQuote.line2}
-                </motion.span>
-
-                {/* Line 3: Luminous Highlight Word (Blooms and scales into place) */}
-                <motion.span 
-                  style={{ scale: highlightScale, y: highlightY }}
-                  className="inline-block text-[#FFD500] drop-shadow-[0_0_32px_rgba(255,213,0,0.55)] mt-1"
-                >
-                  {activeQuote.highlight}
-                </motion.span>
-              </div>
-
-              {/* 3. Narrative Sub-copy */}
-              <motion.p 
-                style={{ y: narrativeY }}
-                className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-300/90 font-normal leading-relaxed max-w-xl mx-auto"
-              >
-                &ldquo;{activeQuote.body}&rdquo;
-              </motion.p>
-            </motion.div>
-          </AnimatePresence>
+          <div 
+            className="w-[600px] sm:w-[900px] h-[360px] sm:h-[480px] rounded-full blur-[110px]"
+            style={{
+              background: 'radial-gradient(circle, rgba(255,213,0,0.22) 0%, rgba(6,182,212,0.12) 45%, transparent 75%)',
+            }}
+          />
         </motion.div>
 
-        {/* OPTION A: LEGO STUD CAPSULE DOCK */}
-        <div className="mt-8 pt-2 flex items-center justify-center z-20">
-          <div className="inline-flex items-center gap-2.5 sm:gap-3 px-3 py-1.5 sm:py-2 rounded-full bg-black/40 border border-white/15 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
-            {/* Prev Button */}
-            <button
-              onClick={handlePrev}
-              className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all cursor-pointer select-none"
-              title="Previous Quote"
-              aria-label="Previous Quote"
+        {/* Monumental Editorial Stage (Single Optical Center) */}
+        <div className="relative w-full max-w-4xl mx-auto flex items-center justify-center min-h-[340px] sm:min-h-[380px]">
+          
+          {/* ---------------------------------------------------------- */}
+          {/* QUOTE 1: ARCHITECTURE                                      */}
+          {/* ---------------------------------------------------------- */}
+          <motion.div 
+            className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none"
+            style={{
+              y: q1ExitY,
+              filter: q1ExitBlur,
+            }}
+          >
+            <h3 
+              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[2.75rem] uppercase tracking-tight text-white max-w-2xl lg:max-w-3xl leading-[1.14] select-none flex flex-col items-center"
+              style={{
+                fontFamily: "'Syne', -apple-system, sans-serif",
+                fontWeight: 900,
+                letterSpacing: "-0.02em",
+              }}
             >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
+              {/* Line 1: Melayang masuk dari kiri miring */}
+              <motion.span 
+                style={{ 
+                  x: q1Line1X, 
+                  rotate: q1Line1Rot, 
+                  opacity: q1Line1Opacity 
+                }}
+                className="inline-block"
+              >
+                {MOTIVATIONAL_QUOTES[0].line1}
+              </motion.span>
 
-            {/* 5 Lego Round Studs */}
-            <div className="flex items-center gap-2 sm:gap-2.5 px-1.5">
-              {MOTIVATIONAL_QUOTES.map((q, idx) => {
-                const isActive = currentIndex === idx;
-                return (
-                  <button
-                    key={q.id}
-                    onClick={() => {
-                      setDirection(idx > currentIndex ? 1 : -1);
-                      setCurrentIndex(idx);
-                    }}
-                    className={`relative rounded-full cursor-pointer transition-all duration-300 flex items-center justify-center ${
-                      isActive 
-                        ? 'w-3.5 h-3.5 bg-[#FFD500] shadow-[0_0_12px_rgba(255,213,0,0.9)] scale-110' 
-                        : 'w-2.5 h-2.5 bg-white/20 hover:bg-white/40'
-                    }`}
-                    title={`Quote ${idx + 1}`}
-                    aria-label={`Go to quote ${idx + 1}`}
-                  >
-                    {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full border border-yellow-800/40 pointer-events-none" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+              {/* Line 2: Melayang masuk dari kanan miring */}
+              <motion.span 
+                style={{ 
+                  x: q1Line2X, 
+                  rotate: q1Line2Rot, 
+                  opacity: q1Line2Opacity 
+                }}
+                className="inline-block"
+              >
+                {MOTIVATIONAL_QUOTES[0].line2}
+              </motion.span>
 
-            {/* Next Button */}
-            <button
-              onClick={handleNext}
-              className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all cursor-pointer select-none"
-              title="Next Quote"
-              aria-label="Next Quote"
+              {/* Line 3 (Highlight): Melayang naik membesar dengan glow emas */}
+              <motion.span 
+                style={{ 
+                  scale: q1HighlightScale, 
+                  y: q1HighlightY, 
+                  opacity: q1HighlightOpacity 
+                }}
+                className="inline-block text-[#FFD500] drop-shadow-[0_0_32px_rgba(255,213,0,0.55)] mt-1"
+              >
+                {MOTIVATIONAL_QUOTES[0].highlight}
+              </motion.span>
+            </h3>
+
+            {/* Subtitle */}
+            <motion.p 
+              style={{ 
+                y: q1BodyY, 
+                opacity: q1BodyOpacity,
+                fontFamily: "'Plus Jakarta Sans', sans-serif" 
+              }}
+              className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-300/90 font-normal leading-relaxed max-w-xl mx-auto"
             >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
+              &ldquo;{MOTIVATIONAL_QUOTES[0].body}&rdquo;
+            </motion.p>
+          </motion.div>
+
+          {/* ---------------------------------------------------------- */}
+          {/* QUOTE 2: SIMPLICITY                                        */}
+          {/* ---------------------------------------------------------- */}
+          <motion.div 
+            className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none"
+            style={{
+              y: q2ExitY,
+              filter: q2ExitBlur,
+            }}
+          >
+            <h3 
+              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[2.75rem] uppercase tracking-tight text-white max-w-2xl lg:max-w-3xl leading-[1.14] select-none flex flex-col items-center"
+              style={{
+                fontFamily: "'Syne', -apple-system, sans-serif",
+                fontWeight: 900,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              <motion.span 
+                style={{ 
+                  x: q2Line1X, 
+                  rotate: q2Line1Rot, 
+                  opacity: q2Line1Opacity 
+                }}
+                className="inline-block"
+              >
+                {MOTIVATIONAL_QUOTES[1].line1}
+              </motion.span>
+
+              <motion.span 
+                style={{ 
+                  x: q2Line2X, 
+                  rotate: q2Line2Rot, 
+                  opacity: q2Line2Opacity 
+                }}
+                className="inline-block"
+              >
+                {MOTIVATIONAL_QUOTES[1].line2}
+              </motion.span>
+
+              <motion.span 
+                style={{ 
+                  scale: q2HighlightScale, 
+                  y: q2HighlightY, 
+                  opacity: q2HighlightOpacity 
+                }}
+                className="inline-block text-[#FFD500] drop-shadow-[0_0_32px_rgba(255,213,0,0.55)] mt-1"
+              >
+                {MOTIVATIONAL_QUOTES[1].highlight}
+              </motion.span>
+            </h3>
+
+            <motion.p 
+              style={{ 
+                y: q2BodyY, 
+                opacity: q2BodyOpacity,
+                fontFamily: "'Plus Jakarta Sans', sans-serif" 
+              }}
+              className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-300/90 font-normal leading-relaxed max-w-xl mx-auto"
+            >
+              &ldquo;{MOTIVATIONAL_QUOTES[1].body}&rdquo;
+            </motion.p>
+          </motion.div>
+
+          {/* ---------------------------------------------------------- */}
+          {/* QUOTE 3: MASTER BUILDER                                    */}
+          {/* ---------------------------------------------------------- */}
+          <motion.div 
+            className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none"
+            style={{
+              y: q3ExitY,
+              filter: q3ExitBlur,
+            }}
+          >
+            <h3 
+              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[2.75rem] uppercase tracking-tight text-white max-w-2xl lg:max-w-3xl leading-[1.14] select-none flex flex-col items-center"
+              style={{
+                fontFamily: "'Syne', -apple-system, sans-serif",
+                fontWeight: 900,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              <motion.span 
+                style={{ 
+                  x: q3Line1X, 
+                  rotate: q3Line1Rot, 
+                  opacity: q3Line1Opacity 
+                }}
+                className="inline-block"
+              >
+                {MOTIVATIONAL_QUOTES[2].line1}
+              </motion.span>
+
+              <motion.span 
+                style={{ 
+                  x: q3Line2X, 
+                  rotate: q3Line2Rot, 
+                  opacity: q3Line2Opacity 
+                }}
+                className="inline-block"
+              >
+                {MOTIVATIONAL_QUOTES[2].line2}
+              </motion.span>
+
+              <motion.span 
+                style={{ 
+                  scale: q3HighlightScale, 
+                  y: q3HighlightY, 
+                  opacity: q3HighlightOpacity 
+                }}
+                className="inline-block text-[#FFD500] drop-shadow-[0_0_32px_rgba(255,213,0,0.55)] mt-1"
+              >
+                {MOTIVATIONAL_QUOTES[2].highlight}
+              </motion.span>
+            </h3>
+
+            <motion.p 
+              style={{ 
+                y: q3BodyY, 
+                opacity: q3BodyOpacity,
+                fontFamily: "'Plus Jakarta Sans', sans-serif" 
+              }}
+              className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-300/90 font-normal leading-relaxed max-w-xl mx-auto"
+            >
+              &ldquo;{MOTIVATIONAL_QUOTES[2].body}&rdquo;
+            </motion.p>
+          </motion.div>
+
         </div>
 
       </div>

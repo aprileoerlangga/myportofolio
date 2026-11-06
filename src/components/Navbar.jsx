@@ -1,6 +1,6 @@
 // Navbar.jsx - Concept 3: The LEGO Movie Builder HUD
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 
@@ -109,6 +109,24 @@ function Navbar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+
+  // Dynamic theme-adaptive border underglow matching active zone
+  // Zone 1 (Hero): Cosmic Blue/Indigo (#0055BF)
+  // Zone 2 (Quotes): Solar Amber/Gold Warmth (#FFD500)
+  // Zone 3 (Tech Stack & Footer): Cyber Cyan Neon (#00F0FF)
+  const borderGlowColor = useTransform(
+    scrollYProgress,
+    [0, 0.18, 0.30, 0.72, 0.84, 1],
+    [
+      'rgba(0, 85, 191, 0.40)',
+      'rgba(0, 85, 191, 0.45)',
+      'rgba(255, 213, 0, 0.55)',
+      'rgba(255, 213, 0, 0.55)',
+      'rgba(0, 240, 255, 0.50)',
+      'rgba(0, 240, 255, 0.50)'
+    ]
+  );
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -150,12 +168,24 @@ function Navbar() {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
         scrolled || isOpen 
-          ? 'bg-[#090b12]/90 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_8px_30px_rgba(0,0,0,0.6)]' 
-          : 'bg-[#090b12]/75 backdrop-blur-md border-b border-white/[0.05]'
+          ? 'bg-[#090b12]/92 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.6)]' 
+          : 'bg-[#090b12]/75 backdrop-blur-md'
       }`}
     >
+      {/* Dynamic Theme Border Seam (Halus & Responsif terhadap Tema Halaman) */}
+      <motion.div 
+        className="absolute bottom-0 left-0 right-0 h-[1px] pointer-events-none"
+        style={{ backgroundColor: borderGlowColor }}
+      />
+
+      {/* Ambient Glow Flare di Bawah Navbar */}
+      <motion.div 
+        className="absolute -bottom-2 left-1/4 right-1/4 h-3 pointer-events-none opacity-30 blur-sm"
+        style={{ backgroundColor: borderGlowColor }}
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           

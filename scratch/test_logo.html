@@ -1,0 +1,534 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    @font-face {
+      font-family: 'Arcadepix';
+      src: url('http://localhost:5174/fonts/arcadepix.ttf') format('truetype');
+    }
+    body {
+      background-color: #0b1120;
+      color: white;
+      font-family: system-ui, sans-serif;
+      padding: 30px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #374151;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    .flex-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .tag {
+      font-size: 13px;
+      color: #9ca3af;
+      font-family: monospace;
+    }
+    .navbar-preview {
+      background: rgba(9, 11, 18, 0.95);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 12px 24px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <h2>LEGO Space Logo Comparison Test</h2>
+  
+  <div class="card">
+    <h3>A. Side-by-Side Comparison (Exact Reference vs New Vector)</h3>
+    <div style="display: flex; gap: 40px; margin-top: 15px;">
+      <div>
+        <div class="tag">Original Reference Image (2x: 72px):</div>
+        <div style="margin-top: 8px; background: #000; padding: 10px; display: inline-block; border-radius: 4px;">
+          <img src="file:///C:/Users/APRILEOERLANGGA/.gemini/antigravity/brain/b483387a-7d2c-424b-95f6-cfff3297c331/.user_uploaded/media_1793919003419_97537858.png" style="height: 72px;" />
+        </div>
+      </div>
+      <div>
+        <div class="tag">New SVG Implementation (2x: 72px):</div>
+        <div style="margin-top: 8px; background: #000; padding: 10px; display: inline-block; border-radius: 4px;">
+          
+  <svg viewBox="0 0 174 72" class="lego-space-logo" style="height: 72px; width: auto; overflow: visible;" xmlns="http://www.w3.org/2000/svg">
+    
+    <defs>
+      <!-- Subtle warm gradient for classic yellow head -->
+      <linearGradient id="legoYellow" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFD628" />
+        <stop offset="35%" stop-color="#FFD21D" />
+        <stop offset="85%" stop-color="#FFC510" />
+        <stop offset="100%" stop-color="#EDB205" />
+      </linearGradient>
+      <!-- Left rim highlight -->
+      <linearGradient id="rimHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFF58C" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="#FFF58C" stop-opacity="0" />
+      </linearGradient>
+      <!-- Stud top gradient -->
+      <linearGradient id="studGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FFE653" />
+        <stop offset="100%" stop-color="#FFC510" />
+      </linearGradient>
+    </defs>
+
+    <!-- 1. SOLID RED RECTANGLE ATTACHED BEHIND HEAD -->
+    <!-- Bounds match exact reference: x=52, y=16, w=118, h=42 -->
+    <g class="red-box-group">
+      <rect 
+        x="52" 
+        y="16" 
+        width="118" 
+        height="42" 
+        fill="#D92121" 
+        rx="0" 
+      />
+      <!-- Pixel Text SPACE -->
+      <text 
+        x="110" 
+        y="42" 
+        fill="#FFFFFF" 
+        font-family="'Arcadepix', monospace" 
+        font-size="28" 
+        letter-spacing="2px" 
+        text-anchor="middle" 
+        dominant-baseline="central"
+        style="font-smooth: never; -webkit-font-smoothing: none;"
+      >SPACE</text>
+    </g>
+
+    <!-- 2. TILTED CLASSIC LEGO HEAD (-12.5 deg) -->
+    <g transform="rotate(-12.5, 36, 38)">
+      <!-- Top Stud (Cylinder) -->
+      <rect x="25" y="8" width="22" height="9" rx="2.5" fill="url(#studGrad)" stroke="#C68A00" stroke-width="0.8" />
+      <ellipse cx="36" cy="10" rx="9" ry="2" fill="#FFEAA0" opacity="0.8" />
+
+      <!-- Neck Base -->
+      <rect x="26.5" y="58" width="19" height="7" rx="2" fill="#EDB205" stroke="#C68A00" stroke-width="0.8" />
+
+      <!-- Main Head Cylinder -->
+      <rect 
+        x="14" 
+        y="16" 
+        width="44" 
+        height="44" 
+        rx="10" 
+        fill="url(#legoYellow)" 
+        stroke="#B88000" 
+        stroke-width="0.9" 
+      />
+
+      <!-- Soft Left Rim Highlight -->
+      <path 
+        d="M 18 20 Q 15 38 18 56" 
+        stroke="url(#rimHighlight)" 
+        stroke-width="2.5" 
+        stroke-linecap="round" 
+        fill="none" 
+      />
+
+      <!-- Forehead gentle curve reflection -->
+      <path 
+        d="M 22 21 Q 36 19 50 21" 
+        stroke="#FFF8B0" 
+        stroke-width="1.2" 
+        stroke-linecap="round" 
+        opacity="0.6" 
+        fill="none" 
+      />
+
+      <!-- Left Eye (Pure solid black circle, no pupils, no eyebrows) -->
+      <circle cx="27" cy="36" r="3.2" fill="#18181B" />
+
+      <!-- Right Eye (Pure solid black circle) -->
+      <circle cx="45" cy="36" r="3.2" fill="#18181B" />
+
+      <!-- Classic Lego Smile (Pure smooth curved arc, no dimples, no tongue) -->
+      <path 
+        d="M 27 46 Q 36 54 45 46" 
+        stroke="#18181B" 
+        stroke-width="2.8" 
+        stroke-linecap="round" 
+        fill="none" 
+      />
+    </g>
+  </svg>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>B. In Navbar Context (Actual Size: 36px)</h3>
+    
+    <div style="margin-bottom: 20px;">
+      <div class="tag" style="margin-bottom: 6px;">Variant 1: Exact Classic [SPACE] + Name Text</div>
+      <div class="navbar-preview">
+        <div style="display: flex; align-items: center; gap: 14px; cursor: pointer;">
+          
+  <svg viewBox="0 0 174 72" class="lego-space-logo" style="height: 36px; width: auto; overflow: visible;" xmlns="http://www.w3.org/2000/svg">
+    
+    <defs>
+      <!-- Subtle warm gradient for classic yellow head -->
+      <linearGradient id="legoYellow" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFD628" />
+        <stop offset="35%" stop-color="#FFD21D" />
+        <stop offset="85%" stop-color="#FFC510" />
+        <stop offset="100%" stop-color="#EDB205" />
+      </linearGradient>
+      <!-- Left rim highlight -->
+      <linearGradient id="rimHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFF58C" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="#FFF58C" stop-opacity="0" />
+      </linearGradient>
+      <!-- Stud top gradient -->
+      <linearGradient id="studGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FFE653" />
+        <stop offset="100%" stop-color="#FFC510" />
+      </linearGradient>
+    </defs>
+
+    <!-- 1. SOLID RED RECTANGLE ATTACHED BEHIND HEAD -->
+    <!-- Bounds match exact reference: x=52, y=16, w=118, h=42 -->
+    <g class="red-box-group">
+      <rect 
+        x="52" 
+        y="16" 
+        width="118" 
+        height="42" 
+        fill="#D92121" 
+        rx="0" 
+      />
+      <!-- Pixel Text SPACE -->
+      <text 
+        x="110" 
+        y="42" 
+        fill="#FFFFFF" 
+        font-family="'Arcadepix', monospace" 
+        font-size="28" 
+        letter-spacing="2px" 
+        text-anchor="middle" 
+        dominant-baseline="central"
+        style="font-smooth: never; -webkit-font-smoothing: none;"
+      >SPACE</text>
+    </g>
+
+    <!-- 2. TILTED CLASSIC LEGO HEAD (-12.5 deg) -->
+    <g transform="rotate(-12.5, 36, 38)">
+      <!-- Top Stud (Cylinder) -->
+      <rect x="25" y="8" width="22" height="9" rx="2.5" fill="url(#studGrad)" stroke="#C68A00" stroke-width="0.8" />
+      <ellipse cx="36" cy="10" rx="9" ry="2" fill="#FFEAA0" opacity="0.8" />
+
+      <!-- Neck Base -->
+      <rect x="26.5" y="58" width="19" height="7" rx="2" fill="#EDB205" stroke="#C68A00" stroke-width="0.8" />
+
+      <!-- Main Head Cylinder -->
+      <rect 
+        x="14" 
+        y="16" 
+        width="44" 
+        height="44" 
+        rx="10" 
+        fill="url(#legoYellow)" 
+        stroke="#B88000" 
+        stroke-width="0.9" 
+      />
+
+      <!-- Soft Left Rim Highlight -->
+      <path 
+        d="M 18 20 Q 15 38 18 56" 
+        stroke="url(#rimHighlight)" 
+        stroke-width="2.5" 
+        stroke-linecap="round" 
+        fill="none" 
+      />
+
+      <!-- Forehead gentle curve reflection -->
+      <path 
+        d="M 22 21 Q 36 19 50 21" 
+        stroke="#FFF8B0" 
+        stroke-width="1.2" 
+        stroke-linecap="round" 
+        opacity="0.6" 
+        fill="none" 
+      />
+
+      <!-- Left Eye (Pure solid black circle, no pupils, no eyebrows) -->
+      <circle cx="27" cy="36" r="3.2" fill="#18181B" />
+
+      <!-- Right Eye (Pure solid black circle) -->
+      <circle cx="45" cy="36" r="3.2" fill="#18181B" />
+
+      <!-- Classic Lego Smile (Pure smooth curved arc, no dimples, no tongue) -->
+      <path 
+        d="M 27 46 Q 36 54 45 46" 
+        stroke="#18181B" 
+        stroke-width="2.8" 
+        stroke-linecap="round" 
+        fill="none" 
+      />
+    </g>
+  </svg>
+  
+          <span style="font-weight: bold; font-size: 17px; color: white; letter-spacing: -0.01em;">Aprileo Erlangga</span>
+        </div>
+        <div style="display: flex; gap: 18px; font-size: 14px; color: #9ca3af;">
+          <span>Home</span>
+          <span style="color: #FFD500; font-weight: bold;">About</span>
+          <span>Projects</span>
+          <span>Contact</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div class="tag" style="margin-bottom: 6px;">Variant 2: Standalone Classic [SPACE] Logo (Iconic minimal brand)</div>
+      <div class="navbar-preview">
+        <div style="display: flex; align-items: center; cursor: pointer;">
+          
+  <svg viewBox="0 0 174 72" class="lego-space-logo" style="height: 36px; width: auto; overflow: visible;" xmlns="http://www.w3.org/2000/svg">
+    
+    <defs>
+      <!-- Subtle warm gradient for classic yellow head -->
+      <linearGradient id="legoYellow" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFD628" />
+        <stop offset="35%" stop-color="#FFD21D" />
+        <stop offset="85%" stop-color="#FFC510" />
+        <stop offset="100%" stop-color="#EDB205" />
+      </linearGradient>
+      <!-- Left rim highlight -->
+      <linearGradient id="rimHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFF58C" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="#FFF58C" stop-opacity="0" />
+      </linearGradient>
+      <!-- Stud top gradient -->
+      <linearGradient id="studGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FFE653" />
+        <stop offset="100%" stop-color="#FFC510" />
+      </linearGradient>
+    </defs>
+
+    <!-- 1. SOLID RED RECTANGLE ATTACHED BEHIND HEAD -->
+    <!-- Bounds match exact reference: x=52, y=16, w=118, h=42 -->
+    <g class="red-box-group">
+      <rect 
+        x="52" 
+        y="16" 
+        width="118" 
+        height="42" 
+        fill="#D92121" 
+        rx="0" 
+      />
+      <!-- Pixel Text SPACE -->
+      <text 
+        x="110" 
+        y="42" 
+        fill="#FFFFFF" 
+        font-family="'Arcadepix', monospace" 
+        font-size="28" 
+        letter-spacing="2px" 
+        text-anchor="middle" 
+        dominant-baseline="central"
+        style="font-smooth: never; -webkit-font-smoothing: none;"
+      >SPACE</text>
+    </g>
+
+    <!-- 2. TILTED CLASSIC LEGO HEAD (-12.5 deg) -->
+    <g transform="rotate(-12.5, 36, 38)">
+      <!-- Top Stud (Cylinder) -->
+      <rect x="25" y="8" width="22" height="9" rx="2.5" fill="url(#studGrad)" stroke="#C68A00" stroke-width="0.8" />
+      <ellipse cx="36" cy="10" rx="9" ry="2" fill="#FFEAA0" opacity="0.8" />
+
+      <!-- Neck Base -->
+      <rect x="26.5" y="58" width="19" height="7" rx="2" fill="#EDB205" stroke="#C68A00" stroke-width="0.8" />
+
+      <!-- Main Head Cylinder -->
+      <rect 
+        x="14" 
+        y="16" 
+        width="44" 
+        height="44" 
+        rx="10" 
+        fill="url(#legoYellow)" 
+        stroke="#B88000" 
+        stroke-width="0.9" 
+      />
+
+      <!-- Soft Left Rim Highlight -->
+      <path 
+        d="M 18 20 Q 15 38 18 56" 
+        stroke="url(#rimHighlight)" 
+        stroke-width="2.5" 
+        stroke-linecap="round" 
+        fill="none" 
+      />
+
+      <!-- Forehead gentle curve reflection -->
+      <path 
+        d="M 22 21 Q 36 19 50 21" 
+        stroke="#FFF8B0" 
+        stroke-width="1.2" 
+        stroke-linecap="round" 
+        opacity="0.6" 
+        fill="none" 
+      />
+
+      <!-- Left Eye (Pure solid black circle, no pupils, no eyebrows) -->
+      <circle cx="27" cy="36" r="3.2" fill="#18181B" />
+
+      <!-- Right Eye (Pure solid black circle) -->
+      <circle cx="45" cy="36" r="3.2" fill="#18181B" />
+
+      <!-- Classic Lego Smile (Pure smooth curved arc, no dimples, no tongue) -->
+      <path 
+        d="M 27 46 Q 36 54 45 46" 
+        stroke="#18181B" 
+        stroke-width="2.8" 
+        stroke-linecap="round" 
+        fill="none" 
+      />
+    </g>
+  </svg>
+  
+        </div>
+        <div style="display: flex; gap: 18px; font-size: 14px; color: #9ca3af;">
+          <span>Home</span>
+          <span style="color: #FFD500; font-weight: bold;">About</span>
+          <span>Projects</span>
+          <span>Contact</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="tag" style="margin-bottom: 6px;">Variant 3: Personalized Name in Red Box [APRILEO]</div>
+      <div class="navbar-preview">
+        <div style="display: flex; align-items: center; cursor: pointer;">
+          
+  <svg viewBox="0 0 174 72" class="lego-space-logo" style="height: 36px; width: auto; overflow: visible;" xmlns="http://www.w3.org/2000/svg">
+    
+    <defs>
+      <!-- Subtle warm gradient for classic yellow head -->
+      <linearGradient id="legoYellow" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFD628" />
+        <stop offset="35%" stop-color="#FFD21D" />
+        <stop offset="85%" stop-color="#FFC510" />
+        <stop offset="100%" stop-color="#EDB205" />
+      </linearGradient>
+      <!-- Left rim highlight -->
+      <linearGradient id="rimHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFF58C" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="#FFF58C" stop-opacity="0" />
+      </linearGradient>
+      <!-- Stud top gradient -->
+      <linearGradient id="studGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FFE653" />
+        <stop offset="100%" stop-color="#FFC510" />
+      </linearGradient>
+    </defs>
+
+    <!-- 1. SOLID RED RECTANGLE ATTACHED BEHIND HEAD -->
+    <!-- Bounds match exact reference: x=52, y=16, w=118, h=42 -->
+    <g class="red-box-group">
+      <rect 
+        x="52" 
+        y="16" 
+        width="118" 
+        height="42" 
+        fill="#D92121" 
+        rx="0" 
+      />
+      <!-- Pixel Text SPACE -->
+      <text 
+        x="110" 
+        y="42" 
+        fill="#FFFFFF" 
+        font-family="'Arcadepix', monospace" 
+        font-size="28" 
+        letter-spacing="2px" 
+        text-anchor="middle" 
+        dominant-baseline="central"
+        style="font-smooth: never; -webkit-font-smoothing: none;"
+      >APRILEO</text>
+    </g>
+
+    <!-- 2. TILTED CLASSIC LEGO HEAD (-12.5 deg) -->
+    <g transform="rotate(-12.5, 36, 38)">
+      <!-- Top Stud (Cylinder) -->
+      <rect x="25" y="8" width="22" height="9" rx="2.5" fill="url(#studGrad)" stroke="#C68A00" stroke-width="0.8" />
+      <ellipse cx="36" cy="10" rx="9" ry="2" fill="#FFEAA0" opacity="0.8" />
+
+      <!-- Neck Base -->
+      <rect x="26.5" y="58" width="19" height="7" rx="2" fill="#EDB205" stroke="#C68A00" stroke-width="0.8" />
+
+      <!-- Main Head Cylinder -->
+      <rect 
+        x="14" 
+        y="16" 
+        width="44" 
+        height="44" 
+        rx="10" 
+        fill="url(#legoYellow)" 
+        stroke="#B88000" 
+        stroke-width="0.9" 
+      />
+
+      <!-- Soft Left Rim Highlight -->
+      <path 
+        d="M 18 20 Q 15 38 18 56" 
+        stroke="url(#rimHighlight)" 
+        stroke-width="2.5" 
+        stroke-linecap="round" 
+        fill="none" 
+      />
+
+      <!-- Forehead gentle curve reflection -->
+      <path 
+        d="M 22 21 Q 36 19 50 21" 
+        stroke="#FFF8B0" 
+        stroke-width="1.2" 
+        stroke-linecap="round" 
+        opacity="0.6" 
+        fill="none" 
+      />
+
+      <!-- Left Eye (Pure solid black circle, no pupils, no eyebrows) -->
+      <circle cx="27" cy="36" r="3.2" fill="#18181B" />
+
+      <!-- Right Eye (Pure solid black circle) -->
+      <circle cx="45" cy="36" r="3.2" fill="#18181B" />
+
+      <!-- Classic Lego Smile (Pure smooth curved arc, no dimples, no tongue) -->
+      <path 
+        d="M 27 46 Q 36 54 45 46" 
+        stroke="#18181B" 
+        stroke-width="2.8" 
+        stroke-linecap="round" 
+        fill="none" 
+      />
+    </g>
+  </svg>
+  
+        </div>
+        <div style="display: flex; gap: 18px; font-size: 14px; color: #9ca3af;">
+          <span>Home</span>
+          <span style="color: #FFD500; font-weight: bold;">About</span>
+          <span>Projects</span>
+          <span>Contact</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

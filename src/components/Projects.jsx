@@ -122,47 +122,48 @@ export function Projects() {
   });
 
   // Spring physics yang responsif dan mentega persis Aceternity
-  const springConfig = { stiffness: 220, damping: 28 };
+  const springConfig = { stiffness: 200, damping: 26 };
 
-  // 1. Header Transition: Muncul megah di awal, lalu fade out lembut saat panggung 3D mendatar
+  // 1. Header Transition: Muncul megah di awal, lalu fade out lembut saat panggung turun & mendatar
   const headerOpacity = useSpring(
-    useTransform(scrollYProgress, [0, 0.16], [1, 0]),
+    useTransform(scrollYProgress, [0, 0.22], [1, 0]),
     springConfig
   );
   const headerY = useSpring(
-    useTransform(scrollYProgress, [0, 0.16], [0, -60]),
+    useTransform(scrollYProgress, [0, 0.22], [0, -45]),
     springConfig
   );
 
-  // 2. 3D Perspective Rotation & Scale (Miring diagonal 3D -> Datar sempurna di panggung)
+  // 2. 3D Perspective Rotation & Scale (Miring 3D -> Turun pelan-pelan & mendatar sempurna ke tengah panggung)
   const rotateX = useSpring(
-    useTransform(scrollYProgress, [0, 0.20], [16, 0]),
+    useTransform(scrollYProgress, [0, 0.28], [15, 0]),
     springConfig
   );
   const rotateZ = useSpring(
-    useTransform(scrollYProgress, [0, 0.20], [18, 0]),
+    useTransform(scrollYProgress, [0, 0.28], [16, 0]),
     springConfig
   );
   const stageOpacity = useSpring(
-    useTransform(scrollYProgress, [0, 0.15], [0.35, 1]),
+    useTransform(scrollYProgress, [0, 0.22], [0.45, 1]),
     springConfig
   );
+  // Stage meluncur TURUN dari posisi elevasi awal (-40px) ke posisi tengah nyaman (+55px)
   const translateY = useSpring(
-    useTransform(scrollYProgress, [0, 0.20], [-260, 0]),
+    useTransform(scrollYProgress, [0, 0.28], [-40, 55]),
     springConfig
   );
   const stageScale = useSpring(
-    useTransform(scrollYProgress, [0, 0.20], [0.92, 1]),
+    useTransform(scrollYProgress, [0, 0.28], [0.90, 1]),
     springConfig
   );
 
-  // 3. Horizontal Gliding: Berlawanan arah dengan jarak yang pas
+  // 3. Horizontal Gliding: Meluncur halus dan seimbang agar SEMUA 6 kartu proyek kelihatan FULL
   const translateX = useSpring(
-    useTransform(scrollYProgress, [0.15, 0.90], ['6%', '-32%']),
+    useTransform(scrollYProgress, [0.22, 0.88], ['6%', '-6%']),
     springConfig
   );
   const translateXReverse = useSpring(
-    useTransform(scrollYProgress, [0.15, 0.90], ['-32%', '6%']),
+    useTransform(scrollYProgress, [0.22, 0.88], ['-6%', '6%']),
     springConfig
   );
 
@@ -179,34 +180,31 @@ export function Projects() {
     <div
       ref={containerRef}
       id="projects"
-      className="relative w-full h-[280vh] sm:h-[300vh] bg-[#090b12] text-white"
+      className="relative w-full h-[280vh] sm:h-[300vh] bg-transparent text-white"
     >
       {/* Viewport Stage Terkunci Pas di Tengah Layar Tanpa Blank Void */}
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden select-none z-10 [perspective:1000px] [transform-style:preserve-3d]">
-        
-        {/* Background Ambient Glow */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full blur-[140px] pointer-events-none opacity-20 transition-all duration-700"
-          style={{ background: '#FFD500' }}
-        />
 
-        {/* 1. HERO HEADER (Gaya Zulfian: Megah, Left-Aligned, Bergeser Lembut) */}
+        {/* 1. HERO HEADER (Harmonized with Classic Space Universe & Arcadepix Typography) */}
         <motion.div
           style={{
             opacity: headerOpacity,
             y: headerY,
           }}
-          className="absolute top-16 sm:top-20 left-0 right-0 max-w-7xl mx-auto px-6 lg:px-8 z-30 pointer-events-none"
+          className="absolute top-20 sm:top-24 left-0 right-0 max-w-7xl mx-auto px-6 lg:px-8 z-30 pointer-events-none"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FFD500]/10 border border-[#FFD500]/30 text-xs font-semibold text-[#FFD500] mb-3 shadow-[0_0_20px_rgba(255,213,0,0.15)]">
-            <span className="w-2 h-2 rounded-full bg-[#FFD500] animate-pulse" />
-            Selected Works & Engineering
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#0055BF]/20 border border-[#00F0FF]/30 text-xs font-mono text-[#00F0FF] mb-3.5 shadow-[0_0_15px_rgba(0,240,255,0.15)] backdrop-blur-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse" />
+            <span className="tracking-widest uppercase text-[10px] sm:text-[11px]">SYS.ARCHIVE // SECTOR 03: ENGINEERING REPOSITORIES</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
-            My <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FFD500] via-[#FFE566] to-[#FF9E00] drop-shadow-[0_2px_20px_rgba(255,213,0,0.25)]">Projects</span>
+          <h1 
+            className="font-pixel text-4xl sm:text-5xl md:text-6xl font-normal tracking-wider text-white uppercase select-none leading-none mb-3"
+            style={{ fontFamily: "'Arcadepix', monospace" }}
+          >
+            MY <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">PROJECTS</span>
           </h1>
-          <p className="max-w-xl text-xs sm:text-sm text-neutral-400 mt-2 leading-relaxed">
-            Koleksi aplikasi mobile, full-stack web, dan sistem IoT dengan arsitektur modern.
+          <p className="max-w-xl text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal">
+            Koleksi aplikasi mobile, full-stack web, dan arsitektur IoT terintegrasi dengan standar performa modern.
           </p>
         </motion.div>
 
@@ -225,7 +223,7 @@ export function Projects() {
           <div className="relative w-full overflow-visible">
             <motion.div
               style={{ x: translateX }}
-              className="flex items-center gap-5 sm:gap-8 px-6 sm:px-10 flex-nowrap"
+              className="flex items-center justify-center gap-5 sm:gap-8 px-6 sm:px-10 flex-nowrap"
             >
               {row1Projects.map((project) => (
                 <ProductCard
@@ -241,7 +239,7 @@ export function Projects() {
           <div className="relative w-full overflow-visible">
             <motion.div
               style={{ x: translateXReverse }}
-              className="flex items-center gap-5 sm:gap-8 px-6 sm:px-10 flex-nowrap"
+              className="flex items-center justify-center gap-5 sm:gap-8 px-6 sm:px-10 flex-nowrap"
             >
               {row2Projects.map((project) => (
                 <ProductCard
@@ -329,10 +327,16 @@ function ProductCard({ project, onOpenModal }) {
   if (project.isGitHubCard) {
     return (
       <motion.div
-        whileHover={{ y: -12, scale: 1.02 }}
+        whileHover={{ y: -10, scale: 1.02 }}
         transition={{ duration: 0.25, ease: 'easeOut' }}
-        className="group relative flex-shrink-0 h-48 sm:h-56 md:h-64 w-[20rem] sm:w-[25rem] md:w-[29rem] rounded-2xl bg-gradient-to-br from-[#121829] to-[#0d121f] border border-[#FFD500]/30 hover:border-[#FFD500] shadow-[0_15px_35px_rgba(0,0,0,0.7)] hover:shadow-[0_25px_50px_rgba(255,213,0,0.2)] p-5 sm:p-6 flex flex-col justify-between transition-all"
+        className="group relative flex-shrink-0 h-48 sm:h-54 md:h-60 w-[20rem] sm:w-[24rem] md:w-[26rem] lg:w-[27.5rem] rounded-2xl bg-gradient-to-br from-[#121829] to-[#0d121f] border border-[#FFD500]/30 hover:border-[#FFD500] shadow-[0_15px_35px_rgba(0,0,0,0.7)] hover:shadow-[0_25px_50px_rgba(255,213,0,0.2)] p-5 sm:p-6 flex flex-col justify-between transition-all"
       >
+        {/* Blueprint Corner Accents */}
+        <div className="absolute top-2.5 left-2.5 w-2 h-2 border-t border-l border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
+        <div className="absolute top-2.5 right-2.5 w-2 h-2 border-t border-r border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
+        <div className="absolute bottom-2.5 left-2.5 w-2 h-2 border-b border-l border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
+        <div className="absolute bottom-2.5 right-2.5 w-2 h-2 border-b border-r border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
+
         <div className="flex items-start justify-between">
           <div className="w-10 h-10 rounded-xl bg-[#FFD500]/10 border border-[#FFD500]/30 flex items-center justify-center text-[#FFD500] shadow-[0_0_20px_rgba(255,213,0,0.2)]">
             <FiFolder className="w-5 h-5" />
@@ -379,10 +383,16 @@ function ProductCard({ project, onOpenModal }) {
 
   return (
     <motion.div
-      whileHover={{ y: -12, scale: 1.02 }}
+      whileHover={{ y: -10, scale: 1.02 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="group relative flex-shrink-0 h-48 sm:h-56 md:h-64 w-[20rem] sm:w-[25rem] md:w-[29rem] rounded-2xl bg-[#0d121f] border border-white/10 hover:border-[#FFD500]/60 shadow-[0_15px_35px_rgba(0,0,0,0.8)] hover:shadow-[0_25px_50px_rgba(255,213,0,0.2)] overflow-hidden transition-all duration-300"
+      className="group relative flex-shrink-0 h-48 sm:h-54 md:h-60 w-[20rem] sm:w-[24rem] md:w-[26rem] lg:w-[27.5rem] rounded-2xl bg-[#0d121f] border border-white/10 hover:border-[#FFD500]/60 shadow-[0_15px_35px_rgba(0,0,0,0.8)] hover:shadow-[0_25px_50px_rgba(255,213,0,0.2)] overflow-hidden transition-all duration-300"
     >
+      {/* Blueprint Corner Accents */}
+      <div className="absolute top-2.5 left-2.5 w-2 h-2 border-t border-l border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
+      <div className="absolute top-2.5 right-2.5 w-2 h-2 border-t border-r border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
+      <div className="absolute bottom-2.5 left-2.5 w-2 h-2 border-b border-l border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
+      <div className="absolute bottom-2.5 right-2.5 w-2 h-2 border-b border-r border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
+
       {/* 1. Gambar Proyek 100% Utuh & Bersih (Tanpa Terpotong) */}
       <div className="relative w-full h-full bg-[#070a10] flex items-center justify-center p-2.5 sm:p-3 overflow-hidden">
         {/* Ambient Glow di belakang gambar */}
@@ -394,18 +404,18 @@ function ProductCard({ project, onOpenModal }) {
         />
 
         {project.isMobile ? (
-          // Thumbnail HP ramping
+          // Thumbnail HP ramping - padding bawah memastikan screenshot utuh tanpa terpotong strip judul
           <img
             src={project.thumbnail}
             alt={project.title}
-            className="relative z-10 max-h-[94%] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)]"
+            className="relative z-10 max-h-[90%] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)] pb-5 group-hover:pb-0 transition-all duration-300"
           />
         ) : (
-          // Landscape Web Screenshot 100% Utuh
+          // Landscape Web Screenshot 100% Utuh - padding bawah menjaga konten web terlihat penuh
           <img
             src={project.thumbnail}
             alt={project.title}
-            className="relative z-10 max-w-full max-h-full object-contain rounded-xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)]"
+            className="relative z-10 max-w-full max-h-[90%] object-contain rounded-xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] pb-5 group-hover:pb-0 transition-all duration-300"
           />
         )}
 

@@ -101,14 +101,18 @@ export const KEYCAP_ICONS = {
     <SiMongodb className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
   ),
 
-  // Git: Official diamond branching symbol
+  // Git: Official red branch inside white diamond badge (Exact match to reference photo!)
   git: () => (
-    <SiGit className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <div className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-[4px] bg-white flex items-center justify-center rotate-45 shadow-sm">
+      <SiGit className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#EF4444] -rotate-45" />
+    </div>
   ),
 
-  // GitHub: Official Octocat
+  // GitHub: Official black Octocat inside white circle badge (Exact match to reference photo!)
   github: () => (
-    <SiGithub className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-white flex items-center justify-center shadow-sm">
+      <SiGithub className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-black" />
+    </div>
   ),
 
   // PostgreSQL: Official Slonik elephant head
@@ -285,9 +289,9 @@ export const KEYBOARD_SKILLS = [
     col: 1,
     shortcut: '2',
     letterKey: 't',
-    bg: '#2563EB',
-    side: '#1D4ED8',
-    sideDark: '#1E3A8A',
+    bg: '#3178C6',
+    side: '#235A97',
+    sideDark: '#163A63',
     category: 'Typed Language',
     tagline: 'javascript with superpowers — catching runtime bugs before they ever reach production.',
     logoKey: 'typescript',
@@ -484,10 +488,10 @@ export const KEYBOARD_SKILLS = [
     col: 2,
     shortcut: 'D',
     letterKey: 'p',
-    bg: '#1E293B',
-    side: '#0F172A',
-    sideDark: '#020617',
-    border: '1px solid rgba(255,255,255,0.1)',
+    bg: '#336791',
+    side: '#275275',
+    sideDark: '#1A3750',
+    border: '1px solid rgba(255,255,255,0.15)',
     category: 'Relational Database',
     tagline: 'the worlds most advanced open-source relational database — uncompromising ACID integrity.',
     logoKey: 'postgres',
@@ -632,7 +636,6 @@ export default function SkillsKeyboard() {
   const [activeSkill, setActiveSkill] = useState(
     () => KEYBOARD_SKILLS.find(s => s.id === 'react') || KEYBOARD_SKILLS[4]
   );
-  const [pressedId, setPressedId] = useState(null);
   const containerRef = useRef(null);
 
   // Scroll kinematics matching user reference:
@@ -643,264 +646,271 @@ export default function SkillsKeyboard() {
 
   // Settled angle matching user reference:
   // rotateX: 46deg, rotateY: -6deg, rotateZ: -36deg
+  // Rock-steady under the mouse cursor so clicks NEVER miss!
   const scrollRotateX = useTransform(scrollYProgress, [0, 0.45, 1], [70, 56, 46]);
   const scrollRotateY = useTransform(scrollYProgress, [0, 0.45, 1], [-22, -14, -6]);
   const scrollRotateZ = useTransform(scrollYProgress, [0, 0.45, 1], [-65, -48, -36]);
   const scrollScale = useTransform(scrollYProgress, [0, 0.35, 1], [0.46, 0.72, 1]);
   const scrollY = useTransform(scrollYProgress, [0, 1], [-220, 0]);
-  const scrollX = useTransform(scrollYProgress, [0, 0.75, 1], [-60, -15, 0]);
 
-  // Mouse parallax motion values
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const chassisRotateX = useTransform([scrollRotateX, mouseY], ([sx, my]) => sx + my * 4);
-  const chassisRotateY = useTransform([scrollRotateY, mouseX], ([sy, mx]) => sy + mx * 4);
-  const chassisRotateZ = useTransform([scrollRotateZ, mouseX], ([sz, mx]) => sz + mx * 2);
-
-  // Smooth entrance opacity for header and left inspector panel:
-  const headerOpacity = useTransform(scrollYProgress, [0.15, 0.6], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0.15, 0.6], [24, 0]);
-  const inspectorOpacity = useTransform(scrollYProgress, [0.25, 0.75], [0, 1]);
-  const inspectorX = useTransform(scrollYProgress, [0.25, 0.75], [-24, 0]);
-
-  // Guaranteed Trigger Function (Works on mouse click, touch, and physical keyboard)
-  // NO AUDIO: Audio completely removed as requested
-  const triggerKey = useCallback((skill) => {
-    setActiveSkill(skill);
-    setPressedId(skill.id);
-    setTimeout(() => {
-      setPressedId((curr) => (curr === skill.id ? null : curr));
-    }, 150);
+  // Guaranteed Instant Trigger Function
+  // Updates inspector immediately with zero delay and triggers visual tactile bounce
+  const triggerKey = useCallback((skill, buttonEl = null) => {
+    setActiveSkill((prev) => (prev.id === skill.id ? prev : skill));
+    if (buttonEl) {
+      buttonEl.classList.add('is-pressed');
+      if (buttonEl._pressTimer) clearTimeout(buttonEl._pressTimer);
+      buttonEl._pressTimer = setTimeout(() => {
+        buttonEl.classList.remove('is-pressed');
+        buttonEl._pressTimer = null;
+      }, 120);
+    }
   }, []);
 
-  // Global physical keyboard listener
+  // Global physical keyboard listener (Deterministic 1-to-1 match to 4x6 grid)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      if (e.repeat) return; // Prevent spam lag on held keys
 
       const pressedChar = e.key.toLowerCase();
 
-      let matched = KEYBOARD_SKILLS.find(
-        (s) => s.shortcut.toLowerCase() === pressedChar || s.letterKey === pressedChar
+      // 1-to-1 direct match with the 4x6 grid keys:
+      // Row 0: 1, 2, 3, 4, 5, 6
+      // Row 1: q, w, e, r, t, y
+      // Row 2: a, s, d, f, g, h
+      // Row 3: z, x, c, v, b, n
+      const matched = KEYBOARD_SKILLS.find(
+        (s) => s.shortcut.toLowerCase() === pressedChar
       );
 
-      if (!matched) {
-        matched = KEYBOARD_SKILLS.find(s => s.name.toLowerCase().startsWith(pressedChar));
-      }
-
       if (matched) {
-        triggerKey(matched);
+        const btn = containerRef.current?.querySelector(`[data-skill-id="${matched.id}"]`);
+        triggerKey(matched, btn);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [triggerKey]);
-
-  // GPU mouse parallax tilt
-  const handleMouseMove = (e) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
-    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
 
   const ActiveInspectorLogo = INSPECTOR_LOGOS[activeSkill.logoKey];
 
   return (
     <div 
       id="skills-section"
-      className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 scroll-mt-28"
+      className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 scroll-mt-28"
       ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
+      {/* Scoped CSS for Ultra-Snappy Hardware-Accelerated 3D Keycap Physics */}
+      <style>{`
+        .keycap-btn {
+          position: relative;
+          transform: translate3d(0, 0, 0);
+          /* ONLY transition transform on GPU Compositor! Zero 16-layer box-shadow blur interpolation! */
+          transition: transform 0.05s cubic-bezier(0.2, 0.8, 0.2, 1);
+          transform-style: preserve-3d;
+          box-shadow:
+            0 1px 1.5px rgba(255, 255, 255, 0.5) inset,
+            -1px 1px 0 var(--key-side),
+            -2px 2px 0 var(--key-side),
+            -3px 3px 0 var(--key-side),
+            -4px 4px 0 var(--key-side),
+            -5px 5px 0 var(--key-side),
+            -6px 6px 0 var(--key-side),
+            -7px 7px 0 var(--key-side-dark),
+            -8px 8px 0 var(--key-side-dark),
+            -9px 9px 0 var(--key-side-dark),
+            -10px 10px 0 var(--key-side-dark),
+            -11px 11px 0 #080c14,
+            -12px 12px 0 #05070c,
+            -13px 13px 0 #020306,
+            -14px 14px 0 #000002,
+            -18px 20px 28px rgba(0, 0, 0, 0.98),
+            -8px 10px 14px rgba(0, 0, 0, 0.88);
+          user-select: none;
+          -webkit-user-select: none;
+          -webkit-user-drag: none;
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        .keycap-btn:hover {
+          transform: translate3d(-2px, 2px, 0);
+        }
+
+        .keycap-btn:active,
+        .keycap-btn.is-pressed {
+          transform: translate3d(-8px, 8px, 0) !important;
+          box-shadow:
+            -1px 1px 0 #020305,
+            -2px 2px 4px rgba(0, 0, 0, 0.9),
+            inset 0 2px 6px rgba(0, 0, 0, 0.75) !important;
+        }
+      `}</style>
+
       {/* ============================================================ */}
-      {/* SECTION TOP HEADER: "SKILLS" + "(hint: press a key)"          */}
-      {/* (Clean, no sound button - matching reference image)           */}
+      {/* SECTION TOP HEADER: "SKILLS & TECHNOLOGIES"                   */}
+      {/* Pixel font matching ABOUT ME header + smooth entrance transitions */}
       {/* ============================================================ */}
       <motion.div 
-        style={{ opacity: headerOpacity, y: headerY }}
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="flex flex-col items-center text-center mb-10 sm:mb-16 select-none relative z-20"
       >
-        <h2 
-          className="text-5xl sm:text-6xl md:text-7xl font-black uppercase tracking-widest text-white relative drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]"
-          style={{
-            fontFamily: "'Space Grotesk', -apple-system, sans-serif",
-            letterSpacing: '0.16em',
-            textShadow: '0 2px 0 #94a3b8, 0 4px 0 #475569, 0 8px 24px rgba(0,0,0,0.9)'
-          }}
+        {/* Pixel Headline matching ABOUT ME: "TECH STACK" */}
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.65, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="font-pixel text-4xl sm:text-5xl md:text-6xl font-normal tracking-wider text-white uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)]"
+          style={{ fontFamily: "'Arcadepix', monospace" }}
         >
-          SKILLS
-        </h2>
+          TECH <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">STACK</span>
+        </motion.h2>
 
-        {/* Hint Caption matching reference */}
-        <div className="flex items-center gap-2 mt-2 font-mono text-xs sm:text-sm text-slate-400">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
-          <span className="text-slate-300 font-medium">
-            (hint: <span className="text-[#FFD500] underline underline-offset-4 font-semibold">press a key</span> on your keyboard or tap below)
-          </span>
-        </div>
+        {/* Subtitle */}
+        <motion.p 
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="text-slate-300 text-sm sm:text-base font-normal mt-3.5 max-w-2xl mx-auto leading-relaxed"
+        >
+          A collection of technologies I use to turn ideas into digital experiences.
+        </motion.p>
       </motion.div>
 
       {/* ============================================================ */}
-      {/* MAIN TWO-COLUMN STAGE: INSPECTOR PANEL (LEFT) + KEYPAD (RIGHT)*/}
+      {/* MAIN TWO-COLUMN STAGE: TEXT (LEFT) + 3D KEYBOARD (RIGHT)     */}
+      {/* Centered container so text sits close beside keyboard        */}
+      {/* Category badge removed per user request: only name & tagline */}
       {/* ============================================================ */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
-        
-        {/* ------------------------------------------------------------ */}
-        {/* LEFT COLUMN: ACTIVE SKILL 3D INSPECTOR (Ref: "ttier" Panel)   */}
-        {/* Features large authentic full-color logo, title, and tagline */}
-        {/* ------------------------------------------------------------ */}
-        <motion.div 
-          style={{ opacity: inspectorOpacity, x: inspectorX }}
-          className="lg:col-span-5 flex flex-col justify-center min-h-[180px] sm:min-h-[240px] relative z-20"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeSkill.id}
-              initial={{ opacity: 0, y: 14, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -14, scale: 0.97 }}
-              transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col"
-            >
-              {/* Top Row: Authentic Full-Color Logo & Category Badge */}
-              <div className="flex items-center gap-4 mb-3">
-                <div 
-                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center p-2.5 shadow-2xl relative border border-white/10"
-                  style={{
-                    background: 'radial-gradient(circle at 35% 30%, #1e293b 0%, #090d16 100%)',
-                    boxShadow: `0 8px 24px -4px ${activeSkill.bg}44, inset 0 1px 1px rgba(255,255,255,0.2)`
-                  }}
-                >
-                  {ActiveInspectorLogo && <ActiveInspectorLogo />}
-                </div>
-
-                <div className="flex flex-col">
-                  <span className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#FFD500] font-semibold">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 xl:gap-16">
+          
+          {/* ------------------------------------------------------------ */}
+          {/* LEFT COLUMN: ACTIVE SKILL INSPECTOR (Beside Keyboard)        */}
+          {/* Shifted rightward toward center so it's not clinging to edge */}
+          {/* ------------------------------------------------------------ */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full lg:w-[380px] xl:w-[420px] flex flex-col justify-center min-h-[160px] sm:min-h-[200px] relative z-20 text-left"
+          >
+            {/* Active Skill Details styled symmetrically with Motivational Quotes */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeSkill.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col text-left"
+              >
+                {/* Category kicker */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFD500] shadow-[0_0_8px_rgba(255,213,0,0.8)]" />
+                  <span className="text-xs font-mono font-bold tracking-widest text-[#FFD500] uppercase">
                     {activeSkill.category}
                   </span>
-                  <span className="font-mono text-[10px] text-slate-400">
-                    Shortcut Key: <kbd className="px-1.5 py-0.5 rounded bg-white/10 border border-white/20 text-white font-bold">{activeSkill.shortcut}</kbd>
-                  </span>
                 </div>
-              </div>
 
-              {/* Massive 3D Extruded Title (Matching reference image) */}
-              <div className="relative my-0.5 overflow-visible">
+                {/* Monumental Skill Title (Option 1: Plus Jakarta Sans Black 900) */}
                 <h3 
-                  className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white select-none whitespace-normal leading-tight pb-1"
+                  className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white select-none whitespace-normal leading-[1.1] pb-1 transition-all duration-200 text-left max-w-sm"
                   style={{
-                    fontFamily: "'Space Grotesk', -apple-system, sans-serif",
-                    textShadow: `
-                      1px 1px 0 #cbd5e1, 
-                      2px 2px 0 #94a3b8, 
-                      3px 3px 0 #64748b, 
-                      4px 4px 0 #475569, 
-                      6px 6px 18px rgba(0,0,0,0.92)
-                    `
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    letterSpacing: "-0.025em",
+                    textShadow: `0 4px 24px rgba(0,0,0,0.9), 0 0 35px ${activeSkill.bg}60`
                   }}
                 >
                   {activeSkill.name}
                 </h3>
-              </div>
 
-              {/* Punchy Tagline */}
-              <p className="mt-3 text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-lg">
-                &ldquo;{activeSkill.tagline}&rdquo;
-              </p>
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
+                {/* Body Tagline matching Motivational Quotes body typography */}
+                <p 
+                  className="mt-3 text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-md text-left"
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif"
+                  }}
+                >
+                  &ldquo;{activeSkill.tagline}&rdquo;
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
 
-        {/* ------------------------------------------------------------ */}
-        {/* RIGHT COLUMN: 3D ISOMETRIC MECHANICAL KEYPAD MATRIX          */}
-        {/* ------------------------------------------------------------ */}
-        <div className="lg:col-span-7 flex items-center justify-center relative z-20 py-4 sm:py-6">
-          
-          {/* Ambient RGB underglow spillage */}
-          <div 
-            className="absolute inset-0 pointer-events-none rounded-3xl opacity-20 transition-all duration-500"
-            style={{
-              background: `radial-gradient(circle at 50% 50%, ${activeSkill.bg} 0%, transparent 70%)`
-            }}
-          />
-
-          {/* Keyboard Chassis Stage with 3D isometric tilt */}
-          <div 
-            className="relative select-none"
-            style={{
-              perspective: '1200px',
-              perspectiveOrigin: '45% 40%',
-            }}
-          >
-            {/* 
-              AUTHENTIC CNC MECHANICAL MACROPAD BODY:
-              Tightly wraps the 4x6 grid with minimal bezel.
-            */}
-            <motion.div 
-              className="relative p-2 sm:p-2.5 rounded-[20px] sm:rounded-[24px] border border-white/10"
+          {/* ------------------------------------------------------------ */}
+          {/* RIGHT COLUMN: 3D ISOMETRIC MECHANICAL KEYPAD MATRIX          */}
+          {/* ------------------------------------------------------------ */}
+          <div className="flex items-center justify-center relative z-20 py-4 sm:py-6 flex-shrink-0">
+            
+            {/* Ambient RGB underglow spillage (Isolated GPU Compositor Layer) */}
+            <div 
+              className="absolute inset-0 pointer-events-none rounded-3xl opacity-20"
               style={{
-                scale: scrollScale,
-                x: scrollX,
-                y: scrollY,
-                rotateX: chassisRotateX,
-                rotateY: chassisRotateY,
-                rotateZ: chassisRotateZ,
-                transformStyle: 'preserve-3d',
-                background: '#05070c',
-                boxShadow: `
-                  0 1px 0 rgba(255,255,255,0.22) inset,
-                  0 -1px 0 rgba(0,0,0,0.95) inset,
-                  -1px 2px 0 #05070a,
-                  -2px 5px 0 #030407,
-                  -4px 9px 0 #020305,
-                  -6px 15px 0 #010203,
-                  -10px 24px 38px rgba(0,0,0,0.98),
-                  -18px 46px 65px rgba(0,0,0,0.95),
-                  0 0 50px ${activeSkill.bg}22
-                `
+                background: `radial-gradient(circle at 50% 50%, ${activeSkill.bg} 0%, transparent 70%)`,
+                transform: 'translateZ(0)',
+                willChange: 'background',
+              }}
+            />
+
+            {/* Keyboard Stage with 3D isometric tilt */}
+            <div 
+              className="relative select-none"
+              style={{
+                perspective: '1200px',
+                perspectiveOrigin: '45% 40%',
               }}
             >
               {/* 
-                DEEP SWITCH PLATE FLOOR & TAPERED KEYCAP GRID:
-                - Pitch black floor (#000002) creates true infinite abyss in crevices
-                - Generous 8px to 10px crevice gap with calibrated z-index stacking
+                Direct 3D Mechanical Keycaps Grid:
+                Floating directly in 3D space with high-profile keycaps and deep travel!
+                Uses pure scroll kinematics for rock-solid stability under cursor!
               */}
-              <div 
-                className="grid grid-cols-6 gap-2 sm:gap-2.5 p-2 rounded-[18px] bg-[#000002]"
+              <motion.div 
+                className="relative"
                 style={{
-                  boxShadow: 'inset 0 8px 30px rgba(0, 0, 0, 0.99)',
-                  transformStyle: 'preserve-3d'
+                  scale: scrollScale,
+                  y: scrollY,
+                  rotateX: scrollRotateX,
+                  rotateY: scrollRotateY,
+                  rotateZ: scrollRotateZ,
+                  transformStyle: 'preserve-3d',
                 }}
               >
-                {KEYBOARD_SKILLS.map((skill, index) => {
-                  const isSelected = activeSkill.id === skill.id;
-                  const isPressed = pressedId === skill.id;
+                <div 
+                  className="grid grid-cols-6 gap-2 sm:gap-2.5"
+                  style={{
+                    transformStyle: 'preserve-3d'
+                  }}
+                >
+                  {KEYBOARD_SKILLS.map((skill) => {
+                    const isSelected = activeSkill.id === skill.id;
 
-                  return (
-                    <KeycapButton
-                      key={skill.id}
-                      skill={skill}
-                      index={index}
-                      isSelected={isSelected}
-                      isPressed={isPressed}
-                      onTrigger={() => triggerKey(skill)}
-                    />
-                  );
-                })}
-              </div>
-            </motion.div>
+                    return (
+                      <KeycapButton
+                        key={skill.id}
+                        skill={skill}
+                        isSelected={isSelected}
+                        onTrigger={triggerKey}
+                      />
+                    );
+                  })}
+                </div>
+              </motion.div>
+            </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   );
@@ -909,83 +919,46 @@ export default function SkillsKeyboard() {
 // ======================================================================
 // 3D MECHANICAL KEYCAP COMPONENT (SA High-Profile Tall Extrusion & 8px Travel)
 // Features pixel-accurate symbol on high-contrast, brand-colored keycap body
+// 100% full-surface click responsiveness (Full Kotak): zero dead zones, zero locks
 // ======================================================================
-const KeycapButton = React.memo(function KeycapButton({ skill, index, isSelected, isPressed, onTrigger }) {
-  const [hovered, setHovered] = useState(false);
-  const lastTriggerRef = useRef(0);
+const KeycapButton = React.memo(function KeycapButton({ skill, isSelected, onTrigger }) {
+  // Ultra-responsive pointer interactions with instant 0ms trigger
+  const handlePointerDown = (e) => {
+    // Only react to primary mouse button (left click) or touch
+    if (e.button !== undefined && e.button !== 0) return;
+    const btn = e.currentTarget;
+    btn._lastPointerDown = Date.now();
+    onTrigger(skill, btn);
+  };
 
-  const handleClick = () => {
-    const now = Date.now();
-    if (now - lastTriggerRef.current < 120) return;
-    lastTriggerRef.current = now;
-    onTrigger();
+  const handleClick = (e) => {
+    const btn = e.currentTarget;
+    // Deduplicate if pointerdown already processed this click within 300ms
+    if (Date.now() - (btn._lastPointerDown || 0) < 300) return;
+    onTrigger(skill, btn);
   };
 
   // Precise z-index layering: Rows further in front and columns to the left render on top!
   const baseZIndex = (skill.row * 10) + (6 - skill.col);
-  const currentZIndex = isPressed || isSelected ? 120 : hovered ? 100 : baseZIndex;
+  const currentZIndex = isSelected ? 120 : baseZIndex;
 
   const KeycapIcon = KEYCAP_ICONS[skill.logoKey];
 
   return (
     <button
       type="button"
-      onPointerDown={handleClick}
+      data-skill-id={skill.id}
+      onPointerDown={handlePointerDown}
       onClick={handleClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       title={`${skill.name} (Press '${skill.shortcut}')`}
-      className="relative w-12 h-12 sm:w-14 sm:h-14 lg:w-[62px] lg:h-[62px] rounded-[13px] p-1 sm:p-[6px] border-none outline-none cursor-pointer select-none transition-all duration-75 flex items-center justify-center"
+      className="keycap-btn relative w-12 h-12 sm:w-14 sm:h-14 lg:w-[62px] lg:h-[62px] rounded-[13px] p-1 sm:p-[6px] border-none outline-none cursor-pointer flex items-center justify-center"
       style={{
         zIndex: currentZIndex,
+        '--key-side': skill.side,
+        '--key-side-dark': skill.sideDark,
         /* Base Skirt Gradient: creates the sloping pyramid skirt */
         background: `linear-gradient(135deg, ${skill.side} 0%, ${skill.sideDark} 100%)`,
         border: skill.border || 'none',
-        
-        /* 
-          TALL 8PX MECHANICAL TRAVEL ON CLICK / PRESS:
-          Visually sinks deep into the plate like a real mechanical switch!
-        */
-        transform: isPressed 
-          ? 'translate(-8px, 8px)' 
-          : hovered 
-          ? 'translate(-2px, 2px)' 
-          : 'translate(0px, 0px)',
-        transformStyle: 'preserve-3d',
-        
-        /* 
-          14-Layer Solid 3D Keycap Extruded Sides (-X and +Y):
-          - Tall, thick, high-profile physical depth down to plate
-          - Creates visible side walls on JS, Next.js, Git, Linux
-          - Deepens the crevice between keys dramatically
-        */
-        boxShadow: isPressed
-          ? `
-            -1px 1px 0 #020305,
-            -2px 2px 4px rgba(0, 0, 0, 0.9),
-            inset 0 2px 6px rgba(0, 0, 0, 0.75)
-            ${isSelected ? `, 0 0 24px ${skill.bg}ff` : ''}
-          `
-          : `
-            0 1px 1.5px rgba(255, 255, 255, 0.5) inset,
-            -1px 1px 0 ${skill.side},
-            -2px 2px 0 ${skill.side},
-            -3px 3px 0 ${skill.side},
-            -4px 4px 0 ${skill.side},
-            -5px 5px 0 ${skill.side},
-            -6px 6px 0 ${skill.side},
-            -7px 7px 0 ${skill.sideDark},
-            -8px 8px 0 ${skill.sideDark},
-            -9px 9px 0 ${skill.sideDark},
-            -10px 10px 0 ${skill.sideDark},
-            -11px 11px 0 #080c14,
-            -12px 12px 0 #05070c,
-            -13px 13px 0 #020306,
-            -14px 14px 0 #000002,
-            -18px 20px 28px rgba(0, 0, 0, 0.98),
-            -8px 10px 14px rgba(0, 0, 0, 0.88)
-            ${isSelected ? `, 0 0 24px ${skill.bg}ff` : ''}
-          `,
       }}
     >
       {/* 
@@ -1015,15 +988,15 @@ const KeycapButton = React.memo(function KeycapButton({ skill, index, isSelected
           {KeycapIcon && <KeycapIcon />}
         </div>
 
-        {/* Active Selection Glow Ring */}
-        {isSelected && (
-          <div 
-            className="absolute inset-0 rounded-[8px] pointer-events-none ring-2 ring-white/95 ring-offset-1 ring-offset-black/50"
-            style={{
-              boxShadow: '0 0 16px rgba(255, 255, 255, 0.6)'
-            }}
-          />
-        )}
+        {/* Active Selection Glow Ring with vibrant color spill (zero DOM thrashing) */}
+        <div 
+          className={`absolute inset-0 rounded-[8px] pointer-events-none ring-2 ring-white/95 ring-offset-1 ring-offset-black/50 transition-opacity duration-100 ${
+            isSelected ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{
+            boxShadow: isSelected ? `0 0 16px rgba(255, 255, 255, 0.65), 0 0 24px ${skill.bg}` : 'none'
+          }}
+        />
       </div>
     </button>
   );
