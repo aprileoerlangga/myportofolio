@@ -10,13 +10,7 @@ import {
   useSpring,
   useTransform,
   useMotionValueEvent,
-  AnimatePresence,
 } from 'framer-motion';
-import {
-  FiGithub,
-  FiExternalLink,
-  FiX,
-} from 'react-icons/fi';
 
 // Project Screenshots
 import iotImage from '../assets/IoT.png';
@@ -186,7 +180,6 @@ export function Projects() {
   const cardRefs = useRef([]);
   const stackedContainerRef = useRef(null);
 
-  const [modalImage, setModalImage] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [windowDimensions, setWindowDimensions] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -204,15 +197,6 @@ export function Projects() {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Keyboard shortcut Esc to close modal
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setModalImage(null);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   // Scroll tracking across the comprehensive stage (Arc + Stacking Swipe)
@@ -427,7 +411,6 @@ export function Projects() {
                 <div
                   key={`${project.id}-${idx}`}
                   ref={(el) => (cardRefs.current[idx] = el)}
-                  onClick={() => setModalImage(project)}
                   style={{
                     width: `${cardWidth}px`,
                     height: `${cardHeight}px`,
@@ -436,7 +419,7 @@ export function Projects() {
                     zIndex: init.zIndex ?? 1,
                     transform: init.transform ?? 'translate(-50%, -50%)',
                   }}
-                  className="absolute top-1/2 left-1/2 rounded-[20px] sm:rounded-[28px] cursor-pointer overflow-hidden bg-[#070b16] shadow-[0_20px_50px_rgba(0,0,0,0.85)] group select-none flex-shrink-0 border border-white/20 will-change-transform"
+                  className="absolute top-1/2 left-1/2 rounded-[20px] sm:rounded-[28px] cursor-default overflow-hidden bg-[#070b16] shadow-[0_20px_50px_rgba(0,0,0,0.85)] group select-none flex-shrink-0 border border-white/20 will-change-transform"
                 >
                 {/* Edge-to-edge Project Screenshot */}
                 {project.isMobile ? (
@@ -495,7 +478,6 @@ export function Projects() {
                 index={idx}
                 total={projectSets.length}
                 smoothScroll={smoothScroll}
-                onOpenModal={setModalImage}
                 isMobile={isMobile}
               />
             ))}
@@ -565,90 +547,6 @@ export function Projects() {
         </motion.div>
 
       </div>
-
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* FULLSCREEN LIGHTBOX MODAL                                              */}
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      <AnimatePresence>
-        {modalImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setModalImage(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-black/90 backdrop-blur-xl"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl w-full max-h-[92vh] bg-[#0c111e] rounded-2xl border border-[#FFD500]/40 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col"
-            >
-              {/* Header Modal */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#070a12]">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded bg-[#E3000B] flex items-center justify-center font-black text-xs text-[#FFD500] border border-white/30">
-                    LEGO
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#FFD500]">
-                      SET #{modalImage.setNo} • {modalImage.category}
-                    </span>
-                    <h3 className="text-lg sm:text-xl font-bold text-white">
-                      {modalImage.rawTitle}
-                    </h3>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setModalImage(null)}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors"
-                >
-                  <FiX className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Tampilan Gambar Full Resolusi */}
-              <div className="relative flex-1 bg-black/60 p-4 sm:p-6 flex items-center justify-center overflow-auto min-h-[300px]">
-                <img
-                  src={modalImage.thumbnail}
-                  alt={modalImage.title}
-                  className="max-w-full max-h-[72vh] object-contain rounded-lg drop-shadow-[0_10px_30px_rgba(0,0,0,0.85)]"
-                />
-              </div>
-
-              {/* Footer Modal dengan Tombol Akses Repo */}
-              <div className="px-6 py-4 border-t border-white/10 bg-[#070a12] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <p className="text-xs text-neutral-300 max-w-xl">
-                    {modalImage.description}
-                  </p>
-                  <div className="flex items-center gap-1.5 pt-1">
-                    {modalImage.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-[10px] px-2 py-0.5 rounded bg-white/[0.08] text-neutral-300 font-mono"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <a
-                  href={modalImage.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFD500] hover:bg-[#ffe033] text-black text-xs font-bold transition-all shadow-[0_4px_15px_rgba(255,213,0,0.3)] hover:scale-105 active:scale-95 flex-shrink-0"
-                >
-                  <FiGithub className="w-4 h-4" />
-                  <span>Buka Repository</span>
-                  <FiExternalLink className="w-3.5 h-3.5 opacity-80" />
-                </a>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
@@ -662,7 +560,6 @@ function StackedIsoCard({
   index,
   total,
   smoothScroll,
-  onOpenModal,
   isMobile,
 }) {
   // Stacking timing:
@@ -744,8 +641,7 @@ function StackedIsoCard({
         filter,
         zIndex: baseZIndex,
       }}
-      className="absolute inset-0 m-auto w-full h-full rounded-[20px] sm:rounded-[28px] overflow-hidden bg-[#070b16] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.85)] cursor-pointer select-none group"
-      onClick={() => onOpenModal(project)}
+      className="absolute inset-0 m-auto w-full h-full rounded-[20px] sm:rounded-[28px] overflow-hidden bg-[#070b16] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.85)] cursor-default select-none group"
     >
       {/* Edge-to-Edge Project Screenshot (100% Identical to Zoom Card) */}
       {project.isMobile ? (
