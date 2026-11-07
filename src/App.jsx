@@ -33,19 +33,25 @@ function RouteWrapper({ children }) {
       behavior: 'instant',
     });
 
+    if (window.__lenis) {
+      window.__lenis.scrollTo(0, { immediate: true });
+    }
+
     if (isHome) {
       document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+      if (window.__lenis) window.__lenis.stop();
     } else {
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
+      if (window.__lenis) window.__lenis.start();
     }
 
     return () => {
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
-  }, [isHome]);
+  }, [location.pathname, isHome]);
 
   return children;
 }
@@ -107,11 +113,12 @@ function App() {
 
     // Inisialisasi Lenis Smooth Scroll untuk gerakan scroll yang mentega (buttery smooth)
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       syncTouch: false,
     });
+    window.__lenis = lenis;
 
     let rafId;
     function raf(time) {
@@ -123,6 +130,7 @@ function App() {
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      delete window.__lenis;
     };
   }, []);
 

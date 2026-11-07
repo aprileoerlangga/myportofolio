@@ -1,37 +1,39 @@
 // src/components/Projects.jsx
-// Perfected 3D HeroParallax — Menggabungkan estetika Zulfian dengan viewport centering tanpa blank void
+// Complete 1:1 Implementation of YAAS Energy (yaas-energy.com) Scroll Experience
+// Part 1: 3D Cylindrical Arc Carousel (Spin & Zoom)
+// Part 2: Isometric Stacking Cards (Scroll down -> cards fly up one by one revealing next project)
 
 import React, { useState, useEffect, useRef } from 'react';
 import {
   motion,
   useScroll,
-  useTransform,
   useSpring,
+  useTransform,
+  useMotionValueEvent,
   AnimatePresence,
 } from 'framer-motion';
 import {
   FiGithub,
   FiExternalLink,
-  FiMaximize2,
   FiX,
-  FiFolder,
-  FiArrowUpRight,
 } from 'react-icons/fi';
 
-// Gambar proyek orisinal milik Aprileo
+// Project Screenshots
 import iotImage from '../assets/IoT.png';
 import rosaStoreImage from '../assets/RosaStore.png';
 import fishAiImage from '../assets/FishAI.png';
 import iwakmartImage from '../assets/Iwakmart Mobile.jpg';
 import portokuImage from '../assets/Web Portoku.jpeg';
 
-// Baris 1: 3 Proyek
-const row1Projects = [
+// The 5 Authentic Collector Projects
+const projectSets = [
   {
     id: 1,
-    title: 'Aplikasi Mobile Fish AI',
-    subtitle: 'AI Diagnostic Mobile App',
-    category: 'Mobile & AI',
+    setNo: '6924',
+    title: 'Fish AI Diagnostics',
+    rawTitle: 'Aplikasi Mobile Fish AI',
+    year: '2024',
+    category: 'MOBILE & COMPUTER VISION',
     description:
       'Aplikasi diagnosis cerdas penyakit ikan & udang berbasis Computer Vision & AI. Menghadirkan deteksi gejala instan dengan rekomendasi penanganan akurat untuk peternak.',
     link: 'https://github.com/aprileoerlangga/FishAI.git',
@@ -42,9 +44,11 @@ const row1Projects = [
   },
   {
     id: 2,
-    title: 'Web E-commerce Handphone',
-    subtitle: 'Rosa Store Online Marketplace',
-    category: 'Fullstack Web',
+    setNo: '6882',
+    title: 'Rosa Store Marketplace',
+    rawTitle: 'Web E-commerce Handphone',
+    year: '2024',
+    category: 'FULLSTACK WEB ARCHITECTURE',
     description:
       'Platform e-commerce modern dengan katalog produk handphone, manajemen keranjang belanja, checkout instan, serta sistem autentikasi aman.',
     link: 'https://github.com/aprileoerlangga/ecommerce-handphone.git',
@@ -55,9 +59,11 @@ const row1Projects = [
   },
   {
     id: 3,
+    setNo: '6984',
     title: 'Iwakmart Mobile App',
-    subtitle: 'Fishery Marketplace Ecosystem',
-    category: 'Mobile Application',
+    rawTitle: 'Iwakmart Fishery App',
+    year: '2025',
+    category: 'FISHERY MARKETPLACE ECOSYSTEM',
     description:
       'Aplikasi marketplace perikanan digital untuk menghubungkan peternak ikan langsung dengan konsumen dengan pelacakan harga dan pemesanan segar.',
     link: 'https://github.com/aprileoerlangga',
@@ -66,15 +72,13 @@ const row1Projects = [
     tags: ['Flutter', 'Firebase', 'State Mgmt'],
     accentColor: '#3b82f6',
   },
-];
-
-// Baris 2: 3 Proyek
-const row2Projects = [
   {
     id: 4,
-    title: 'IoT GPS Tracker Bagpack',
-    subtitle: 'Real-Time Location Tracking',
-    category: 'IoT & Hardware',
+    setNo: '6950',
+    title: 'IoT GPS Tracker System',
+    rawTitle: 'IoT GPS Tracker Bagpack',
+    year: '2025',
+    category: 'HARDWARE & TELEMETRY DASHBOARD',
     description:
       'Sistem pelacakan tas ransel pintar terintegrasi mikrokontroler GPS, GSM module, dan dashboard pemantauan lokasi real-time interaktif berbasis web.',
     link: 'https://github.com/aprileoerlangga/GPSTrackerBag.git',
@@ -85,89 +89,124 @@ const row2Projects = [
   },
   {
     id: 5,
-    title: 'Personal Web Portfolio',
-    subtitle: 'Interactive 3D Experience',
-    category: 'Frontend Engineering',
+    setNo: '6928',
+    title: 'Personal 3D Portfolio',
+    rawTitle: 'Interactive 3D Experience',
+    year: '2026',
+    category: 'CREATIVE FRONTEND & THREE.JS',
     description:
-      'Website portofolio kreatif dengan integrasi karakter 3D Lego interaktif, animasi transisi halus, audio-visual responsif, dan styling modern.',
+      'Website portofolio kreatif dengan integrasi karakter 3D Lego interaktif, audio-visual responsif, dan styling Classic Space retro-modern.',
     link: 'https://github.com/aprileoerlangga/my-portofolio.git',
     thumbnail: portokuImage,
     isMobile: false,
     tags: ['React 19', 'Three.js', 'Framer Motion'],
     accentColor: '#FFD500',
   },
-  {
-    id: 6,
-    title: 'GitHub & Open Source',
-    subtitle: 'Explore More Repositories',
-    category: 'Open Source',
-    description:
-      'Kunjungi profil GitHub saya untuk menjelajahi berbagai riset, eksperimen AI, otomasi, dan repositori proyek sumber terbuka lainnya.',
-    link: 'https://github.com/aprileoerlangga',
-    thumbnail: null,
-    isGitHubCard: true,
-    tags: ['GitHub', 'Git', 'Open Source'],
-    accentColor: '#FFD500',
-  },
 ];
+
+// ══════════════════════════════════════════════════════════════════════════════
+// EXACT PRODUCTION MATHEMATICS EXTRACTED DIRECTLY FROM YAAS-ENERGY.COM
+// ══════════════════════════════════════════════════════════════════════════════
+const Vt = 0.7;
+const dollar_e = 0.35;
+const Kt = 24;
+const sr = 2.62;
+const or_val = 0.06;
+const mt = 3.2;
+const Xe = 2.2;
+const wt = 3.1;
+const Ye = 0.62;
+const ir = 1.25;
+const cr = 18;
+
+// Virtual reel of 25 cards (5 repetitions) exactly as in YAAS Energy
+const REPEAT_COUNT = 5;
+const virtualCards = Array.from(
+  { length: projectSets.length * REPEAT_COUNT },
+  (_, i) => ({
+    ...projectSets[i % projectSets.length],
+    virtualIndex: i,
+  })
+);
+
+// Target center card index = 10 (projectSets[0] - Fish AI)
+const TARGET_CENTER_INDEX = 10;
+const SPIN_CARDS_COUNT = 7;
+
+function Te(n) {
+  return n < 0 ? 0 : n > 1 ? 1 : n;
+}
+
+function yt(n, e, t) {
+  return n + (e - n) * t;
+}
+
+function vt(n) {
+  return n < 0.5 ? 2 * n * n : 1 - Math.pow(-2 * n + 2, 2) / 2;
+}
+
+function Zt(n) {
+  return Math.sqrt(n * n + dollar_e * dollar_e) - dollar_e;
+}
+
+function lr(n, e, t) {
+  const i = Math.max(-mt, Math.min(mt, n));
+  const s = (-i * Kt * Math.PI) / 180;
+  const c = Vt * e * Zt(i);
+  const o = e / 2;
+  const u = Math.cos(s);
+  const d = Math.sin(s);
+  const g = t * 0.15;
+  const f = (o * u * t) / Math.max(t - c - o * d, g);
+  const l = (o * u * t) / Math.max(t - c + o * d, g);
+  return { left: f, right: l };
+}
+
+function dr(n, e, t) {
+  const i = n.map((f) => lr(f, e, t));
+  const s = or_val * e;
+  const c = [0];
+  for (let f = 1; f < n.length; f += 1) {
+    c[f] = c[f - 1] + i[f - 1].right + s + i[f].left;
+  }
+  let o = 0;
+  while (o < n.length - 2 && n[o + 1] < 0) o += 1;
+  const u = n[o + 1] - n[o];
+  const d = u === 0 ? 0 : (0 - n[o]) / u;
+  const g = c[o] + (c[o + 1] - c[o]) * d;
+  return c.map((f) => f - g);
+}
 
 export function Projects() {
   const containerRef = useRef(null);
-  const [modalImage, setModalImage] = useState(null);
+  const stageRef = useRef(null);
+  const headlineRef = useRef(null);
+  const sublineRef = useRef(null);
+  const arcCardsContainerRef = useRef(null);
+  const cardRefs = useRef([]);
+  const stackedContainerRef = useRef(null);
 
-  // Scroll tracking dalam runway yang terukur pas
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
+  const [modalImage, setModalImage] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800,
   });
 
-  // Spring physics yang responsif dan mentega persis Aceternity
-  const springConfig = { stiffness: 200, damping: 26 };
+  // Track window dimensions and resize
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      setIsMobile(w < 768);
+      setWindowDimensions({ width: w, height: h });
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  // 1. Header Transition: Muncul megah di awal, lalu fade out lembut saat panggung turun & mendatar
-  const headerOpacity = useSpring(
-    useTransform(scrollYProgress, [0, 0.22], [1, 0]),
-    springConfig
-  );
-  const headerY = useSpring(
-    useTransform(scrollYProgress, [0, 0.22], [0, -45]),
-    springConfig
-  );
-
-  // 2. 3D Perspective Rotation & Scale (Miring 3D -> Turun pelan-pelan & mendatar sempurna ke tengah panggung)
-  const rotateX = useSpring(
-    useTransform(scrollYProgress, [0, 0.28], [15, 0]),
-    springConfig
-  );
-  const rotateZ = useSpring(
-    useTransform(scrollYProgress, [0, 0.28], [16, 0]),
-    springConfig
-  );
-  const stageOpacity = useSpring(
-    useTransform(scrollYProgress, [0, 0.22], [0.45, 1]),
-    springConfig
-  );
-  // Stage meluncur TURUN dari posisi elevasi awal (-40px) ke posisi tengah nyaman (+55px)
-  const translateY = useSpring(
-    useTransform(scrollYProgress, [0, 0.28], [-40, 55]),
-    springConfig
-  );
-  const stageScale = useSpring(
-    useTransform(scrollYProgress, [0, 0.28], [0.90, 1]),
-    springConfig
-  );
-
-  // 3. Horizontal Gliding: Meluncur halus dan seimbang agar SEMUA 6 kartu proyek kelihatan FULL
-  const translateX = useSpring(
-    useTransform(scrollYProgress, [0.22, 0.88], ['6%', '-6%']),
-    springConfig
-  );
-  const translateXReverse = useSpring(
-    useTransform(scrollYProgress, [0.22, 0.88], ['-6%', '6%']),
-    springConfig
-  );
-
-  // Keyboard shortcut Esc untuk menutup modal gambar
+  // Keyboard shortcut Esc to close modal
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setModalImage(null);
@@ -176,85 +215,360 @@ export function Projects() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Scroll tracking across the comprehensive stage (Arc + Stacking Swipe)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  });
+
+  const smoothScroll = useSpring(scrollYProgress, {
+    stiffness: 180,
+    damping: 26,
+    mass: 0.3,
+  });
+
+  // Dimensions for Arc and Zoom Target - Aesthetic studio framing (perfect vertical centering, zero cut-off)
+  const cardWidth = isMobile
+    ? Math.min(260, windowDimensions.width * 0.68)
+    : Math.min(360, Math.max(280, windowDimensions.width * 0.22));
+  const cardHeight = (cardWidth * 273) / 382;
+  const targetWidth = isMobile
+    ? Math.min(340, windowDimensions.width - 32)
+    : Math.min(920, Math.max(680, windowDimensions.width * 0.60));
+  const targetHeight = isMobile
+    ? Math.min(420, windowDimensions.height * 0.52)
+    : Math.min(460, Math.max(340, windowDimensions.height * 0.48));
+
+  // Pre-calculated initial positions at A = 0 (ue = 3) for instant zero-flicker render
+  const initialStyles = React.useMemo(() => {
+    const ue0 = TARGET_CENTER_INDEX - SPIN_CARDS_COUNT; // 3
+    const te0 = sr * cardWidth;
+    const ie0 = virtualCards.map((_, x) => x - ue0);
+    const ne0 = dr(ie0, cardWidth, te0);
+
+    return virtualCards.map((_, x) => {
+      const h = ie0[x];
+      const y = Math.abs(h);
+      if (y > wt) {
+        return { opacity: 0, visibility: 'hidden', zIndex: 0, transform: 'translate(-50%, -50%) scale(0)' };
+      }
+      const L = ne0[x];
+      const j = Vt * cardWidth * Zt(h);
+      const rotY = -h * Kt;
+      const W = y <= Xe ? 1 : 1 - (y - Xe) / (wt - Xe);
+      return {
+        opacity: W,
+        visibility: 'visible',
+        zIndex: 10 - Math.min(5, Math.round(y)),
+        transform: `translate(-50%, -50%) translate3d(${L}px, 0, 0) perspective(${te0}px) translateZ(${j}px) rotateY(${rotY}deg)`,
+      };
+    });
+  }, [cardWidth]);
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // DIRECT HIGH-PERFORMANCE DOM STYLE UPDATES (Locked 60/120 FPS, No React lag)
+  // ════════════════════════════════════════════════════════════════════════════
+  const updateVisuals = (scrollP) => {
+    // ──────────────────────────────────────────────────────────────────────────
+    // PHASE 1: ARC STAGE (scrollP from 0.00 to 0.35)
+    // ──────────────────────────────────────────────────────────────────────────
+    const arcPhaseMax = 0.35;
+    const arcNormalized = Math.max(0, Math.min(1, scrollP / arcPhaseMax));
+
+    // Mathematical progression for Arc spin and zoom
+    const S = vt(Te(arcNormalized / Ye));
+    const Z = Te((arcNormalized - Ye) / (1 - Ye));
+    const ue = TARGET_CENTER_INDEX - SPIN_CARDS_COUNT * (1 - S);
+    const z = Te(Z * ir);
+    const se = String(Math.max(0, 1 - z));
+    const oe = z === 0 ? 'none' : `blur(${z * cr}px)`;
+
+    // Headline & Subline fading and blurring as center card zooms
+    if (headlineRef.current) {
+      headlineRef.current.style.opacity = se;
+      headlineRef.current.style.filter = oe;
+    }
+    if (sublineRef.current) {
+      sublineRef.current.style.opacity = se;
+      sublineRef.current.style.filter = oe;
+    }
+
+    // Calculate 3D Arc positions using exact YAAS cylindrical equations
+    const te = sr * cardWidth;
+    const ie = virtualCards.map((_, x) => x - ue);
+    const ne = dr(ie, cardWidth, te);
+
+    virtualCards.forEach((_, x) => {
+      const cardEl = cardRefs.current[x];
+      if (!cardEl) return;
+
+      const h = ie[x];
+      const y = Math.abs(h);
+
+      if (y > wt) {
+        cardEl.style.opacity = '0';
+        cardEl.style.visibility = 'hidden';
+        return;
+      }
+
+      cardEl.style.visibility = 'visible';
+      const isTargetCenter = x === TARGET_CENTER_INDEX;
+      const L = ne[x];
+      const j = Vt * cardWidth * Zt(h);
+      const rotY = -h * Kt;
+      const W = y <= Xe ? 1 : 1 - (y - Xe) / (wt - Xe);
+
+      if (isTargetCenter) {
+        const H = vt(Z);
+        const currW = yt(cardWidth, targetWidth, H);
+        const currH = yt(cardHeight, targetHeight, H);
+        cardEl.style.width = `${currW}px`;
+        cardEl.style.height = `${currH}px`;
+        cardEl.style.opacity = String(W);
+        cardEl.style.zIndex = '30';
+        cardEl.style.transform = `translate(-50%, -50%) translate3d(${L * (1 - H)}px, 0, 0) perspective(${te}px) translateZ(${j * (1 - H)}px) rotateY(${rotY * (1 - H)}deg)`;
+      } else {
+        cardEl.style.width = `${cardWidth}px`;
+        cardEl.style.height = `${cardHeight}px`;
+        cardEl.style.opacity = String(Math.max(0, W * (1 - z)));
+        cardEl.style.filter = oe;
+        cardEl.style.zIndex = String(10 - Math.min(5, Math.round(y)));
+        cardEl.style.transform = `translate(-50%, -50%) translate3d(${L}px, 0, 0) perspective(${te}px) translateZ(${j}px) rotateY(${rotY}deg)`;
+      }
+    });
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // PHASE 2: SEAMLESS 1:1 HAND-OFF TO STACKED DECK
+    // Zoom completes fully at scrollP = 0.35 (Z = 1.0, 100% full dimensions)
+    // Cross-fade between 0.35 and 0.39 where BOTH cards are 100% identical
+    // Resting showcase from 0.39 to 0.44
+    // Sequential stack fly-up begins at 0.44
+    // ──────────────────────────────────────────────────────────────────────────
+    if (arcCardsContainerRef.current) {
+      if (scrollP > 0.40) {
+        arcCardsContainerRef.current.style.opacity = '0';
+        arcCardsContainerRef.current.style.pointerEvents = 'none';
+        arcCardsContainerRef.current.style.visibility = 'hidden';
+      } else if (scrollP > 0.35) {
+        const fadeOut = 1 - (scrollP - 0.35) / 0.04;
+        arcCardsContainerRef.current.style.opacity = String(Math.max(0, fadeOut));
+        arcCardsContainerRef.current.style.pointerEvents = 'none';
+        arcCardsContainerRef.current.style.visibility = 'visible';
+      } else {
+        arcCardsContainerRef.current.style.opacity = '1';
+        arcCardsContainerRef.current.style.pointerEvents = 'auto';
+        arcCardsContainerRef.current.style.visibility = 'visible';
+      }
+    }
+
+    if (stackedContainerRef.current) {
+      if (scrollP < 0.35) {
+        stackedContainerRef.current.style.opacity = '0';
+        stackedContainerRef.current.style.pointerEvents = 'none';
+        stackedContainerRef.current.style.visibility = 'hidden';
+      } else if (scrollP < 0.39) {
+        const fadeIn = (scrollP - 0.35) / 0.04;
+        stackedContainerRef.current.style.opacity = String(Math.min(1, fadeIn));
+        stackedContainerRef.current.style.pointerEvents = scrollP >= 0.37 ? 'auto' : 'none';
+        stackedContainerRef.current.style.visibility = 'visible';
+      } else {
+        stackedContainerRef.current.style.opacity = '1';
+        stackedContainerRef.current.style.pointerEvents = 'auto';
+        stackedContainerRef.current.style.visibility = 'visible';
+      }
+    }
+  };
+
+  // Attach smooth scroll event
+  useMotionValueEvent(smoothScroll, 'change', (latest) => {
+    updateVisuals(latest);
+  });
+
+  // Initial setup on mount
+  useEffect(() => {
+    updateVisuals(0);
+  }, [cardWidth, cardHeight, targetWidth, targetHeight]);
+
   return (
-    <div
-      ref={containerRef}
-      id="projects"
-      className="relative w-full h-[280vh] sm:h-[300vh] bg-transparent text-white"
-    >
-      {/* Viewport Stage Terkunci Pas di Tengah Layar Tanpa Blank Void */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden select-none z-10 [perspective:1000px] [transform-style:preserve-3d]">
-
-        {/* 1. HERO HEADER (Harmonized with Classic Space Universe & Arcadepix Typography) */}
-        <motion.div
-          style={{
-            opacity: headerOpacity,
-            y: headerY,
-          }}
-          className="absolute top-20 sm:top-24 left-0 right-0 max-w-7xl mx-auto px-6 lg:px-8 z-30 pointer-events-none"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#0055BF]/20 border border-[#00F0FF]/30 text-xs font-mono text-[#00F0FF] mb-3.5 shadow-[0_0_15px_rgba(0,240,255,0.15)] backdrop-blur-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse" />
-            <span className="tracking-widest uppercase text-[10px] sm:text-[11px]">SYS.ARCHIVE // SECTOR 03: ENGINEERING REPOSITORIES</span>
-          </div>
-          <h1 
-            className="font-pixel text-4xl sm:text-5xl md:text-6xl font-normal tracking-wider text-white uppercase select-none leading-none mb-3"
-            style={{ fontFamily: "'Arcadepix', monospace" }}
+    <section id="projects" className="bg-transparent text-white relative">
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* STICKY COMPREHENSIVE STAGE (YAAS Arc Spin -> Zoom -> Stacked Fly-Up)  */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      <div
+        ref={containerRef}
+        id="projects-stage"
+        className="relative w-full h-[550vh] sm:h-[600vh] bg-transparent text-white"
+      >
+        {/* Sticky Viewport (100vh - Perfectly centered vertically) */}
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden select-none z-10 px-4">
+          
+          {/* ── TOP SECTION: YAAS Headline (Safely below 64px navbar with ample breathing room) ── */}
+          <div
+            ref={headlineRef}
+            className="absolute top-20 sm:top-24 md:top-24 inset-x-0 w-full flex flex-col items-center z-20 pointer-events-none text-center px-4"
           >
-            MY <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">PROJECTS</span>
-          </h1>
-          <p className="max-w-xl text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal">
-            Koleksi aplikasi mobile, full-stack web, dan arsitektur IoT terintegrasi dengan standar performa modern.
-          </p>
-        </motion.div>
+            <h2
+              className="font-pixel text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-wider text-white uppercase select-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.95)] leading-tight"
+              style={{ fontFamily: "'Arcadepix', monospace" }}
+            >
+              MY <span className="text-[#FFD500] drop-shadow-[0_0_35px_rgba(255,213,0,0.65)]">PROJECTS</span>
+            </h2>
+          </div>
 
-        {/* 2. PANGGUNG 3D PARALLAX WIDESCREEN (ESTETIK, LAPANG & CRISP) */}
+          {/* ── MIDDLE SECTION 1: 3D CYLINDRICAL ARC STAGE (Dead center vertically) ── */}
+          <div
+            ref={arcCardsContainerRef}
+            className="relative flex-1 w-full h-full flex items-center justify-center min-h-0 z-10 pointer-events-auto"
+          >
+            {virtualCards.map((project, idx) => {
+              const init = initialStyles[idx] || {};
+              const isCenter = idx === TARGET_CENTER_INDEX;
+              return (
+                <div
+                  key={`${project.id}-${idx}`}
+                  ref={(el) => (cardRefs.current[idx] = el)}
+                  onClick={() => setModalImage(project)}
+                  style={{
+                    width: `${cardWidth}px`,
+                    height: `${cardHeight}px`,
+                    opacity: init.opacity ?? 0,
+                    visibility: init.visibility ?? 'hidden',
+                    zIndex: init.zIndex ?? 1,
+                    transform: init.transform ?? 'translate(-50%, -50%)',
+                  }}
+                  className="absolute top-1/2 left-1/2 rounded-[20px] sm:rounded-[28px] cursor-pointer overflow-hidden bg-[#070b16] shadow-[0_20px_50px_rgba(0,0,0,0.85)] group select-none flex-shrink-0 border border-white/20 will-change-transform"
+                >
+                {/* Edge-to-edge Project Screenshot */}
+                {project.isMobile ? (
+                  <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0b1329] to-[#040711]">
+                    <div
+                      className="absolute inset-0 pointer-events-none opacity-25"
+                      style={{
+                        background: `radial-gradient(circle at center, ${project.accentColor || '#14b8a6'} 0%, transparent 70%)`,
+                      }}
+                    />
+                    <img
+                      src={project.thumbnail}
+                      alt={project.title}
+                      className="relative z-10 w-auto h-full max-h-[92%] object-contain py-2 drop-shadow-[0_15px_35px_rgba(0,0,0,0.9)]"
+                    />
+                  </div>
+                ) : (
+                  <img
+                    src={project.thumbnail}
+                    alt={project.title}
+                    className="object-cover object-top absolute h-full w-full inset-0 rounded-[20px] sm:rounded-[28px]"
+                  />
+                )}
+
+                {/* Title overlay: appears smoothly only when cursor is hovered over the card */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 flex flex-col justify-end p-5 sm:p-7">
+                  <h3
+                    className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-white select-none whitespace-normal leading-[1.15] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] truncate"
+                    style={{
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      letterSpacing: "-0.025em",
+                    }}
+                  >
+                    {project.title}
+                  </h3>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+          {/* ── MIDDLE SECTION 2: STACKED FLY-UP CARDS (Dead center vertically) ──── */}
+          <div
+            ref={stackedContainerRef}
+            style={{
+              width: `${targetWidth}px`,
+              height: `${targetHeight}px`,
+              opacity: 0,
+            }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-20 pointer-events-none"
+          >
+            {projectSets.map((project, idx) => (
+              <StackedIsoCard
+                key={project.id}
+                project={project}
+                index={idx}
+                total={projectSets.length}
+                smoothScroll={smoothScroll}
+                onOpenModal={setModalImage}
+                isMobile={isMobile}
+              />
+            ))}
+          </div>
+
+          {/* ── BOTTOM SECTION: Editorial Subline (Tampilan awal di bawah project) ── */}
+          <div
+            ref={sublineRef}
+            className="absolute bottom-8 sm:bottom-12 md:bottom-14 inset-x-0 w-full flex flex-col items-center z-20 pointer-events-none text-center px-6"
+          >
+            <p
+              className="text-slate-300 text-xs sm:text-sm md:text-base font-normal max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              A curated collection of web applications, mobile ecosystems, and interactive digital experiences.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* ACT 3: EDITORIAL CONCLUDING SECTION (Gaya Motivational Quotes About)   */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      <div className="relative z-20 max-w-4xl mx-auto px-6 sm:px-10 w-full pt-28 sm:pt-36 pb-32 sm:pb-44 select-none">
+        
+        {/* Soft Dynamic Ambient Backlight Glow (Identik dengan MotivationalQuotes) */}
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+          <div 
+            className="w-[500px] sm:w-[850px] h-[320px] sm:h-[440px] rounded-full blur-[110px] opacity-25"
+            style={{
+              background: 'radial-gradient(circle, rgba(255,213,0,0.25) 0%, rgba(6,182,212,0.15) 45%, transparent 75%)',
+            }}
+          />
+        </div>
+
+        {/* Monumental Editorial Stage */}
         <motion.div
-          style={{
-            rotateX,
-            rotateZ,
-            translateY,
-            scale: stageScale,
-            opacity: stageOpacity,
-          }}
-          className="[transform-style:preserve-3d] w-full flex flex-col justify-center gap-4 sm:gap-6 my-auto"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="relative z-10 flex flex-col items-center justify-center text-center"
         >
-          {/* BARIS 1: REVERSE HORIZONTAL MOTION */}
-          <div className="relative w-full overflow-visible">
-            <motion.div
-              style={{ x: translateX }}
-              className="flex items-center justify-center gap-5 sm:gap-8 px-6 sm:px-10 flex-nowrap"
-            >
-              {row1Projects.map((project) => (
-                <ProductCard
-                  key={project.id}
-                  project={project}
-                  onOpenModal={setModalImage}
-                />
-              ))}
-            </motion.div>
-          </div>
+          {/* Monumental Editorial Heading (Font Syne 900 Identik dengan Motivational Quotes) */}
+          <h3 
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[3.25rem] uppercase tracking-tight text-white max-w-3xl leading-[1.14] select-none flex flex-col items-center"
+            style={{
+              fontFamily: "'Syne', -apple-system, sans-serif",
+              fontWeight: 900,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            <span>LET'S ASSEMBLE THE FUTURE</span>
+            <span className="text-[#FFD500] drop-shadow-[0_0_32px_rgba(255,213,0,0.55)] mt-1 sm:mt-1.5">
+              ONE BRICK AT A TIME.
+            </span>
+          </h3>
 
-          {/* BARIS 2: FORWARD HORIZONTAL MOTION */}
-          <div className="relative w-full overflow-visible">
-            <motion.div
-              style={{ x: translateXReverse }}
-              className="flex items-center justify-center gap-5 sm:gap-8 px-6 sm:px-10 flex-nowrap"
-            >
-              {row2Projects.map((project) => (
-                <ProductCard
-                  key={project.id}
-                  project={project}
-                  onOpenModal={setModalImage}
-                />
-              ))}
-            </motion.div>
-          </div>
+          {/* Subtitle / Quote (Font Plus Jakarta Sans Identik dengan Motivational Quotes) */}
+          <p 
+            className="mt-5 sm:mt-6 text-sm sm:text-base md:text-lg text-slate-300/90 font-normal leading-relaxed max-w-2xl mx-auto"
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+          >
+            &ldquo;Every enduring digital system begins like assembling LEGO bricks — founded on precision, structured with clean logic, and engineered to deliver real, lasting human impact.&rdquo;
+          </p>
         </motion.div>
 
       </div>
 
-      {/* 3. FULLSCREEN LIGHTBOX MODAL */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* FULLSCREEN LIGHTBOX MODAL                                              */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {modalImage && (
           <motion.div
@@ -269,17 +583,22 @@ export function Projects() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-5xl w-full max-h-[90vh] bg-[#0d121f] rounded-2xl border border-[#FFD500]/30 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col"
+              className="relative max-w-4xl w-full max-h-[92vh] bg-[#0c111e] rounded-2xl border border-[#FFD500]/40 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col"
             >
               {/* Header Modal */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#070a10]">
-                <div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#FFD500]">
-                    {modalImage.category}
-                  </span>
-                  <h3 className="text-lg sm:text-xl font-bold text-white">
-                    {modalImage.title}
-                  </h3>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#070a12]">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded bg-[#E3000B] flex items-center justify-center font-black text-xs text-[#FFD500] border border-white/30">
+                    LEGO
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#FFD500]">
+                      SET #{modalImage.setNo} • {modalImage.category}
+                    </span>
+                    <h3 className="text-lg sm:text-xl font-bold text-white">
+                      {modalImage.rawTitle}
+                    </h3>
+                  </div>
                 </div>
                 <button
                   onClick={() => setModalImage(null)}
@@ -290,27 +609,39 @@ export function Projects() {
               </div>
 
               {/* Tampilan Gambar Full Resolusi */}
-              <div className="relative flex-1 bg-black/50 p-4 sm:p-6 flex items-center justify-center overflow-auto">
+              <div className="relative flex-1 bg-black/60 p-4 sm:p-6 flex items-center justify-center overflow-auto min-h-[300px]">
                 <img
                   src={modalImage.thumbnail}
                   alt={modalImage.title}
-                  className="max-w-full max-h-[60vh] object-contain rounded-lg drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
+                  className="max-w-full max-h-[72vh] object-contain rounded-lg drop-shadow-[0_10px_30px_rgba(0,0,0,0.85)]"
                 />
               </div>
 
               {/* Footer Modal dengan Tombol Akses Repo */}
-              <div className="px-6 py-4 border-t border-white/10 bg-[#070a10] flex items-center justify-between gap-4">
-                <p className="text-xs text-neutral-400 max-w-xl">
-                  {modalImage.description}
-                </p>
+              <div className="px-6 py-4 border-t border-white/10 bg-[#070a12] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <p className="text-xs text-neutral-300 max-w-xl">
+                    {modalImage.description}
+                  </p>
+                  <div className="flex items-center gap-1.5 pt-1">
+                    {modalImage.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[10px] px-2 py-0.5 rounded bg-white/[0.08] text-neutral-300 font-mono"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
                 <a
                   href={modalImage.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FFD500] hover:bg-[#ffe033] text-black text-xs font-bold transition-all shadow-[0_4px_15px_rgba(255,213,0,0.3)] hover:scale-105 active:scale-95 flex-shrink-0"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFD500] hover:bg-[#ffe033] text-black text-xs font-bold transition-all shadow-[0_4px_15px_rgba(255,213,0,0.3)] hover:scale-105 active:scale-95 flex-shrink-0"
                 >
                   <FiGithub className="w-4 h-4" />
-                  <span>Lihat Repository</span>
+                  <span>Buka Repository</span>
                   <FiExternalLink className="w-3.5 h-3.5 opacity-80" />
                 </a>
               </div>
@@ -318,175 +649,140 @@ export function Projects() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </section>
   );
 }
 
-// Subkomponen ProductCard (Widescreen, Bersih, Estetik, dan Interaktif ala Zulfian)
-function ProductCard({ project, onOpenModal }) {
-  if (project.isGitHubCard) {
-    return (
-      <motion.div
-        whileHover={{ y: -10, scale: 1.02 }}
-        transition={{ duration: 0.25, ease: 'easeOut' }}
-        className="group relative flex-shrink-0 h-48 sm:h-54 md:h-60 w-[20rem] sm:w-[24rem] md:w-[26rem] lg:w-[27.5rem] rounded-2xl bg-gradient-to-br from-[#121829] to-[#0d121f] border border-[#FFD500]/30 hover:border-[#FFD500] shadow-[0_15px_35px_rgba(0,0,0,0.7)] hover:shadow-[0_25px_50px_rgba(255,213,0,0.2)] p-5 sm:p-6 flex flex-col justify-between transition-all"
-      >
-        {/* Blueprint Corner Accents */}
-        <div className="absolute top-2.5 left-2.5 w-2 h-2 border-t border-l border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
-        <div className="absolute top-2.5 right-2.5 w-2 h-2 border-t border-r border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
-        <div className="absolute bottom-2.5 left-2.5 w-2 h-2 border-b border-l border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
-        <div className="absolute bottom-2.5 right-2.5 w-2 h-2 border-b border-r border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
+// ══════════════════════════════════════════════════════════════════════════════
+// 2. STACKED ISO CARD COMPONENT (YAAS Stacking Swipe: Scroll 36% to 92%)
+// Cards fly upwards one by one revealing the next project card underneath!
+// ══════════════════════════════════════════════════════════════════════════════
+function StackedIsoCard({
+  project,
+  index,
+  total,
+  smoothScroll,
+  onOpenModal,
+  isMobile,
+}) {
+  // Stacking timing:
+  // Visible resting stack hand-off from 0.36 to 0.44
+  // Sequential card fly-up transitions from 0.44 to 0.88
+  // Final card rests in spotlight from 0.88 to 0.94
+  // Smooth exit to concluding section past 0.94
+  const stackStart = 0.44;
+  const stackEnd = 0.88;
+  const cardDuration = (stackEnd - stackStart) / (total - 1); // ~0.11 per card
 
-        <div className="flex items-start justify-between">
-          <div className="w-10 h-10 rounded-xl bg-[#FFD500]/10 border border-[#FFD500]/30 flex items-center justify-center text-[#FFD500] shadow-[0_0_20px_rgba(255,213,0,0.2)]">
-            <FiFolder className="w-5 h-5" />
-          </div>
-          <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider text-[#FFD500] bg-[#FFD500]/10 border border-[#FFD500]/30">
-            {project.category}
-          </span>
-        </div>
+  const cStart = stackStart + index * cardDuration;
+  const cEnd = cStart + cardDuration;
+  const isLastCard = index === total - 1;
 
-        <div>
-          <h3 className="text-base sm:text-lg md:text-xl font-extrabold text-white group-hover:text-[#FFD500] transition-colors flex items-center gap-2">
-            {project.title}
-            <FiArrowUpRight className="w-4 h-4 opacity-70 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          </h3>
-          <p className="text-[10px] sm:text-xs text-neutral-300 mt-1 line-clamp-2 leading-relaxed">
-            {project.description}
-          </p>
-        </div>
+  // Stacking z-index: First cards on top, so when they fly up they reveal cards below
+  const baseZIndex = total - index + 10;
 
-        <div className="flex items-center justify-between pt-2 border-t border-white/10">
-          <div className="flex items-center gap-1.5">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-md bg-white/[0.06] border border-white/10 text-neutral-300 font-medium"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          <a
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#FFD500] hover:bg-[#ffe033] text-black text-[11px] font-bold transition-all shadow-[0_2px_10px_rgba(255,213,0,0.3)] hover:scale-105 active:scale-95"
-          >
-            <FiGithub className="w-3.5 h-3.5" />
-            <span>GitHub</span>
-          </a>
-        </div>
-      </motion.div>
-    );
-  }
+  // Alternate tilt angle: -7deg or +7deg exactly as in YAAS Energy (xt = 7)
+  const flyRotate = index % 2 === 0 ? -7 : 7;
+
+  // Y position: Exact 0% in resting stack (dead center, zero bottom cut-off), then flies up to -125%
+  const y = useTransform(smoothScroll, (p) => {
+    if (p >= cStart && !isLastCard) {
+      const flyP = Math.min(1, Math.max(0, (p - cStart) / cardDuration));
+      const eased = flyP < 0.5 ? 2 * flyP * flyP : 1 - Math.pow(-2 * flyP + 2, 2) / 2;
+      return `${eased * -125}%`;
+    }
+    return '0%';
+  });
+
+  // Scale: Stack depth scale (1.0 -> 0.965 -> 0.93...) creating an authentic physical deck
+  const scale = useTransform(smoothScroll, (p) => {
+    if (p >= cStart && !isLastCard) return 1;
+    const cardsAheadFlown = p <= stackStart ? 0 : Math.min(index, (p - stackStart) / cardDuration);
+    const depth = Math.max(0, index - cardsAheadFlown);
+    return Math.max(0.85, 1.0 - depth * 0.035);
+  });
+
+  // Rotation: 0 while sitting in the stack, tilts dynamically as it flies upwards
+  const rotate = useTransform(smoothScroll, (p) => {
+    if (isLastCard) return 0;
+    if (p < cStart) return 0;
+    if (p > cEnd) return flyRotate;
+    const progress = (p - cStart) / cardDuration;
+    return progress * flyRotate;
+  });
+
+  // Opacity: Full in stack, fades out only towards the end of its upward fly
+  const opacity = useTransform(smoothScroll, (p) => {
+    if (isLastCard) return 1;
+    if (p < cStart) {
+      const cardsAheadFlown = p <= stackStart ? 0 : Math.min(index, (p - stackStart) / cardDuration);
+      const depth = Math.max(0, index - cardsAheadFlown);
+      return Math.max(0.5, 1.0 - depth * 0.12);
+    }
+    if (p > cEnd) return 0;
+    const progress = (p - cStart) / cardDuration;
+    if (progress < 0.65) return 1;
+    return Math.max(0, 1 - (progress - 0.65) / 0.35);
+  });
+
+  // Filter: Cards deeper in stack have slight shadow/dim to accentuate the top card
+  const filter = useTransform(smoothScroll, (p) => {
+    if (isLastCard && p >= stackEnd) return 'brightness(1)';
+    const cardsAheadFlown = p <= stackStart ? 0 : Math.min(index, (p - stackStart) / cardDuration);
+    const depth = Math.max(0, index - cardsAheadFlown);
+    const brightness = Math.max(0.70, 1.0 - depth * 0.07);
+    return `brightness(${brightness})`;
+  });
 
   return (
-    <motion.div
-      whileHover={{ y: -10, scale: 1.02 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="group relative flex-shrink-0 h-48 sm:h-54 md:h-60 w-[20rem] sm:w-[24rem] md:w-[26rem] lg:w-[27.5rem] rounded-2xl bg-[#0d121f] border border-white/10 hover:border-[#FFD500]/60 shadow-[0_15px_35px_rgba(0,0,0,0.8)] hover:shadow-[0_25px_50px_rgba(255,213,0,0.2)] overflow-hidden transition-all duration-300"
+    <motion.article
+      style={{
+        y,
+        scale,
+        rotate,
+        opacity,
+        filter,
+        zIndex: baseZIndex,
+      }}
+      className="absolute inset-0 m-auto w-full h-full rounded-[20px] sm:rounded-[28px] overflow-hidden bg-[#070b16] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.85)] cursor-pointer select-none group"
+      onClick={() => onOpenModal(project)}
     >
-      {/* Blueprint Corner Accents */}
-      <div className="absolute top-2.5 left-2.5 w-2 h-2 border-t border-l border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
-      <div className="absolute top-2.5 right-2.5 w-2 h-2 border-t border-r border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
-      <div className="absolute bottom-2.5 left-2.5 w-2 h-2 border-b border-l border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
-      <div className="absolute bottom-2.5 right-2.5 w-2 h-2 border-b border-r border-[#00F0FF]/40 pointer-events-none z-30 group-hover:border-[#FFD500]/80 transition-colors" />
-
-      {/* 1. Gambar Proyek 100% Utuh & Bersih (Tanpa Terpotong) */}
-      <div className="relative w-full h-full bg-[#070a10] flex items-center justify-center p-2.5 sm:p-3 overflow-hidden">
-        {/* Ambient Glow di belakang gambar */}
+      {/* Edge-to-Edge Project Screenshot (100% Identical to Zoom Card) */}
+      {project.isMobile ? (
+        <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0b1329] to-[#040711]">
+          <div
+            className="absolute inset-0 pointer-events-none opacity-25"
+            style={{
+              background: `radial-gradient(circle at center, ${project.accentColor || '#14b8a6'} 0%, transparent 70%)`,
+            }}
+          />
+          <img
+            src={project.thumbnail}
+            alt={project.title}
+            className="relative z-10 w-auto h-full max-h-[92%] object-contain py-2 drop-shadow-[0_15px_35px_rgba(0,0,0,0.9)]"
+          />
+        </div>
+      ) : (
         <img
           src={project.thumbnail}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125 pointer-events-none"
+          alt={project.title}
+          className="object-cover object-top absolute h-full w-full inset-0 rounded-[20px] sm:rounded-[28px]"
         />
+      )}
 
-        {project.isMobile ? (
-          // Thumbnail HP ramping - padding bawah memastikan screenshot utuh tanpa terpotong strip judul
-          <img
-            src={project.thumbnail}
-            alt={project.title}
-            className="relative z-10 max-h-[90%] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)] pb-5 group-hover:pb-0 transition-all duration-300"
-          />
-        ) : (
-          // Landscape Web Screenshot 100% Utuh - padding bawah menjaga konten web terlihat penuh
-          <img
-            src={project.thumbnail}
-            alt={project.title}
-            className="relative z-10 max-w-full max-h-[90%] object-contain rounded-xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] pb-5 group-hover:pb-0 transition-all duration-300"
-          />
-        )}
-
-        {/* Tombol Zoom Modal di Pojok Kanan Atas */}
-        <button
-          onClick={() => onOpenModal(project)}
-          aria-label="Lihat gambar penuh"
-          title="Lihat Gambar Penuh"
-          className="absolute top-2.5 right-2.5 z-30 p-1.5 rounded-xl bg-black/60 hover:bg-black/90 border border-white/10 text-neutral-300 hover:text-white transition-all shadow-md backdrop-blur-md"
+      {/* Title overlay: appears smoothly only when cursor is hovered over the card */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 flex flex-col justify-end p-5 sm:p-7">
+        <h3
+          className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-white select-none whitespace-normal leading-[1.15] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] truncate"
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            letterSpacing: "-0.025em",
+          }}
         >
-          <FiMaximize2 className="w-3.5 h-3.5" />
-        </button>
-
-        {/* Strip Judul Minimalis Bawah (Selalu Tampak) */}
-        <div className="absolute bottom-0 inset-x-0 p-2.5 sm:p-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex items-center justify-between z-20 group-hover:opacity-0 transition-opacity duration-300">
-          <div>
-            <span className="text-[9px] font-semibold uppercase tracking-wider text-[#FFD500]">
-              {project.category}
-            </span>
-            <h4 className="text-xs sm:text-sm font-bold text-white truncate max-w-[18rem]">
-              {project.title}
-            </h4>
-          </div>
-          <span className="text-[10px] text-neutral-400 font-mono">0{project.id}</span>
-        </div>
+          {project.title}
+        </h3>
       </div>
-
-      {/* 2. Glass Overlay Interaktif Saat Hover (Menampilkan Detail & Tombol Repo) */}
-      <div className="absolute inset-0 bg-[#070a12]/94 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 sm:p-5 flex flex-col justify-between z-20">
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider text-[#FFD500] bg-[#FFD500]/10 border border-[#FFD500]/30">
-              {project.category}
-            </span>
-            <span className="text-[10px] text-neutral-400 font-mono">0{project.id} / 06</span>
-          </div>
-
-          <h3 className="text-sm sm:text-base font-bold text-white leading-snug">
-            {project.title}
-          </h3>
-
-          <p className="text-[10px] sm:text-xs text-neutral-300 mt-1.5 line-clamp-2 leading-relaxed">
-            {project.description}
-          </p>
-        </div>
-
-        <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-1 max-w-[60%]">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[8.5px] sm:text-[9px] px-1.5 py-0.5 rounded bg-white/[0.08] border border-white/10 text-neutral-300 font-medium"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <a
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-[#FFD500] hover:bg-[#ffe033] text-black text-[11px] font-bold transition-all shadow-[0_2px_10px_rgba(255,213,0,0.3)] hover:scale-105 active:scale-95 flex-shrink-0"
-          >
-            <FiGithub className="w-3 h-3" />
-            <span>Repository</span>
-            <FiExternalLink className="w-2.5 h-2.5 opacity-70" />
-          </a>
-        </div>
-      </div>
-    </motion.div>
+    </motion.article>
   );
 }
 

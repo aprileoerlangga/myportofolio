@@ -161,7 +161,11 @@ function Navbar() {
   // Handle klik link: hanya smooth scroll ke atas jika sudah berada di halaman yang sama
   const handleLinkClick = (targetPath) => {
     if (location.pathname === targetPath) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.__lenis) {
+        window.__lenis.scrollTo(0, { duration: 1.0 });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
     setIsOpen(false);
   };

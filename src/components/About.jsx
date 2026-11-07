@@ -56,7 +56,7 @@ function About() {
                 Hi, I'm <strong className="text-white font-semibold">Aprileo Muhammad David Erlangga</strong>! I grew up in Lamongan, a small city full of inspiration and natural beauty that sparked my lifelong curiosity about technology and digital craftsmanship.
               </p>
               <p>
-                Through self-driven exploration, I discovered a strong passion for software architecture. Today, as a <span className="text-white font-semibold">Fullstack Developer</span>, I build <strong className="text-white font-semibold">scalable web applications</strong> with high performance and polished, tactile user experiences.
+                Through self-driven exploration, I discovered a strong passion for software architecture. Today, as a Fullstack Developer, I build scalable web applications with high performance and polished, tactile user experiences.
               </p>
               <p className="text-slate-400 text-sm sm:text-[15px]">
                 I'm passionate about turning complex architectural ideas into intuitive, engaging digital products — one brick of code at a time.

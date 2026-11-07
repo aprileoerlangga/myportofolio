@@ -36,6 +36,15 @@
   text-transform: uppercase;
 }
 
+.font-soledago {
+  font-family: 'Soledago', cursive, sans-serif !important;
+  letter-spacing: -0.01em;
+}
+
+.font-bounded {
+  font-family: 'Bounded', sans-serif !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

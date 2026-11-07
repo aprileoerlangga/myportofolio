@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { 
   SiGithub, 
@@ -42,44 +42,50 @@ const contactLinks = [
 ];
 
 function Contact() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
+  const spotlightRef = useRef(null);
 
   const handleMouseMove = (e) => {
+    if (!spotlightRef.current) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    spotlightRef.current.style.background = `radial-gradient(550px circle at ${x}px ${y}px, rgba(255, 213, 0, 0.045), transparent 60%)`;
+  };
+
+  const handleMouseEnter = () => {
+    if (spotlightRef.current) spotlightRef.current.style.opacity = '1';
+  };
+
+  const handleMouseLeave = () => {
+    if (spotlightRef.current) spotlightRef.current.style.opacity = '0';
   };
 
   return (
     <section 
       id="contact" 
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className="min-h-screen pt-32 pb-36 bg-transparent text-slate-200 overflow-x-clip relative flex flex-col justify-center"
     >
       {/* 1. Giant Faint Editorial Watermark in Background */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none -z-20 whitespace-nowrap overflow-hidden">
-        <span className="text-[13vw] font-black uppercase tracking-tighter text-white/[0.015] leading-none block font-mono">
-          CONNECT
+        <span 
+          className="font-pixel text-[13vw] font-normal uppercase tracking-wider text-white/[0.035] leading-none block select-none pointer-events-none"
+          style={{ fontFamily: "'Arcadepix', monospace" }}
+        >
+          CONTACT
         </span>
       </div>
 
       {/* 2. Atmospheric Ambient Light Mesh */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] max-w-[92vw] h-[450px] bg-gradient-to-tr from-[#FFD500]/[0.08] via-amber-500/[0.04] to-[#0055BF]/[0.05] blur-[130px] pointer-events-none rounded-full -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] max-w-[92vw] h-[480px] bg-gradient-to-tr from-[#FFD500]/[0.12] via-amber-500/[0.06] to-[#0055BF]/[0.08] blur-[130px] pointer-events-none rounded-full -z-10" />
 
-      {/* 3. Subtle Interactive Mouse Spotlight */}
+      {/* 3. Subtle Interactive Mouse Spotlight (Direct DOM - 120 FPS zero React re-render) */}
       <div 
-        className="absolute inset-0 pointer-events-none -z-10 transition-opacity duration-500"
-        style={{
-          opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(550px circle at ${mousePos.x}px ${mousePos.y}px, rgba(255, 213, 0, 0.045), transparent 60%)`
-        }}
+        ref={spotlightRef}
+        className="absolute inset-0 pointer-events-none -z-10 opacity-0 transition-opacity duration-300"
       />
-
 
       <div className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 w-full relative z-10">
         
@@ -91,16 +97,25 @@ function Contact() {
           className="flex flex-col items-center text-center pb-4 mb-16 sm:mb-20 relative z-10"
         >
           <div className="flex items-center justify-center mb-3 group cursor-pointer select-none">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white">
-              Get in <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FFD500] via-[#FFE566] to-[#FF9E00] drop-shadow-[0_2px_15px_rgba(255,213,0,0.2)]">Touch</span>
+            <h2 
+              className="font-pixel text-4xl sm:text-5xl md:text-6xl font-normal tracking-wider text-white uppercase select-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.95)] leading-tight"
+              style={{ fontFamily: "'Arcadepix', monospace" }}
+            >
+              GET IN <span className="text-[#FFD500] drop-shadow-[0_0_35px_rgba(255,213,0,0.65)]">TOUCH</span>
             </h2>
           </div>
 
-          <h3 className="text-lg sm:text-xl font-semibold text-slate-200 tracking-tight mt-1 mb-2 max-w-2xl mx-auto">
+          <h3 
+            className="text-base sm:text-lg md:text-xl font-bold text-white tracking-tight mt-1 mb-2 max-w-2xl mx-auto"
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+          >
             Let's Build Something Meaningful Together.
           </h3>
 
-          <p className="text-slate-400 text-sm sm:text-base font-normal max-w-2xl mx-auto leading-relaxed">
+          <p 
+            className="text-slate-300 text-sm sm:text-base font-normal max-w-2xl mx-auto leading-relaxed"
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+          >
             Have a project in mind, a collaboration inquiry, or simply want to connect? Reach out directly through any platform below.
           </p>
         </motion.div>
@@ -137,7 +152,10 @@ function Contact() {
                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-zinc-300 group-hover:text-[#FFD500] group-hover:border-[#FFD500]/40 group-hover:bg-[#FFD500]/10 transition-all duration-200 shadow-sm flex-shrink-0">
                       <Icon className="w-4.5 h-4.5 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:scale-110" />
                     </div>
-                    <span className="text-lg sm:text-xl font-bold tracking-tight text-white group-hover:text-[#FFD500] transition-colors duration-200">
+                    <span 
+                      className="text-lg sm:text-xl font-bold tracking-tight text-white group-hover:text-[#FFD500] transition-colors duration-200"
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                    >
                       {item.name}
                     </span>
                   </div>

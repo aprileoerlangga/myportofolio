@@ -901,41 +901,97 @@ export default function LegoCurtainLoader({ onComplete }) {
       initial={false}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 z-[99999] overflow-hidden pointer-events-auto select-none bg-[#090b12]"
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed inset-0 z-[99999] overflow-hidden pointer-events-auto select-none bg-[#060a17]"
     >
       {/* 
         ====================================================================
-        CINEMATIC BACKDROP: EXACT MATCH WITH HOME.JSX STUDIO LIGHTING
+        COSMIC AEROSPACE BACKDROP: HARMONIZED WITH ABOUT & CLASSIC SPACE
         ====================================================================
       */}
-      <div className="absolute inset-0 w-full h-full">
-        {/* Harmonious Studio Lighting (Exact palette as Home.jsx) */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none">
+        {/* 1. Deep Orbital Void & Nebula Lighting (Classic Space Blue, Violet & Amber Horizon) */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: `
-              radial-gradient(ellipse 90% 60% at 75% 40%, rgba(255, 213, 0, 0.08), transparent 70%),
-              radial-gradient(ellipse 70% 50% at 25% 30%, rgba(0, 85, 191, 0.07), transparent 65%),
-              radial-gradient(circle 800px at 50% 110%, rgba(227, 0, 11, 0.04), transparent 70%),
-              #090b12
+              radial-gradient(circle 950px at 80% 20%, rgba(0, 85, 191, 0.32), transparent 70%),
+              radial-gradient(circle 850px at 15% 45%, rgba(121, 40, 202, 0.22), transparent 65%),
+              radial-gradient(circle 1000px at 50% 90%, rgba(255, 213, 0, 0.12), transparent 70%),
+              linear-gradient(180deg, #060a17 0%, #0a0e20 50%, #050814 100%)
             `,
           }}
         />
 
+        {/* 2. Twinkling Space Stars Field across the Cosmic Sky */}
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-75"
+          style={{
+            backgroundImage: `
+              radial-gradient(1px 1px at 25px 35px, #ffffff, rgba(0,0,0,0)),
+              radial-gradient(1.5px 1.5px at 120px 80px, #ffffff, rgba(0,0,0,0)),
+              radial-gradient(1px 1px at 240px 190px, #ffd500, rgba(0,0,0,0)),
+              radial-gradient(2px 2px at 380px 120px, #61dafb, rgba(0,0,0,0)),
+              radial-gradient(1px 1px at 490px 310px, #ffffff, rgba(0,0,0,0)),
+              radial-gradient(1.5px 1.5px at 620px 220px, #ffffff, rgba(0,0,0,0)),
+              radial-gradient(1px 1px at 750px 90px, #ffd500, rgba(0,0,0,0)),
+              radial-gradient(2px 2px at 890px 270px, #ffffff, rgba(0,0,0,0)),
+              radial-gradient(1px 1px at 1020px 150px, #61dafb, rgba(0,0,0,0)),
+              radial-gradient(1.5px 1.5px at 1180px 320px, #ffffff, rgba(0,0,0,0)),
+              radial-gradient(1px 1px at 1310px 180px, #ffffff, rgba(0,0,0,0)),
+              radial-gradient(1.5px 1.5px at 1410px 70px, #ffd500, rgba(0,0,0,0))
+            `,
+            backgroundSize: '1440px 420px',
+          }}
+        />
 
-        {/* ============================================================ */}
-        {/* CENTER STAGE: THE 3D LEGO AIRPLANE ASSEMBLY                  */}
-        {/* ============================================================ */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 z-20">
-          {/* Warm Golden Spotlight behind plane (Pure gradient, zero blur filter) */}
-          <div
-            className="absolute w-[460px] h-[260px] rounded-full pointer-events-none"
+        {/* 3. Stylized Classic Space Celestial Planet (Glowing Orb in Top-Right) */}
+        <div 
+          className="absolute top-6 -right-14 sm:right-6 md:right-12 w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full pointer-events-none opacity-85"
+          style={{
+            background: 'radial-gradient(circle at 35% 35%, rgba(0, 240, 255, 0.85) 0%, rgba(0, 85, 191, 0.8) 45%, rgba(121, 40, 202, 0.85) 75%, rgba(255, 0, 128, 0.7) 100%)',
+            boxShadow: '0 0 60px rgba(0, 240, 255, 0.35), inset -18px -18px 36px rgba(0, 0, 0, 0.85), inset 12px 12px 24px rgba(255, 255, 255, 0.35)',
+            transform: 'translateZ(0)',
+          }}
+        >
+          <div 
+            className="absolute inset-0 rounded-full opacity-35"
             style={{
-              background:
-                'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(255, 213, 0, 0.09) 0%, rgba(254, 138, 24, 0.03) 45%, transparent 75%)',
+              background: 'radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.9) 0%, transparent 60%)',
             }}
           />
+        </div>
+
+        {/* 4. Classic Space Perspective Cyber Launchpad Runway Grid on Floor */}
+        <div 
+          className="absolute inset-x-0 bottom-0 h-[380px] sm:h-[440px] pointer-events-none opacity-35"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(0, 240, 255, 0.35) 1.5px, transparent 1.5px),
+              linear-gradient(to bottom, rgba(255, 213, 0, 0.25) 1.5px, transparent 1.5px)
+            `,
+            backgroundSize: '54px 54px',
+            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 45%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 45%, transparent 100%)',
+            transform: 'perspective(550px) rotateX(52deg)',
+            transformOrigin: 'bottom center',
+          }}
+        />
+
+        {/* 5. Center Aerodynamic Ambient Glow Behind Plane */}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] sm:w-[750px] h-[340px] rounded-full pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(255, 213, 0, 0.14) 0%, rgba(0, 85, 191, 0.10) 45%, transparent 75%)',
+          }}
+        />
+      </div>
+
+      {/* ============================================================ */}
+      {/* CENTER STAGE: THE 3D LEGO AIRPLANE ASSEMBLY                  */}
+      {/* ============================================================ */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-4 z-20">
 
           {/* Aircraft Stage: Swoops in from Left on load, hovers in center, and blasts off to Right on takeoff */}
           <motion.div
@@ -1036,7 +1092,6 @@ export default function LegoCurtainLoader({ onComplete }) {
             )}
           </AnimatePresence>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
   );
 }

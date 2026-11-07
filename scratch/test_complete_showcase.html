@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Verified YAAS Projects Showcase</title>
+<style>
+  @font-face {
+    font-family: 'Arcadepix';
+    src: url('/fonts/arcadepix.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #090b12;
+    color: #ffffff;
+    font-family: system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  .scroll-container {
+    height: 550vh;
+    position: relative;
+  }
+
+  .sticky-viewport {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .headline {
+    position: absolute;
+    top: 96px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Arcadepix', monospace;
+    font-size: 48px;
+    z-index: 30;
+    pointer-events: none;
+    transition: opacity 0.1s linear, filter 0.1s linear;
+  }
+  .headline span {
+    color: #FFD500;
+    text-shadow: 0 0 35px rgba(255, 213, 0, 0.65);
+  }
+
+  .stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 24px;
+    background: #070b16;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.85);
+    overflow: hidden;
+    will-change: transform, opacity, width, height;
+  }
+
+  .card-bottom {
+    position: absolute;
+    inset-x: 0;
+    bottom: 0;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .card:hover .card-bottom {
+    opacity: 1;
+  }
+
+  .subline {
+    position: absolute;
+    bottom: 48px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #cbd5e1;
+    font-size: 15px;
+    font-weight: 400;
+    z-index: 20;
+    pointer-events: none;
+    transition: opacity 0.1s linear, filter 0.1s linear;
+  }
+
+  .card-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    font-size: 32px;
+    color: white;
+  }
+
+  .debug-panel {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 13px;
+    z-index: 100;
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-container">
+  <div class="sticky-viewport">
+    <div class="headline" id="headline">MY <span>PROJECTS</span></div>
+    <div class="subline" id="subline">A curated collection of web applications, mobile ecosystems, and interactive digital experiences.</div>
+    
+    <div class="stage" id="arcStage"></div>
+    <div class="stage" id="stackStage" style="opacity: 0;"></div>
+  </div>
+</div>
+
+<div class="debug-panel" id="debug">Scroll: 0.00 | Phase: Arc Spin</div>
+
+<script>
+  const projects = [
+    { title: 'Fish AI Diagnostics', cat: 'MOBILE & COMPUTER VISION', img: '/src/assets/FishAI.png', isMob: true },
+    { title: 'Rosa Store Marketplace', cat: 'FULLSTACK WEB ARCHITECTURE', img: '/src/assets/RosaStore.png', isMob: false },
+    { title: 'Iwakmart Mobile App', cat: 'FISHERY MARKETPLACE ECOSYSTEM', img: '/src/assets/Iwakmart Mobile.jpg', isMob: false },
+    { title: 'IoT GPS Tracker System', cat: 'HARDWARE & TELEMETRY DASHBOARD', img: '/src/assets/IoT.png', isMob: false },
+    { title: 'Personal 3D Portfolio', cat: 'CREATIVE FRONTEND & THREE.JS', img: '/src/assets/Web Portoku.jpeg', isMob: false },
+  ];
+
+  const debug = document.getElementById('debug');
+  window.addEventListener('scroll', () => {
+    const max = document.body.scrollHeight - window.innerHeight;
+    const p = window.scrollY / max;
+    let phase = 'Arc Spin (0.0 - 0.20)';
+    if (p > 0.20 && p <= 0.35) phase = 'Arc Zoom (0.20 - 0.35)';
+    else if (p > 0.35 && p <= 0.44) phase = 'Seamless Hand-off / Showcase (0.35 - 0.44)';
+    else if (p > 0.44 && p <= 0.88) phase = 'Card Stack Fly-Up (0.44 - 0.88)';
+    else if (p > 0.88) phase = 'Final Spotlight / Conclusion (0.88 - 1.0)';
+    debug.textContent = `Scroll: ${p.toFixed(3)} | Phase: ${phase}`;
+  });
+</script>
+
+</body>
+</html>
+

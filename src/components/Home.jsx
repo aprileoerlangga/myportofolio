@@ -35,28 +35,65 @@ function Home() {
   };
 
   return (
-    <div className="h-screen h-[100dvh] w-full flex items-center justify-center bg-[#0a0d16] text-white relative overflow-hidden select-none">
+    <div className="h-screen h-[100dvh] w-full flex items-center justify-center bg-[#060a17] text-white relative overflow-hidden select-none">
       {/* ========================================================================= */}
-      {/* MIDNIGHT OBSIDIAN STUDIO BACKDROP (COMPLEMENTARY TO LEGO)                 */}
+      {/* CLASSIC SPACE COSMIC BACKDROP (COMPLEMENTARY TO LEGO SPACEMAN)            */}
       {/* ========================================================================= */}
 
-      {/* Deep Obsidian Midnight Atmospheric Studio Lighting Base */}
+      {/* 1. Deep Orbital Void & Nebula Lighting (Royal Blue, Cosmic Violet & Solar Amber) */}
       <div 
         className="absolute inset-0 z-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 90% 65% at 75% 35%, rgba(0, 85, 191, 0.12), transparent 70%),
-            radial-gradient(ellipse 70% 55% at 20% 30%, rgba(255, 213, 0, 0.07), transparent 65%),
-            radial-gradient(circle 850px at 50% 115%, rgba(14, 165, 233, 0.08), transparent 70%),
-            linear-gradient(145deg, rgba(12, 17, 30, 0.95) 0%, rgba(9, 12, 22, 0.98) 60%, #0a0d16 100%),
-            #0a0d16
+            radial-gradient(circle 950px at 80% 25%, rgba(0, 85, 191, 0.30), transparent 70%),
+            radial-gradient(circle 850px at 15% 40%, rgba(121, 40, 202, 0.22), transparent 65%),
+            radial-gradient(circle 900px at 50% 95%, rgba(255, 213, 0, 0.13), transparent 70%),
+            linear-gradient(160deg, #060a17 0%, #090e22 50%, #050814 100%)
           `
+        }}
+      />
+
+      {/* 2. Universal Twinkling Cosmic Stars Field */}
+      <div 
+        className="absolute inset-0 z-0 pointer-events-none opacity-70"
+        style={{
+          backgroundImage: `
+            radial-gradient(1px 1px at 25px 35px, #ffffff, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 120px 80px, #ffffff, rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 240px 190px, #ffd500, rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 380px 120px, #61dafb, rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 490px 310px, #ffffff, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 620px 220px, #ffffff, rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 750px 90px, #ffd500, rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 890px 270px, #ffffff, rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 1020px 150px, #61dafb, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 1180px 320px, #ffffff, rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 1310px 180px, #ffffff, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 1410px 70px, #ffd500, rgba(0,0,0,0))
+          `,
+          backgroundSize: '1440px 420px',
+        }}
+      />
+
+      {/* 3. Classic Space Perspective Cyber Launchpad Grid on Floor */}
+      <div 
+        className="absolute inset-x-0 bottom-0 h-[340px] sm:h-[400px] pointer-events-none opacity-30 z-0"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(0, 240, 255, 0.35) 1.5px, transparent 1.5px),
+            linear-gradient(to bottom, rgba(255, 213, 0, 0.25) 1.5px, transparent 1.5px)
+          `,
+          backgroundSize: '54px 54px',
+          maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)',
+          transform: 'perspective(550px) rotateX(52deg)',
+          transformOrigin: 'bottom center',
         }}
       />
 
       {/* Subtle architectural studio depth texture */}
       <div 
-        className="absolute inset-0 z-0 pointer-events-none opacity-15"
+        className="absolute inset-0 z-0 pointer-events-none opacity-10"
         style={{
           backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px)',
           backgroundSize: '36px 36px',
