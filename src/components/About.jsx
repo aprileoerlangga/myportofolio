@@ -18,7 +18,7 @@ function About() {
       {/* ============================================================ */}
       {/* ACT 1: MASTER BUILDER PROFILE (Full Initial Viewport Hero)   */}
       {/* ============================================================ */}
-      <div className="min-h-[calc(100vh-4.5rem)] flex flex-col justify-center max-w-5xl mx-auto px-6 sm:px-10 lg:px-12 w-full pt-16 sm:pt-20 pb-12 sm:pb-16 relative z-20">
+      <div className="min-h-[calc(100vh-4.5rem)] min-h-[calc(100dvh-4.5rem)] flex flex-col justify-center max-w-5xl mx-auto px-6 sm:px-10 lg:px-12 w-full pt-16 sm:pt-20 pb-12 sm:pb-16 relative z-20">
         
         {/* Header Title */}
         <motion.div 

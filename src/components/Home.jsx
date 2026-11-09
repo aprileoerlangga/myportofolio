@@ -174,9 +174,12 @@ function Home() {
       />
       
       {/* ========================================================================= */}
-      {/* 5. FULL-HERO 3D LEGO CANVAS LAYER (Passes IN FRONT OF TEXT at z-20, jumps to z-50 during Brick Throw) */}
+      {/* 5. FULL-HERO 3D LEGO CANVAS LAYER                                         */}
+      {/* - Desktop (lg:): z-20 -> passes IN FRONT of text headline                 */}
+      {/* - Mobile (HP):   z-10 -> passes BEHIND text headline                      */}
+      {/* - Throw click:   z-50 -> brick flies straight into camera lens            */}
       {/* ========================================================================= */}
-      <div className={`absolute inset-0 ${isThrowing ? 'z-50' : 'z-20'} pointer-events-none overflow-hidden`}>
+      <div className={`absolute inset-0 ${isThrowing ? 'z-50' : 'z-10 lg:z-20'} pointer-events-none overflow-hidden`}>
         <Suspense fallback={null}>
           <LegoMinifigure 
             domTarget={domTarget} 
@@ -188,9 +191,9 @@ function Home() {
         </Suspense>
       </div>
 
-      <div className="container mx-auto px-5 sm:px-8 lg:px-12 relative z-10 w-full pointer-events-none">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 lg:gap-16">
-          {/* Left: Text content — sits at z-10 so Lego figure at z-20 walks right IN FRONT of it */}
+      <div className="container mx-auto px-5 sm:px-8 lg:px-12 relative z-30 lg:z-10 w-full pointer-events-none min-h-[100dvh] flex flex-col justify-center">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16 py-8 sm:py-10 lg:py-0">
+          {/* Left: Text content — z-30 on mobile (ahead of Lego), lg:z-10 on desktop (behind Lego) */}
           <motion.div 
             initial="hidden"
             animate="visible"
@@ -204,7 +207,7 @@ function Home() {
                 },
               },
             }}
-            className="w-full lg:w-1/2 text-center lg:text-left flex flex-col items-center lg:items-start relative z-10 pointer-events-auto"
+            className="w-full lg:w-1/2 text-center lg:text-left flex flex-col items-center lg:items-start relative z-30 lg:z-10 pointer-events-auto shrink-0"
           >
             {/* Retro Pixel "Classic Space" Headline with exact Arcadepix Typography */}
             <motion.h1 
@@ -216,7 +219,7 @@ function Home() {
                   transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
                 },
               }}
-              className="font-pixel text-4xl sm:text-6xl lg:text-7xl font-normal mb-3 sm:mb-4 leading-[1.1] tracking-widest uppercase select-none"
+              className="font-pixel text-4xl sm:text-5xl lg:text-7xl font-normal mb-2 sm:mb-4 leading-[1.1] tracking-widest uppercase select-none"
               style={{ fontFamily: "'Arcadepix', monospace" }}
             >
               <span className="block pb-0.5 sm:pb-1 text-white drop-shadow-[0_4px_16px_rgba(255,255,255,0.25)]">
@@ -237,10 +240,10 @@ function Home() {
                   transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
                 },
               }}
-              className="mb-6 sm:mb-8 flex items-center justify-center lg:justify-start gap-2.5"
+              className="mb-5 sm:mb-8 flex items-center justify-center lg:justify-start gap-2.5"
             >
               <span 
-                className="font-pixel text-sm sm:text-xl font-normal tracking-widest text-slate-300 uppercase drop-shadow-[0_2px_8px_rgba(255,255,255,0.15)]"
+                className="font-pixel text-sm sm:text-lg lg:text-xl font-normal tracking-widest text-slate-300 uppercase drop-shadow-[0_2px_8px_rgba(255,255,255,0.15)]"
                 style={{ fontFamily: "'Arcadepix', monospace" }}
               >
                 Fullstack Developer
@@ -259,7 +262,7 @@ function Home() {
                   transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
                 },
               }}
-              className="w-full flex justify-center lg:justify-start relative z-30 pointer-events-auto"
+              className="w-full flex justify-center lg:justify-start relative z-30 lg:z-10 pointer-events-auto"
             >
               <button
                 type="button"
@@ -281,16 +284,16 @@ function Home() {
             </motion.div>
           </motion.div>
           
-          {/* Right: Interactive 3D Workstation Anchor & OrbitControls Grab Zone */}
+          {/* Right / Bottom: Interactive 3D Workstation Anchor & OrbitControls Grab Zone */}
           <motion.div 
-            className="w-full lg:w-1/2 flex justify-center items-center relative z-30 pointer-events-none"
+            className="w-full lg:w-1/2 flex justify-center items-center relative z-20 pointer-events-none mt-2 sm:mt-4 lg:mt-0 shrink-0"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
           >
             <div 
               ref={orbitTargetRef}
-              className={`relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] flex items-center justify-center select-none ${
+              className={`relative w-64 h-56 sm:w-72 sm:h-64 md:w-80 md:h-80 lg:w-[28rem] lg:h-[28rem] flex items-center justify-center select-none ${
                 isInteractive && !isThrowing ? 'cursor-grab active:cursor-grabbing pointer-events-auto' : 'pointer-events-none cursor-default'
               }`}
               title={isInteractive && !isThrowing ? "Drag to inspect Lego Minifigure in 3D" : ""}

@@ -3,11 +3,164 @@ import {
   OrbitControls, Float,
   RoundedBox,
 } from '@react-three/drei';
-import { useRef, useMemo, useState, useEffect, Suspense } from 'react';
+import { useRef, useMemo, useState, useEffect, Suspense, Component } from 'react';
 import * as THREE from 'three';
+import { motion } from 'framer-motion';
 import { LegoBrick3D } from './Lego3DComponents';
 
+export const isMobileDevice = typeof window !== 'undefined' && (
+  /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+  (window.innerWidth < 768)
+);
 
+export function isWebGLAvailable() {
+  if (typeof window === 'undefined') return true;
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    );
+  } catch {
+    return false;
+  }
+}
+
+class CanvasErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.warn('Canvas Error Boundary caught an issue:', error, errorInfo);
+    if (this.props.onError) this.props.onError();
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || null;
+    }
+    return this.props.children;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHTWEIGHT FALLBACK LEGO AVATAR (For devices with WebGL disabled/crashing)
+   ═══════════════════════════════════════════════════════════════ */
+function LegoFallbackAvatar({ isThrowing, onThrowComplete, onInteractionReady }) {
+  useEffect(() => {
+    if (onInteractionReady) onInteractionReady(true);
+  }, [onInteractionReady]);
+
+  useEffect(() => {
+    if (isThrowing) {
+      const timer = setTimeout(() => {
+        if (onThrowComplete) onThrowComplete();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isThrowing, onThrowComplete]);
+
+  return (
+    <div className="w-full h-full flex flex-col items-center justify-center relative select-none pointer-events-auto">
+      <motion.div 
+        className="relative flex flex-col items-center justify-center"
+        animate={{ y: [-5, 5, -5], rotate: [-0.6, 0.6, -0.6] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+      >
+        {/* Soft Ambient Halo */}
+        <div className="absolute w-52 h-52 rounded-full bg-[#0055BF]/25 blur-3xl pointer-events-none" />
+        <div className="absolute w-36 h-36 rounded-full bg-[#FFD500]/15 blur-2xl pointer-events-none" />
+
+        {/* Vector Classic Space Lego Minifigure */}
+        <svg viewBox="0 0 200 240" className="w-48 h-56 sm:w-56 sm:h-64 drop-shadow-[0_16px_32px_rgba(0,0,0,0.85)] overflow-visible">
+          <defs>
+            <linearGradient id="fbHead" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#FFF275" />
+              <stop offset="60%" stopColor="#FFD500" />
+              <stop offset="100%" stopColor="#D49B00" />
+            </linearGradient>
+            <linearGradient id="fbBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#1E75E8" />
+              <stop offset="60%" stopColor="#0055BF" />
+              <stop offset="100%" stopColor="#003580" />
+            </linearGradient>
+            <linearGradient id="fbTorso" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="70%" stopColor="#F1F5F9" />
+              <stop offset="100%" stopColor="#CBD5E1" />
+            </linearGradient>
+          </defs>
+
+          {/* Baseplate Pedestal */}
+          <ellipse cx="100" cy="226" rx="72" ry="12" fill="#003380" />
+          <ellipse cx="100" cy="223" rx="68" ry="10" fill="url(#fbBlue)" />
+          {/* Baseplate Studs */}
+          <ellipse cx="80" cy="221" rx="8" ry="3.5" fill="#1E75E8" />
+          <ellipse cx="100" cy="221" rx="8" ry="3.5" fill="#1E75E8" />
+          <ellipse cx="120" cy="221" rx="8" ry="3.5" fill="#1E75E8" />
+
+          {/* Legs & Boots */}
+          <rect x="73" y="160" width="23" height="52" rx="4" fill="url(#fbBlue)" />
+          <rect x="104" y="160" width="23" height="52" rx="4" fill="url(#fbBlue)" />
+          {/* Feet */}
+          <rect x="68" y="202" width="28" height="12" rx="3" fill="#003380" />
+          <rect x="104" y="202" width="28" height="12" rx="3" fill="#003380" />
+          
+          {/* Hip Piece */}
+          <rect x="71" y="148" width="58" height="16" rx="3" fill="#0040A8" />
+
+          {/* Torso */}
+          <polygon points="76,150 124,150 120,94 80,94" fill="url(#fbTorso)" stroke="#003580" strokeWidth="1.5" />
+          {/* Classic Space Emblem */}
+          <circle cx="100" cy="120" rx="9" ry="9" fill="#FFD500" />
+          <path d="M 88 128 Q 100 110 112 116" stroke="#E3000B" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+
+          {/* Left Arm (Relaxed) */}
+          <path d="M 78 96 L 63 132 L 71 140" stroke="url(#fbBlue)" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          <circle cx="71" cy="142" r="7" fill="url(#fbHead)" />
+
+          {/* Right Arm (Waving friendly greeting) */}
+          <path d="M 122 96 L 140 116 L 146 102" stroke="url(#fbBlue)" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          <circle cx="147" cy="98" r="7" fill="url(#fbHead)" />
+
+          {/* Neck */}
+          <rect x="94" y="85" width="12" height="10" rx="2" fill="url(#fbHead)" />
+
+          {/* Head */}
+          <rect x="83" y="50" width="34" height="38" rx="8" fill="url(#fbHead)" />
+          {/* Eyes & Catchlights */}
+          <circle cx="92" cy="67" r="3" fill="#111111" />
+          <circle cx="93" cy="66" r="1" fill="#FFFFFF" />
+          <circle cx="108" cy="67" r="3" fill="#111111" />
+          <circle cx="109" cy="66" r="1" fill="#FFFFFF" />
+          {/* Eyebrows */}
+          <path d="M 88 61 Q 92 59 96 62" stroke="#3A1805" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+          <path d="M 104 62 Q 108 59 112 61" stroke="#3A1805" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+          {/* Smile */}
+          <path d="M 92 76 Q 100 83 108 76" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+
+          {/* Classic LEGO Hair */}
+          <path d="M 79 60 C 78 38 122 38 121 60 C 117 52 107 48 100 48 C 91 48 83 52 79 60 Z" fill="#0F172A" />
+        </svg>
+
+        {/* Orbiting Satellite Floating Bricks */}
+        <motion.div 
+          className="absolute -top-1 -right-2 w-7 h-5 bg-[#E3000B] rounded-[2px] shadow-lg border-t border-white/40"
+          animate={{ y: [-4, 4, -4], rotate: [0, 12, 0] }}
+          transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className="absolute top-16 -left-3 w-6 h-6 bg-[#FFD500] rounded-[2px] shadow-lg border-t border-white/40"
+          animate={{ y: [4, -4, 4], rotate: [0, -12, 0] }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        />
+      </motion.div>
+    </div>
+  );
+}
 
 /* ═══════════════════════════════════════════════════════════════
    HELPERS
@@ -16,14 +169,14 @@ function damp(current, target, lambda, dt) {
   return THREE.MathUtils.lerp(current, target, 1 - Math.exp(-lambda * dt));
 }
 
-// Classic Lego ABS plastic material
+// Classic Lego ABS plastic material — optimized for mobile GPU without heavy clearcoat overhead
 const PLASTIC = (color) => ({
   color,
   roughness: 0.22,
   metalness: 0.0,
-  clearcoat: 0.65,
-  clearcoatRoughness: 0.2,
-  envMapIntensity: 0.9,
+  clearcoat: isMobileDevice ? 0.0 : 0.65,
+  clearcoatRoughness: isMobileDevice ? 0.0 : 0.2,
+  envMapIntensity: isMobileDevice ? 0.45 : 0.9,
 });
 
 /* ═══════════════════════════════════════════════════════════════
@@ -55,34 +208,36 @@ function LegoHead({ color = '#FFD000', animRef }) {
   // 1. Dynamic Face Canvas Texture — pad-printed directly onto the curved cylinder surface
   const faceTextureInfo = useMemo(() => {
     const canvas = document.createElement('canvas');
-    canvas.width = 1024;
-    canvas.height = 1024;
+    const size = isMobileDevice ? 512 : 1024;
+    canvas.width = size;
+    canvas.height = size;
     const ctx = canvas.getContext('2d');
+    const s = size / 1024;
 
     const drawFace = (blinkScale = 1.0) => {
-      ctx.clearRect(0, 0, 1024, 1024);
+      ctx.clearRect(0, 0, size, size);
 
-      const eyeY = 450;
-      const leftEyeX = 292;
-      const rightEyeX = 732;
-      const eyeRadiusX = 64;
-      const eyeRadiusY = Math.max(2, 64 * blinkScale);
+      const eyeY = 450 * s;
+      const leftEyeX = 292 * s;
+      const rightEyeX = 732 * s;
+      const eyeRadiusX = 64 * s;
+      const eyeRadiusY = Math.max(2, 64 * blinkScale * s);
 
       // Eyebrows — classic Lego arched brows
       ctx.strokeStyle = '#3a1805';
-      ctx.lineWidth = 14;
+      ctx.lineWidth = 14 * s;
       ctx.lineCap = 'round';
 
       // Left eyebrow
       ctx.beginPath();
-      ctx.moveTo(235, 325);
-      ctx.quadraticCurveTo(292, 305, 345, 332);
+      ctx.moveTo(235 * s, 325 * s);
+      ctx.quadraticCurveTo(292 * s, 305 * s, 345 * s, 332 * s);
       ctx.stroke();
 
       // Right eyebrow
       ctx.beginPath();
-      ctx.moveTo(679, 332);
-      ctx.quadraticCurveTo(732, 305, 789, 325);
+      ctx.moveTo(679 * s, 332 * s);
+      ctx.quadraticCurveTo(732 * s, 305 * s, 789 * s, 325 * s);
       ctx.stroke();
 
       // Eyes with crisp specular catchlight
@@ -96,7 +251,7 @@ function LegoHead({ color = '#FFD000', animRef }) {
         if (blinkScale > 0.35) {
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.arc(cx + 20, cy - 20 * blinkScale, 18 * blinkScale, 0, Math.PI * 2);
+          ctx.arc(cx + 20 * s, cy - 20 * blinkScale * s, 18 * blinkScale * s, 0, Math.PI * 2);
           ctx.fill();
         }
       };
@@ -105,31 +260,31 @@ function LegoHead({ color = '#FFD000', animRef }) {
 
       // Classic Lego Smile — warm, friendly U-curve
       ctx.strokeStyle = '#111111';
-      ctx.lineWidth = 26;
+      ctx.lineWidth = 26 * s;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
       ctx.beginPath();
-      ctx.moveTo(335, 670);
-      ctx.bezierCurveTo(400, 755, 624, 755, 689, 670);
+      ctx.moveTo(335 * s, 670 * s);
+      ctx.bezierCurveTo(400 * s, 755 * s, 624 * s, 755 * s, 689 * s, 670 * s);
       ctx.stroke();
 
       // Smile corner dimples
-      ctx.lineWidth = 16;
+      ctx.lineWidth = 16 * s;
       ctx.beginPath();
-      ctx.moveTo(330, 680);
-      ctx.lineTo(345, 655);
+      ctx.moveTo(330 * s, 680 * s);
+      ctx.lineTo(345 * s, 655 * s);
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.moveTo(694, 680);
-      ctx.lineTo(679, 655);
+      ctx.moveTo(694 * s, 680 * s);
+      ctx.lineTo(679 * s, 655 * s);
       ctx.stroke();
     };
 
     drawFace(1.0);
     const texture = new THREE.CanvasTexture(canvas);
-    texture.anisotropy = 8;
+    texture.anisotropy = isMobileDevice ? 2 : 8;
     return { texture, drawFace };
   }, []);
 
@@ -451,14 +606,14 @@ function LegoHair({ color = '#0f0f0f' }) {
   const geom = useMemo(() => getLegoHairGeometry(), []);
 
   return (
-    <mesh geometry={geom} castShadow receiveShadow>
+    <mesh geometry={geom} castShadow={!isMobileDevice} receiveShadow={!isMobileDevice}>
       <meshPhysicalMaterial
         color={color}
         roughness={0.16}
         metalness={0.02}
-        clearcoat={0.96}
-        clearcoatRoughness={0.08}
-        envMapIntensity={1.2}
+        clearcoat={isMobileDevice ? 0.0 : 0.96}
+        clearcoatRoughness={isMobileDevice ? 0.0 : 0.08}
+        envMapIntensity={isMobileDevice ? 0.5 : 1.2}
         side={THREE.DoubleSide}
       />
     </mesh>
@@ -1518,9 +1673,9 @@ function FloatingBricks({ animRef }) {
           redBrickRef.current.visible = true;
           const p = elapsed / 0.34;
           const ease = p * p * (3 - 2 * p); // smoothstep curve
-          const startX = -1.65;
-          const startY = 2.85;
-          const startZ = 1.35;
+          const startX = isMobileDevice ? -0.85 : -1.65;
+          const startY = isMobileDevice ? 1.85 : 2.85;
+          const startZ = isMobileDevice ? 0.90 : 1.35;
           const handX = -0.72;
           const handY = 2.52;
           const handZ = 0.82;
@@ -1541,7 +1696,24 @@ function FloatingBricks({ animRef }) {
   });
 
   const bricks = useMemo(() => {
-    // 5 balok LEGO warna-warni yang mengitari karakter setinggi torso, bahu, dan kepala
+    // On mobile devices, use 3 primary Classic Space bricks with a tighter orbit radius (1.35) so they never touch text or screen boundaries
+    if (isMobileDevice) {
+      const items = [
+        { id: 'red', color: '#E3000B', type: '2x2', y: 1.8, r: 1.35, scale: 0.18, speed: 1.4 },
+        { id: 'yellow', color: '#FFD500', type: '2x4', y: 1.3, r: 1.45, scale: 0.18, speed: 1.2 },
+        { id: 'blue', color: '#0055BF', type: '2x2', y: 2.1, r: 1.40, scale: 0.18, speed: 1.5 },
+      ];
+      return items.map((item, i) => {
+        const angle = (i / 3) * Math.PI * 2;
+        return {
+          ...item,
+          pos: [Math.cos(angle) * item.r, item.y, Math.sin(angle) * item.r],
+          rot: [0.3 + (i * 0.4), 0.5 + (i * 0.6), -0.2 + (i * 0.3)],
+        };
+      });
+    }
+
+    // 5 balok LEGO warna-warni yang mengitari karakter setinggi torso, bahu, dan kepala on desktop
     const count = 5;
     const items = [
       { id: 'red', color: '#E3000B', type: '2x4', y: 2.7, r: 2.50, scale: 0.28, speed: 1.4 },
@@ -1710,8 +1882,11 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
   const { viewport, size } = useThree();
 
   const isDesktop = size.width >= 1024;
+  const isMobile = size.width < 768;
+  const initialScale = isDesktop ? 1.0 : (isMobile ? 0.76 : 0.86);
+
   const initialX = isDesktop ? Math.min(3.2, Math.max(1.8, viewport.width * 0.26)) : 0;
-  const initialY = isDesktop ? -2.02 : -viewport.height * 0.35;
+  const initialY = isDesktop ? -2.02 : -viewport.height * 0.26;
   const stationPosRef = useRef({ x: initialX, y: initialY });
 
   // Smooth rotation interaction
@@ -1764,8 +1939,12 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
 
   useFrame((_, delta) => {
     const isDesktop = size.width >= 1024;
+    const isMobile = size.width < 768;
+    const currentScale = isDesktop ? 1.0 : (isMobile ? 0.76 : 0.86);
+
     let targetX = isDesktop ? Math.min(3.2, Math.max(1.8, viewport.width * 0.26)) : 0;
-    let targetY = isDesktop ? -2.02 : -viewport.height * 0.35;
+    const centerOffset = 1.7 * currentScale;
+    let targetY = isDesktop ? -2.02 : (-viewport.height * 0.26 - centerOffset * 0.35);
 
     if (domElement) {
       const rect = domElement.getBoundingClientRect();
@@ -1773,8 +1952,12 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
       const py = rect.top + rect.height / 2;
       const ndcX = (px / size.width) * 2 - 1;
       const ndcY = -(py / size.height) * 2 + 1;
-      targetX = (ndcX * viewport.width) / 2;
-      targetY = (ndcY * viewport.height) / 2 - 2.02;
+      
+      const worldX = (ndcX * viewport.width) / 2;
+      const worldY = (ndcY * viewport.height) / 2;
+
+      targetX = worldX;
+      targetY = isDesktop ? (worldY - 2.02) : (worldY - centerOffset);
     }
 
     stationPosRef.current = { x: targetX, y: targetY };
@@ -1800,6 +1983,7 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
     if (stationGroupRef.current) {
       stationGroupRef.current.position.x = targetX;
       stationGroupRef.current.position.y = targetY;
+      stationGroupRef.current.scale.setScalar(currentScale);
       stationGroupRef.current.rotation.x = rotCurrent.current.x;
       stationGroupRef.current.rotation.y = rotCurrent.current.y;
     }
@@ -1807,7 +1991,7 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
     // Dynamic start position starting off the far left edge of the screen
     if (animRef?.current) {
       const worldLeftEdge = -viewport.width / 2 - 1.5;
-      animRef.current.startLocalX = worldLeftEdge - targetX;
+      animRef.current.startLocalX = (worldLeftEdge - targetX) / currentScale;
       if (animRef.current.startTime === null) {
         animRef.current.x = animRef.current.startLocalX;
       }
@@ -1818,22 +2002,22 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
     <>
       <RenderNotifier onRendered={onRendered} />
       {/* High-Performance Instant Studio Lighting — Zero Network Latency */}
-      <hemisphereLight args={['#ffffff', '#181e2e', 0.65]} />
+      <hemisphereLight args={['#ffffff', '#181e2e', isMobileDevice ? 0.8 : 0.65]} />
       <directionalLight
         position={[5, 9, 6]}
-        intensity={1.55}
-        castShadow
-        shadow-mapSize={[512, 512]}
+        intensity={isMobileDevice ? 1.6 : 1.55}
+        castShadow={!isMobileDevice}
+        shadow-mapSize={isMobileDevice ? [256, 256] : [512, 512]}
         shadow-bias={-0.0008}
         color="#ffffff"
       />
       <directionalLight position={[-5, 4, 3]} intensity={0.7} color="#93c5fd" />
-      <directionalLight position={[0, 6, -6]} intensity={0.9} color="#ffffff" />
+      <directionalLight position={[0, 6, -6]} intensity={0.8} color="#ffffff" />
       <pointLight position={[0, -0.5, 3.0]} intensity={0.4} color="#ffd500" />
-      <ambientLight intensity={0.45} color="#ffffff" />
+      <ambientLight intensity={isMobileDevice ? 0.55 : 0.45} color="#ffffff" />
 
       {/* Unified 3D Workstation & Character Group */}
-      <group ref={stationGroupRef} position={[initialX, initialY, 0]}>
+      <group ref={stationGroupRef} position={[initialX, initialY, 0]} scale={initialScale}>
         <Minifigure animRef={animRef} isIntroActive={isIntroActive} />
         {/* Decor — only the bricks float and tumble */}
         <FloatingBricks animRef={animRef} />
@@ -1858,8 +2042,10 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
 export default function LegoMinifigure({ domTarget, isIntroActive = false, isThrowing = false, onThrowComplete, onInteractionReady }) {
   const glRef = useRef(null);
   const [contextLost, setContextLost] = useState(false);
+  const [webGLError, setWebGLError] = useState(!isWebGLAvailable());
   const [canvasKey, setCanvasKey] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const lostCountRef = useRef(0);
 
   // Central animation state coordinator for walk-in sequence & brick throw
   const animRef = useRef({
@@ -1928,6 +2114,18 @@ export default function LegoMinifigure({ domTarget, isIntroActive = false, isThr
     };
   }, []);
 
+  if (webGLError) {
+    return (
+      <div className="w-full h-full relative bg-transparent flex items-center justify-center pointer-events-auto">
+        <LegoFallbackAvatar 
+          isThrowing={isThrowing} 
+          onThrowComplete={onThrowComplete} 
+          onInteractionReady={onInteractionReady} 
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full relative bg-transparent transition-opacity duration-500 ease-out" style={{ opacity: isLoaded ? 1 : 0 }}>
       {contextLost && (
@@ -1935,65 +2133,82 @@ export default function LegoMinifigure({ domTarget, isIntroActive = false, isThr
           <div className="w-8 h-8 border-2 border-[#FFD500]/20 border-t-[#FFD500] rounded-full animate-spin" />
         </div>
       )}
-      <Canvas
-        key={canvasKey}
-        shadows
-        camera={{ position: [0, 0.2, 10.8], fov: 28 }}
-        dpr={[1, 1.5]}
-        gl={{
-          antialias: true,
-          alpha: true,
-          powerPreference: 'high-performance',
-          stencil: false,
-          depth: true,
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.0,
-        }}
-        onCreated={({ gl, scene, camera }) => {
-          glRef.current = gl;
-          gl.setClearColor(0x000000, 0);
-          gl.clear();
-          gl.domElement.style.backgroundColor = 'transparent';
-          try {
-            gl.compile(scene, camera);
-          } catch {
-            // ignore
-          }
-          requestAnimationFrame(() => {
-            setIsLoaded(true);
-          });
-
-          const canvasEl = gl.domElement;
-          const handleContextLost = (event) => {
-            event.preventDefault();
-            setContextLost(true);
-            console.warn('WebGL context lost. Restoring cleanly...');
-            setTimeout(() => {
-              setCanvasKey(prev => prev + 1);
-              setContextLost(false);
-            }, 100);
-          };
-
-          const handleContextRestored = () => {
-            setContextLost(false);
-          };
-
-          canvasEl.addEventListener('webglcontextlost', handleContextLost, false);
-          canvasEl.addEventListener('webglcontextrestored', handleContextRestored, false);
-        }}
-        style={{ width: '100%', height: '100%', background: 'transparent', pointerEvents: 'none' }}
-      >
-        <Suspense fallback={null}>
-          <Scene 
-            onRendered={() => setIsLoaded(true)} 
-            animRef={animRef} 
-            domElement={domTarget} 
-            isIntroActive={isIntroActive} 
-            onThrowComplete={onThrowComplete}
-            onInteractionReady={onInteractionReady}
+      <CanvasErrorBoundary 
+        fallback={
+          <LegoFallbackAvatar 
+            isThrowing={isThrowing} 
+            onThrowComplete={onThrowComplete} 
+            onInteractionReady={onInteractionReady} 
           />
-        </Suspense>
-      </Canvas>
+        }
+        onError={() => setWebGLError(true)}
+      >
+        <Canvas
+          key={canvasKey}
+          shadows={!isMobileDevice}
+          camera={{ position: [0, 0.2, 10.8], fov: 28 }}
+          dpr={isMobileDevice ? 1 : [1, 1.5]}
+          gl={{
+            antialias: !isMobileDevice,
+            alpha: true,
+            powerPreference: isMobileDevice ? 'default' : 'high-performance',
+            stencil: false,
+            depth: true,
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.0,
+          }}
+          onCreated={({ gl, scene, camera }) => {
+            glRef.current = gl;
+            gl.setClearColor(0x000000, 0);
+            gl.clear();
+            gl.domElement.style.backgroundColor = 'transparent';
+            try {
+              gl.compile(scene, camera);
+            } catch {
+              // ignore
+            }
+            requestAnimationFrame(() => {
+              setIsLoaded(true);
+            });
+
+            const canvasEl = gl.domElement;
+            const handleContextLost = (event) => {
+              event.preventDefault();
+              lostCountRef.current += 1;
+              console.warn(`WebGL context lost (count: ${lostCountRef.current}).`);
+              if (lostCountRef.current > 2) {
+                console.warn('WebGL context lost repeatedly. Falling back to lightweight SVG avatar.');
+                setWebGLError(true);
+                return;
+              }
+              setContextLost(true);
+              setTimeout(() => {
+                setCanvasKey(prev => prev + 1);
+                setContextLost(false);
+              }, 200);
+            };
+
+            const handleContextRestored = () => {
+              setContextLost(false);
+            };
+
+            canvasEl.addEventListener('webglcontextlost', handleContextLost, false);
+            canvasEl.addEventListener('webglcontextrestored', handleContextRestored, false);
+          }}
+          style={{ width: '100%', height: '100%', background: 'transparent', pointerEvents: 'none' }}
+        >
+          <Suspense fallback={null}>
+            <Scene 
+              onRendered={() => setIsLoaded(true)} 
+              animRef={animRef} 
+              domElement={domTarget} 
+              isIntroActive={isIntroActive} 
+              onThrowComplete={onThrowComplete}
+              onInteractionReady={onInteractionReady}
+            />
+          </Suspense>
+        </Canvas>
+      </CanvasErrorBoundary>
     </div>
   );
 }

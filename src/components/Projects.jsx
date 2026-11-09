@@ -383,8 +383,8 @@ export function Projects() {
         id="projects-stage"
         className="relative w-full h-[550vh] sm:h-[600vh] bg-transparent text-white"
       >
-        {/* Sticky Viewport (100vh - Perfectly centered vertically) */}
-        <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden select-none z-10 px-4">
+        {/* Sticky Viewport (100vh / 100dvh - Perfectly centered vertically across iOS & Android) */}
+        <div className="sticky top-0 h-screen h-[100dvh] w-full flex items-center justify-center overflow-hidden select-none z-10 px-4">
           
           {/* ── TOP SECTION: YAAS Headline (Safely below 64px navbar with ample breathing room) ── */}
           <div
@@ -444,10 +444,10 @@ export function Projects() {
                   />
                 )}
 
-                {/* Title overlay: appears smoothly only when cursor is hovered over the card */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 flex flex-col justify-end p-5 sm:p-7">
+                {/* Title overlay: mobile-friendly (always visible on mobile, smooth hover on desktop) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 flex flex-col justify-end p-4 sm:p-7">
                   <h3
-                    className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-white select-none whitespace-normal leading-[1.15] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] truncate"
+                    className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-white select-none whitespace-normal leading-[1.15] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] truncate"
                     style={{
                       fontFamily: "'Plus Jakarta Sans', sans-serif",
                       letterSpacing: "-0.025em",
@@ -666,10 +666,10 @@ function StackedIsoCard({
         />
       )}
 
-      {/* Title overlay: appears smoothly only when cursor is hovered over the card */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 flex flex-col justify-end p-5 sm:p-7">
+      {/* Title overlay: mobile-friendly (always visible on mobile, smooth hover on desktop) */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 flex flex-col justify-end p-4 sm:p-7">
         <h3
-          className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-white select-none whitespace-normal leading-[1.15] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] truncate"
+          className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-white select-none whitespace-normal leading-[1.15] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] truncate"
           style={{
             fontFamily: "'Plus Jakarta Sans', sans-serif",
             letterSpacing: "-0.025em",

@@ -888,7 +888,7 @@ export default function SkillsKeyboard() {
                 }}
               >
                 <div 
-                  className="grid grid-cols-6 gap-2 sm:gap-2.5"
+                  className="grid grid-cols-6 gap-1.5 min-[370px]:gap-2 sm:gap-2.5"
                   style={{
                     transformStyle: 'preserve-3d'
                   }}
@@ -951,7 +951,7 @@ const KeycapButton = React.memo(function KeycapButton({ skill, isSelected, onTri
       onPointerDown={handlePointerDown}
       onClick={handleClick}
       title={`${skill.name} (Press '${skill.shortcut}')`}
-      className="keycap-btn relative w-12 h-12 sm:w-14 sm:h-14 lg:w-[62px] lg:h-[62px] rounded-[13px] p-1 sm:p-[6px] border-none outline-none cursor-pointer flex items-center justify-center"
+      className="keycap-btn relative w-10 h-10 min-[370px]:w-11 min-[370px]:h-11 min-[420px]:w-12 min-[420px]:h-12 sm:w-14 sm:h-14 lg:w-[62px] lg:h-[62px] rounded-[10px] min-[370px]:rounded-[11px] min-[420px]:rounded-[13px] p-0.5 min-[370px]:p-1 sm:p-[6px] border-none outline-none cursor-pointer flex items-center justify-center"
       style={{
         zIndex: currentZIndex,
         '--key-side': skill.side,

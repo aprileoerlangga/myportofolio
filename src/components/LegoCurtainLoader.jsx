@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 function LegoAirplane3D({ isTakeoff = false }) {
   return (
     <div
-      className="relative w-80 h-44 sm:w-96 sm:h-52 md:w-[28rem] md:h-60 filter drop-shadow-[0_25px_40px_rgba(0,0,0,0.95)] select-none"
+      className="relative w-72 h-40 min-[380px]:w-80 min-[380px]:h-44 sm:w-96 sm:h-52 md:w-[28rem] md:h-60 filter drop-shadow-[0_25px_40px_rgba(0,0,0,0.95)] select-none"
       style={{ perspective: 1000 }}
     >
       <svg

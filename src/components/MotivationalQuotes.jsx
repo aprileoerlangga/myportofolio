@@ -124,7 +124,7 @@ export default function MotivationalQuotes() {
         Sticky Viewport Stage:
         Locks in viewport center, text gracefully transitions on scroll without any button clutter!
       */}
-      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 overflow-hidden">
+      <div className="sticky top-0 h-screen h-[100dvh] w-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 overflow-hidden">
         
         {/* Soft Dynamic Ambient Backlight Glow */}
         <motion.div 

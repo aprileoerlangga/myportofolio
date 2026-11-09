@@ -145,7 +145,8 @@ function Contact() {
                     ease: [0.16, 1, 0.3, 1] 
                   }}
                   whileHover={{ x: 6 }}
-                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-6 py-2 px-3 -mx-3 rounded-xl hover:bg-white/[0.02] cursor-pointer select-none transition-all duration-200"
+                  whileTap={{ scale: 0.98 }}
+                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-6 py-2.5 sm:py-2 px-3 -mx-3 rounded-xl hover:bg-white/[0.02] active:bg-white/[0.04] cursor-pointer select-none transition-all duration-200"
                 >
                   {/* Platform Title + Logo Icon */}
                   <div className="flex items-center gap-3 sm:gap-3.5">

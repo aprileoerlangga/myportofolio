@@ -50,11 +50,12 @@
 @tailwind utilities;
 
 html, body {
-  background-color: #090b12;
+  background-color: #060a17;
   color: #ffffff;
   font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1, h2, h3, h4, h5, h6 {
