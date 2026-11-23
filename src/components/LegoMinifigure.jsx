@@ -6,7 +6,7 @@ import {
 import { useRef, useMemo, useState, useEffect, Suspense, Component } from 'react';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
-import { LegoBrick3D } from './Lego3DComponents';
+import { LegoBrick3D } from './LegoBricks';
 
 export const isMobileDevice = typeof window !== 'undefined' && (
   /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
@@ -17,10 +17,17 @@ export function isWebGLAvailable() {
   if (typeof window === 'undefined') return true;
   try {
     const canvas = document.createElement('canvas');
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
-    );
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    const available = !!(window.WebGLRenderingContext && gl);
+    if (gl) {
+      try {
+        const ext = gl.getExtension('WEBGL_lose_context');
+        if (ext) ext.loseContext();
+      } catch {
+        // ignore
+      }
+    }
+    return available;
   } catch {
     return false;
   }
@@ -37,6 +44,11 @@ class CanvasErrorBoundary extends Component {
   componentDidCatch(error, errorInfo) {
     console.warn('Canvas Error Boundary caught an issue:', error, errorInfo);
     if (this.props.onError) this.props.onError();
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.resetKey !== this.props.resetKey && this.state.hasError) {
+      this.setState({ hasError: false });
+    }
   }
   render() {
     if (this.state.hasError) {
@@ -112,11 +124,8 @@ function LegoFallbackAvatar({ isThrowing, onThrowComplete, onInteractionReady })
           {/* Hip Piece */}
           <rect x="71" y="148" width="58" height="16" rx="3" fill="#0040A8" />
 
-          {/* Torso */}
+          {/* Torso — clean solid color */}
           <polygon points="76,150 124,150 120,94 80,94" fill="url(#fbTorso)" stroke="#003580" strokeWidth="1.5" />
-          {/* Classic Space Emblem */}
-          <circle cx="100" cy="120" rx="9" ry="9" fill="#FFD500" />
-          <path d="M 88 128 Q 100 110 112 116" stroke="#E3000B" strokeWidth="2.5" fill="none" strokeLinecap="round" />
 
           {/* Left Arm (Relaxed) */}
           <path d="M 78 96 L 63 132 L 71 140" stroke="url(#fbBlue)" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" fill="none" />
@@ -163,13 +172,52 @@ function LegoFallbackAvatar({ isThrowing, onThrowComplete, onInteractionReady })
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   HELPERS
+   HELPERS & ULTRA-PERFORMANT MATERIAL FACTORY
    ═══════════════════════════════════════════════════════════════ */
 function damp(current, target, lambda, dt) {
-  return THREE.MathUtils.lerp(current, target, 1 - Math.exp(-lambda * dt));
+  // Clamped dt prevents explosive overshoots on frame drops
+  const safeDt = Math.min(dt, 0.033);
+  return THREE.MathUtils.lerp(current, target, 1 - Math.exp(-lambda * safeDt));
 }
 
-// Classic Lego ABS plastic material — optimized for mobile GPU without heavy clearcoat overhead
+// Global material singleton cache — prevents GPU program thrashing & enables Three.js draw-call batching
+const materialCache = new Map();
+
+export function getLegoMaterial(color, isMobile = isMobileDevice, customProps = {}) {
+  const roughness = customProps.roughness !== undefined ? customProps.roughness : 0.20;
+  const metalness = customProps.metalness !== undefined ? customProps.metalness : 0.0;
+  const side = customProps.side || THREE.FrontSide;
+  const key = `${color}_${isMobile ? 'm' : 'd'}_${roughness}_${metalness}_${side}`;
+
+  if (!materialCache.has(key)) {
+    let mat;
+    if (isMobile) {
+      // Single-pass standard PBR for mobile: zero clearcoat overhead, locked 60/120 FPS
+      mat = new THREE.MeshStandardMaterial({
+        color,
+        roughness,
+        metalness,
+        envMapIntensity: 0.5,
+        side,
+      });
+    } else {
+      // Full authentic ABS clearcoat for desktop
+      mat = new THREE.MeshPhysicalMaterial({
+        color,
+        roughness,
+        metalness,
+        clearcoat: 0.90,
+        clearcoatRoughness: 0.08,
+        envMapIntensity: 1.0,
+        side,
+      });
+    }
+    materialCache.set(key, mat);
+  }
+  return materialCache.get(key);
+}
+
+// Fallback PLASTIC for backward compatibility
 const PLASTIC = (color) => ({
   color,
   roughness: 0.22,
@@ -183,16 +231,17 @@ const PLASTIC = (color) => ({
    LEGO STUD — iconic cylindrical bump
    ═══════════════════════════════════════════════════════════════ */
 function Stud({ position, color, scale = 1 }) {
+  const studMat = useMemo(() => getLegoMaterial(color), [color]);
+  const ringMat = useMemo(() => getLegoMaterial(color, isMobileDevice, { roughness: 0.3, side: THREE.DoubleSide }), [color]);
+
   return (
     <group position={position} scale={scale}>
-      <mesh castShadow>
-        <cylinderGeometry args={[0.16, 0.16, 0.12, 24]} />
-        <meshPhysicalMaterial {...PLASTIC(color)} />
+      <mesh castShadow={!isMobileDevice} material={studMat}>
+        <cylinderGeometry args={[0.16, 0.16, 0.12, 18]} />
       </mesh>
       {/* Hollow ring on top */}
-      <mesh position={[0, 0.061, 0]}>
-        <ringGeometry args={[0.08, 0.155, 24]} />
-        <meshPhysicalMaterial {...PLASTIC(color)} side={THREE.DoubleSide} roughness={0.3} />
+      <mesh position={[0, 0.061, 0]} material={ringMat}>
+        <ringGeometry args={[0.08, 0.155, 18]} />
       </mesh>
     </group>
   );
@@ -296,6 +345,7 @@ function LegoHead({ color = '#FFD000', animRef }) {
   }, []);
 
   useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.033);
     const t = performance.now() / 1000;
 
     // Friendly, curious welcoming head acting looking towards visitors
@@ -306,67 +356,80 @@ function LegoHead({ color = '#FFD000', animRef }) {
 
       const a = animRef?.current;
       if (a && a.isThrowing && a.throwStartTime) {
-        targetRotX = -0.06;
-        targetRotY = 0.08;
-        targetRotZ = -0.04;
-      } else if (a && a.isWalking) {
-        // Looking ahead in direction of walk with slight confident head tilt
-        targetRotY = 0.12;
-        targetRotX = 0.05;
-        targetRotZ = -0.02;
-      } else if (a && a.isIntroWave) {
-        // Friendly greeting tilt while waving
-        targetRotZ = 0.06 + Math.sin(t * 3.0) * 0.02;
-        targetRotY = -0.05;
-        targetRotX = -0.04;
+        const elapsed = (performance.now() / 1000) - a.throwStartTime;
+        if (elapsed < 0.40) {
+          // Looks up and forward tracking incoming red brick
+          targetRotX = -0.08;
+          targetRotY = 0.14;
+          targetRotZ = -0.04;
+        } else if (elapsed < 0.80) {
+          // Locks onto camera lens during high overhead wind-up
+          targetRotX = -0.04;
+          targetRotY = 0.05;
+          targetRotZ = -0.02;
+        } else {
+          // Nods dynamically into the pitch and follow-through
+          targetRotX = 0.08;
+          targetRotY = -0.02;
+          targetRotZ = 0.02;
+        }
+      } else {
+        // Zero-G Curious Astronaut Head Motion — menatap ramah dengan tilt alami gravitasi nol
+        targetRotX = -0.02 + Math.sin(t * 1.3) * 0.03;
+        targetRotY = Math.sin(t * 1.1) * 0.07;
+        targetRotZ = 0.035 + Math.sin(t * 0.9) * 0.03;
       }
 
-      headRef.current.rotation.x = damp(headRef.current.rotation.x, targetRotX, 4.0, delta);
-      headRef.current.rotation.y = damp(headRef.current.rotation.y, targetRotY, 4.0, delta);
-      headRef.current.rotation.z = damp(headRef.current.rotation.z, targetRotZ, 4.0, delta);
+      headRef.current.rotation.x = damp(headRef.current.rotation.x, targetRotX, 4.0, dt);
+      headRef.current.rotation.y = damp(headRef.current.rotation.y, targetRotY, 4.0, dt);
+      headRef.current.rotation.z = damp(headRef.current.rotation.z, targetRotZ, 4.0, dt);
     }
 
-    // Natural blink animation
+    // Natural keyframed blink animation — avoids GPU texImage2D upload pipeline stalls
     const bs = blinkState.current;
-    bs.timer += delta;
-    let blink = 1;
+    bs.timer += dt;
+    let targetBlink = 1.0;
     if (bs.timer > bs.next) {
       const p = bs.timer - bs.next;
-      if (p < 0.07) blink = Math.max(0.05, 1 - p / 0.07);
-      else if (p < 0.14) blink = Math.min(1, (p - 0.07) / 0.07);
-      else { bs.timer = 0; bs.next = 2 + Math.random() * 3; }
+      if (p < 0.06) targetBlink = 0.35;
+      else if (p < 0.12) targetBlink = 0.05;
+      else if (p < 0.18) targetBlink = 0.35;
+      else { 
+        bs.timer = 0; 
+        bs.next = 2.5 + Math.random() * 3.5; 
+        targetBlink = 1.0; 
+      }
     }
-    if (Math.abs(bs.lastScale - blink) > 0.02) {
-      bs.lastScale = blink;
-      faceTextureInfo.drawFace(blink);
+    if (Math.abs(bs.lastScale - targetBlink) > 0.08) {
+      bs.lastScale = targetBlink;
+      faceTextureInfo.drawFace(targetBlink);
       faceTextureInfo.texture.needsUpdate = true;
     }
   });
 
+  const headMat = useMemo(() => getLegoMaterial(color, isMobileDevice), [color]);
+
   return (
     <group position={[0, 3.08, 0]} ref={headRef}>
       {/* Head cylinder — classic Lego proportions */}
-      <mesh castShadow receiveShadow>
-        <cylinderGeometry args={[0.62, 0.60, 0.82, 32]} />
-        <meshPhysicalMaterial {...PLASTIC(color)} />
+      <mesh castShadow={!isMobileDevice} receiveShadow={!isMobileDevice} material={headMat}>
+        <cylinderGeometry args={[0.62, 0.60, 0.82, 24]} />
       </mesh>
 
       {/* Black under-hair scalp cap covering top head surface so yellow NEVER bleeds through */}
       <mesh position={[0, 0.412, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.625, 32]} />
+        <circleGeometry args={[0.625, 24]} />
         <meshBasicMaterial color="#0e0e0e" />
       </mesh>
 
       {/* Bottom lip ring */}
-      <mesh position={[0, -0.41, 0]}>
-        <cylinderGeometry args={[0.61, 0.60, 0.02, 32]} />
-        <meshPhysicalMaterial {...PLASTIC(color)} />
+      <mesh position={[0, -0.41, 0]} material={headMat}>
+        <cylinderGeometry args={[0.61, 0.60, 0.02, 24]} />
       </mesh>
 
       {/* Clean, sleek Yellow Neck Cylinder — perfectly bridging head to torso */}
-      <mesh position={[0, -0.48, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.26, 0.26, 0.15, 32]} />
-        <meshPhysicalMaterial {...PLASTIC(color)} />
+      <mesh position={[0, -0.48, 0]} castShadow={!isMobileDevice} receiveShadow={!isMobileDevice} material={headMat}>
+        <cylinderGeometry args={[0.26, 0.26, 0.15, 24]} />
       </mesh>
 
       {/* Hair attached directly to head — sways and moves with head */}
@@ -661,33 +724,26 @@ function getTorsoGeometry() {
   return cachedTorsoGeom;
 }
 
-function LegoTorso({ bodyColor = '#ffffff' }) {
+function LegoTorso({ bodyColor = '#F8FAFC' }) {
   const ref = useRef();
   const torsoGeom = useMemo(() => getTorsoGeometry(), []);
+  const torsoMat = useMemo(() => getLegoMaterial(bodyColor, isMobileDevice, { roughness: 0.16 }), [bodyColor]);
 
   // Subtle breathing animation
   useFrame((_, delta) => {
     if (ref.current) {
+      const dt = Math.min(delta, 0.033);
       const t = performance.now() / 1000;
       const b = Math.sin(t * 1.5) * 0.004 + 1;
-      ref.current.scale.x = damp(ref.current.scale.x, b, 5, delta);
-      ref.current.scale.z = damp(ref.current.scale.z, b, 5, delta);
+      ref.current.scale.x = damp(ref.current.scale.x, b, 5, dt);
+      ref.current.scale.z = damp(ref.current.scale.z, b, 5, dt);
     }
   });
 
   return (
     <group position={[0, 2.05, 0]} ref={ref}>
-      {/* Authentic trapezoidal torso body — pristine flat top & smooth beveled edges */}
-      <mesh geometry={torsoGeom} castShadow receiveShadow>
-        <meshPhysicalMaterial
-          color={bodyColor}
-          roughness={0.16}
-          metalness={0.0}
-          clearcoat={0.95}
-          clearcoatRoughness={0.08}
-          envMapIntensity={1.1}
-        />
-      </mesh>
+      {/* Authentic trapezoidal torso body — pristine clean solid color finish with zero logo */}
+      <mesh geometry={torsoGeom} castShadow={!isMobileDevice} receiveShadow={!isMobileDevice} material={torsoMat} />
     </group>
   );
 }
@@ -744,7 +800,6 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000', 
   const { geom: armGeom, wristPos, wristQuat } = useMemo(() => getArmGeometry(side), [side]);
 
   useFrame((_, rawDelta) => {
-    const delta = Math.min(rawDelta, 0.05); // Clamped timestep
     const t = performance.now() / 1000;
     const s = sv.current;
 
@@ -757,161 +812,143 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000', 
 
     const a = animRef?.current;
 
-    // Toggle held brick inside right C-claw: visible strictly from snatch completion (0.34s) to release (0.88s)
+    // Toggle held brick inside right C-claw: visible strictly from grab (0.40s) to release (0.98s)
     if (heldBrickRef.current) {
       if (a && a.isThrowing && side === 'right' && a.throwStartTime) {
         const elapsed = (performance.now() / 1000) - a.throwStartTime;
-        heldBrickRef.current.visible = (elapsed >= 0.34 && elapsed < 0.88);
+        const isHeld = (elapsed >= 0.40 && elapsed < 0.98);
+        heldBrickRef.current.visible = isHeld;
+        if (elapsed >= 0.96 && elapsed <= 1.02 && !a.releaseWorldPos) {
+          const wp = new THREE.Vector3();
+          heldBrickRef.current.getWorldPosition(wp);
+          a.releaseWorldPos = { x: wp.x, y: wp.y, z: wp.z };
+        }
       } else {
         heldBrickRef.current.visible = false;
       }
     }
 
     if (a && a.isThrowing && side === 'right' && a.throwStartTime) {
-      // DYNAMIC OVERHEAD THROW ANIMATION — SNATCHES RED BRICK & PITCHES OVERHEAD
       const elapsed = (performance.now() / 1000) - a.throwStartTime;
-      if (elapsed < 0.34) {
-        // Phase 1: Reaches high up forward to snatch floating red Lego brick
-        const p = elapsed / 0.34;
+      if (elapsed < 0.40) {
+        // Phase 1: Reaches smoothly forward-up to meet and snatch red brick
+        const p = elapsed / 0.40;
+        const ease = (1 - Math.cos(p * Math.PI)) / 2;
+        targetX = THREE.MathUtils.lerp(0.04, -1.82, ease);
+        targetZ = THREE.MathUtils.lerp(-0.04, -0.24, ease);
+        targetY = THREE.MathUtils.lerp(0, 0.16, ease);
+        targetHx = THREE.MathUtils.lerp(0, 0.42, ease); // opens C-claw to receive brick
+      } else if (elapsed < 0.80) {
+        // Phase 2: High overhead athletic wind-up! Arm cocks back above head
+        const p = (elapsed - 0.40) / 0.40;
+        const ease = (1 - Math.cos(p * Math.PI)) / 2;
+        targetX = THREE.MathUtils.lerp(-1.82, -2.82, ease);
+        targetZ = THREE.MathUtils.lerp(-0.24, -0.34, ease);
+        targetY = THREE.MathUtils.lerp(0.16, 0.24, ease);
+        targetHx = THREE.MathUtils.lerp(0.42, 0.22, ease); // firm clamp around brick
+      } else if (elapsed < 0.98) {
+        // Phase 3: Explosive power whip forward & release!
+        const p = (elapsed - 0.80) / 0.18;
         const ease = Math.sin((p * Math.PI) / 2);
-        targetX = THREE.MathUtils.lerp(0.04, -1.95, ease); // reaches high up forward
-        targetZ = THREE.MathUtils.lerp(-0.04, -0.26, ease);
-        targetY = THREE.MathUtils.lerp(0, 0.18, ease);
-        targetHx = THREE.MathUtils.lerp(0, 0.45, ease); // open C-hand grasping
-      } else if (elapsed < 0.70) {
-        // Phase 2: High overhead wind-up! Arm cocks back above head
-        const p = (elapsed - 0.34) / 0.36;
-        const ease = Math.sin((p * Math.PI) / 2);
-        targetX = THREE.MathUtils.lerp(-1.95, -2.70, ease); // cocks high overhead and back!
-        targetZ = THREE.MathUtils.lerp(-0.26, -0.34, ease); // clear head with solid clearance
-        targetY = THREE.MathUtils.lerp(0.18, 0.24, ease);
-        targetHx = THREE.MathUtils.lerp(0.45, 0.30, ease); // secure clamp
-      } else if (elapsed < 0.88) {
-        // Phase 3: High overhead power pitch forward whip & release!
-        const p = (elapsed - 0.70) / 0.18;
-        const ease = Math.sin((p * Math.PI) / 2);
-        targetX = THREE.MathUtils.lerp(-2.70, -1.25, ease); // overhead whip forward & release!
-        targetZ = THREE.MathUtils.lerp(-0.34, -0.12, ease);
-        targetY = THREE.MathUtils.lerp(0.24, -0.16, ease);
-        targetHx = THREE.MathUtils.lerp(0.30, -0.55, ease); // forward wrist snap!
+        targetX = THREE.MathUtils.lerp(-2.82, -1.18, ease);
+        targetZ = THREE.MathUtils.lerp(-0.34, -0.10, ease);
+        targetY = THREE.MathUtils.lerp(0.24, -0.15, ease);
+        targetHx = THREE.MathUtils.lerp(0.22, -0.60, ease); // crisp wrist whip release
       } else {
-        // Phase 4: Follow-through pointing towards screen
-        targetX = -1.15;
-        targetZ = -0.10;
-        targetY = -0.15;
-        targetHx = -0.55;
+        // Phase 4: Follow-through and natural settle
+        const p = Math.min(1.0, (elapsed - 0.98) / 0.30);
+        const ease = 1 - Math.pow(1 - p, 3);
+        targetX = THREE.MathUtils.lerp(-1.18, -1.05, ease);
+        targetZ = THREE.MathUtils.lerp(-0.10, -0.06, ease);
+        targetY = THREE.MathUtils.lerp(-0.15, -0.10, ease);
+        targetHx = THREE.MathUtils.lerp(-0.60, -0.40, ease);
       }
     } else if (a && a.isThrowing && side === 'left' && a.throwStartTime) {
       // Left arm balances athletically during pitch
       const elapsed = (performance.now() / 1000) - a.throwStartTime;
-      if (elapsed < 0.70) {
-        // Balances up and forward during windup
-        const p = Math.min(1.0, elapsed / 0.70);
-        const ease = Math.sin((p * Math.PI) / 2);
-        targetX = THREE.MathUtils.lerp(0, -0.80, ease);
-        targetZ = THREE.MathUtils.lerp(0, 0.28, ease);
-        targetY = THREE.MathUtils.lerp(0, -0.12, ease);
+      if (elapsed < 0.80) {
+        const p = Math.min(1.0, elapsed / 0.80);
+        const ease = (1 - Math.cos(p * Math.PI)) / 2;
+        targetX = THREE.MathUtils.lerp(0, -0.85, ease);
+        targetZ = THREE.MathUtils.lerp(0, 0.30, ease);
+        targetY = THREE.MathUtils.lerp(0, -0.14, ease);
       } else {
-        // Pulls back as right arm pitches forward
-        const p = Math.min(1.0, (elapsed - 0.70) / 0.18);
+        const p = Math.min(1.0, (elapsed - 0.80) / 0.18);
         const ease = Math.sin((p * Math.PI) / 2);
-        targetX = THREE.MathUtils.lerp(-0.80, 0.45, ease);
-        targetZ = THREE.MathUtils.lerp(0.28, 0.10, ease);
-        targetY = THREE.MathUtils.lerp(-0.12, 0, ease);
+        targetX = THREE.MathUtils.lerp(-0.85, 0.48, ease);
+        targetZ = THREE.MathUtils.lerp(0.30, 0.10, ease);
+        targetY = THREE.MathUtils.lerp(-0.14, 0, ease);
       }
-    } else if (a && a.isWalking) {
-      // WALK CYCLE ARM SWINGS (opposite of leg swings)
-      if (side === 'left') {
-        targetX = a.leftArmAngle;
-        targetZ = 0.04;
-        targetY = 0;
+    } else if (side === 'right') {
+      // TANGAN KANAN: Mengambang Anggun di Gravitasi Nol — Melambai Ramah & Mengarahkan Balok
+      const cycleDuration = 6.8;
+      const cycle = t % cycleDuration;
+
+      let waveLift = 0;
+      if (cycle < 0.7) {
+        // Angkat tangan ke atas menyapa
+        const p = cycle / 0.7;
+        waveLift = (1 - Math.cos(p * Math.PI)) / 2;
+      } else if (cycle < 2.8) {
+        // Melambai ramah di atas menyapa pengunjung
+        waveLift = 1.0;
+      } else if (cycle < 3.5) {
+        // Menurunkan tangan ke posisi konduktor
+        const p = (cycle - 2.8) / 0.7;
+        waveLift = (1 + Math.cos(p * Math.PI)) / 2;
       } else {
-        targetX = a.rightArmAngle;
-        targetZ = -0.04;
-        targetY = 0;
+        // Fase Menggerakkan Balok Melayang
+        waveLift = 0.0;
       }
-    } else if (a && a.isIntroWave && side === 'right') {
-      // IMMEDIATE GREETING WAVE WHEN ARRIVING AT BASEPLATE
-      const lift = a.introWaveLift;
-      const waveT = a.introWaveProgress;
-      const waveMotion = Math.sin(waveT * 6.5);
 
-      const restX = 0.04;
-      const restZ = -0.04;
-      const restY = 0;
-
+      // 1. Pose Melambai Ramah di Atas
+      const waveT = cycle - 0.7;
+      const waveMotion = Math.sin(waveT * 6.2);
       const waveX = -2.40 + Math.sin(waveT * 3.0) * 0.04;
       const waveZ = -0.42 - waveMotion * 0.18;
       const waveY = -0.22 - waveMotion * 0.08;
 
-      targetX = THREE.MathUtils.lerp(restX, waveX, lift);
-      targetZ = THREE.MathUtils.lerp(restZ, waveZ, lift);
-      targetY = THREE.MathUtils.lerp(restY, waveY, lift);
+      // 2. Pose Mengarahkan Balok Melayang di Luar Angkasa
+      const condX = -0.68 + Math.sin(t * 1.8) * 0.14;
+      const condZ = -0.20 + Math.cos(t * 1.4) * 0.08;
+      const condY = -0.08 + Math.sin(t * 2.0) * 0.05;
 
-      targetHx = THREE.MathUtils.lerp(0, 0.25 + Math.sin(waveT * 6.5) * 0.14, lift);
-      targetHy = THREE.MathUtils.lerp(0, Math.cos(waveT * 6.5) * 0.40, lift);
-      targetHz = THREE.MathUtils.lerp(0, Math.sin(waveT * 6.5) * 0.14, lift);
-    } else if (side === 'right') {
-      // TANGAN KANAN: Mengangkat ke atas-depan, melambai ramah, lalu turun kembali secara berkala (hidup & tidak kaku)
-      const cycleDuration = 5.5; // Total siklus animasi dalam detik
-      const cycle = t % cycleDuration;
+      targetX = THREE.MathUtils.lerp(condX, waveX, waveLift);
+      targetZ = THREE.MathUtils.lerp(condZ, waveZ, waveLift);
+      targetY = THREE.MathUtils.lerp(condY, waveY, waveLift);
 
-      let lift = 0;
-      if (cycle < 0.9) {
-        // Fase 1: Mengangkat tangan ke depan & ke atas (0.0s - 0.9s)
-        const p = cycle / 0.9;
-        lift = (1 - Math.cos(p * Math.PI)) / 2;
-      } else if (cycle < 3.6) {
-        // Fase 2: Melambai aktif di atas ke arah depan menyapa pengunjung (0.9s - 3.6s)
-        lift = 1.0;
-      } else if (cycle < 4.4) {
-        // Fase 3: Menurunkan tangan kembali ke samping badan (3.6s - 4.4s)
-        const p = (cycle - 3.6) / 0.8;
-        lift = (1 + Math.cos(p * Math.PI)) / 2;
-      } else {
-        // Fase 4: Istirahat santai di samping badan dengan micro-breathing (4.4s - 5.5s)
-        lift = 0.0;
-      }
+      const waveHx = 0.25 + Math.sin(waveT * 6.2) * 0.14;
+      const waveHy = Math.cos(waveT * 6.2) * 0.40;
+      const waveHz = Math.sin(waveT * 6.2) * 0.14;
 
-      // Posisi santai di samping badan (bebas benturan dari torso)
-      const restX = 0.04 + Math.sin(t * 1.5) * 0.02;
-      const restZ = -0.04;
-      const restY = 0;
+      const condHx = 0.15 + Math.sin(t * 2.4) * 0.18;
+      const condHy = 0.25 + Math.cos(t * 1.8) * 0.20;
+      const condHz = Math.sin(t * 2.0) * 0.10;
 
-      // Posisi melambai ke depan-atas (terangkat tinggi sejajar kepala/mata & ke depan)
-      const waveT = cycle - 0.9;
-      const waveMotion = Math.sin(waveT * 6.2); // Melambai bolak-balik ceria
-      const waveX = -2.40 + Math.sin(waveT * 3.0) * 0.04; // Terangkat tinggi sejajar kepala & ke depan
-      const waveZ = -0.42 - waveMotion * 0.18; // Ayunan melambai ke kiri-kanan (jelas di samping kepala)
-      const waveY = -0.22 - waveMotion * 0.08;
-
-      targetX = THREE.MathUtils.lerp(restX, waveX, lift);
-      targetZ = THREE.MathUtils.lerp(restZ, waveZ, lift);
-      targetY = THREE.MathUtils.lerp(restY, waveY, lift);
-
-      // Artikulasi pergelangan/tangan melambai aktif di atas
-      targetHx = THREE.MathUtils.lerp(0, 0.25 + Math.sin(waveT * 6.2) * 0.14, lift);
-      targetHy = THREE.MathUtils.lerp(0, Math.cos(waveT * 6.2) * 0.40, lift);
-      targetHz = THREE.MathUtils.lerp(0, Math.sin(waveT * 6.2) * 0.14, lift);
+      targetHx = THREE.MathUtils.lerp(condHx, waveHx, waveLift);
+      targetHy = THREE.MathUtils.lerp(condHy, waveHy, waveLift);
+      targetHz = THREE.MathUtils.lerp(condHz, waveHz, waveLift);
     } else {
-      // TANGAN KIRI: Menggantung alami di samping badan dengan micro-breathing (bebas benturan)
-      targetX = 0.04 + Math.sin(t * 1.5 + Math.PI) * 0.02;
-      targetZ = 0.04 + Math.cos(t * 1.2) * 0.01;
-      targetY = 0;
-      targetHx = 0;
-      targetHy = 0;
-      targetHz = 0;
+      // TANGAN KIRI: Mengambang Rileks di Gravitasi Nol (Zero-G Spacewalk)
+      targetX = -0.52 + Math.sin(t * 1.4) * 0.12;
+      targetZ = 0.22 + Math.cos(t * 1.1) * 0.08;
+      targetY = -0.08 + Math.sin(t * 1.6) * 0.05;
+
+      targetHx = 0.10 + Math.sin(t * 1.8) * 0.15;
+      targetHy = -0.18 + Math.cos(t * 1.4) * 0.18;
+      targetHz = -Math.sin(t * 1.6) * 0.08;
     }
 
     // Smooth physics damping (fast responsiveness during athletic throw)
+    const dt = Math.min(rawDelta, 0.033);
     const armDamp = (a && a.isThrowing) ? 26.0 : 5.0;
     const handDamp = (a && a.isThrowing) ? 26.0 : 5.5;
-    s.ax = damp(s.ax, targetX, armDamp, delta);
-    s.az = damp(s.az, targetZ, armDamp, delta);
-    s.ay = damp(s.ay, targetY, armDamp, delta);
-    s.hx = damp(s.hx, targetHx, handDamp, delta);
-    s.hy = damp(s.hy, targetHy, handDamp, delta);
-    s.hz = damp(s.hz, targetHz, handDamp, delta);
+    s.ax = damp(s.ax, targetX, armDamp, dt);
+    s.az = damp(s.az, targetZ, armDamp, dt);
+    s.ay = damp(s.ay, targetY, armDamp, dt);
+    s.hx = damp(s.hx, targetHx, handDamp, dt);
+    s.hy = damp(s.hy, targetHy, handDamp, dt);
+    s.hz = damp(s.hz, targetHz, handDamp, dt);
 
     if (armRef.current) {
       armRef.current.rotation.x = s.ax;
@@ -925,73 +962,47 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000', 
     }
   });
 
+  const armMat = useMemo(() => getLegoMaterial(armColor, isMobileDevice, { roughness: 0.16 }), [armColor]);
+  const handMat = useMemo(() => getLegoMaterial(handColor, isMobileDevice, { roughness: 0.16 }), [handColor]);
+
   return (
     <group position={[x, 2.31, 0]}>
       <group ref={armRef}>
         {/* Shoulder spherical cap — snug against torso socket */}
-        <mesh position={[0, 0, 0]} castShadow>
-          <sphereGeometry args={[0.19, 24, 20]} />
-          <meshPhysicalMaterial
-            color={armColor}
-            roughness={0.16}
-            clearcoat={0.95}
-            clearcoatRoughness={0.08}
-            envMapIntensity={1.1}
-          />
+        <mesh position={[0, 0, 0]} castShadow={!isMobileDevice} material={armMat}>
+          <sphereGeometry args={[0.19, 18, 16]} />
         </mesh>
 
         {/* Continuous organic curved arm tube */}
-        <mesh geometry={armGeom} castShadow receiveShadow>
-          <meshPhysicalMaterial
-            color={armColor}
-            roughness={0.16}
-            clearcoat={0.95}
-            clearcoatRoughness={0.08}
-            envMapIntensity={1.1}
-          />
-        </mesh>
+        <mesh geometry={armGeom} castShadow={!isMobileDevice} receiveShadow={!isMobileDevice} material={armMat} />
 
         {/* Wrist Socket Assembly — perfectly aligned with curve endpoint & tangent */}
         <group position={[wristPos.x, wristPos.y, wristPos.z]} quaternion={wristQuat}>
           {/* Blue plastic wrist cuff rim */}
-          <mesh castShadow>
-            <cylinderGeometry args={[0.134, 0.130, 0.05, 22]} />
-            <meshPhysicalMaterial
-              color={armColor}
-              roughness={0.16}
-              clearcoat={0.95}
-              clearcoatRoughness={0.08}
-            />
+          <mesh castShadow={!isMobileDevice} material={armMat}>
+            <cylinderGeometry args={[0.134, 0.130, 0.05, 18]} />
           </mesh>
 
           {/* Hand Articulation Group (rotates inside wrist socket) */}
           <group ref={handRef} position={[0, -0.04, 0]}>
             {/* Yellow wrist peg inserted into arm socket */}
-            <mesh position={[0, 0.02, 0]} castShadow>
-              <cylinderGeometry args={[0.055, 0.055, 0.07, 16]} />
-              <meshPhysicalMaterial {...PLASTIC(handColor)} />
+            <mesh position={[0, 0.02, 0]} castShadow={!isMobileDevice} material={handMat}>
+              <cylinderGeometry args={[0.055, 0.055, 0.07, 14]} />
             </mesh>
 
             {/* Hand collar transition */}
-            <mesh position={[0, -0.02, 0]} castShadow>
-              <cylinderGeometry args={[0.078, 0.078, 0.035, 18]} />
-              <meshPhysicalMaterial {...PLASTIC(handColor)} />
+            <mesh position={[0, -0.02, 0]} castShadow={!isMobileDevice} material={handMat}>
+              <cylinderGeometry args={[0.078, 0.078, 0.035, 16]} />
             </mesh>
 
             {/* Iconic Yellow C-Claw — opening oriented inward toward hips/thighs like reference image */}
             <mesh
               position={[0, -0.08, 0.02]}
               rotation={[0.20, sign === 1 ? -Math.PI / 2 + 0.35 : Math.PI / 2 - 0.35, 0]}
-              castShadow
+              castShadow={!isMobileDevice}
+              material={handMat}
             >
-              <torusGeometry args={[0.086, 0.036, 16, 28, Math.PI * 1.44]} />
-              <meshPhysicalMaterial
-                color={handColor}
-                roughness={0.18}
-                clearcoat={0.92}
-                clearcoatRoughness={0.10}
-                envMapIntensity={1.0}
-              />
+              <torusGeometry args={[0.086, 0.036, 14, 22, Math.PI * 1.44]} />
             </mesh>
 
             {/* Held 2x2 Lego Brick firmly gripped inside right C-claw */}
@@ -1003,7 +1014,7 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000', 
                 rotation={[0.15, -Math.PI / 2 + 0.35, 0]} 
                 scale={0.20}
               >
-                <LegoBrick3D type="2x2" color="#E3000B" />
+                <LegoBrick3D type="2x2" color="#E3000B" material={getLegoMaterial('#E3000B')} />
               </group>
             )}
           </group>
@@ -1017,40 +1028,33 @@ function LegoArm({ side = 'right', armColor = '#0040B8', handColor = '#FFD000', 
    HIP CONNECTOR — authentic LEGO pelvis piece (width 1.26 flush with torso)
    ═══════════════════════════════════════════════════════════════ */
 function HipPiece({ color = '#0040B8' }) {
+  const hipMat = useMemo(() => getLegoMaterial(color, isMobileDevice, { roughness: 0.16 }), [color]);
+
   return (
     <group position={[0, 1.44, 0]}>
       {/* Upper waist band — width 1.26, depth 0.78 flush with authentic chunky torso */}
-      <mesh castShadow receiveShadow>
-        <RoundedBox args={[1.26, 0.18, 0.78]} radius={0.03} smoothness={3}>
-          <meshPhysicalMaterial
-            color={color}
-            roughness={0.16}
-            clearcoat={0.95}
-            clearcoatRoughness={0.08}
-            envMapIntensity={1.1}
-          />
-        </RoundedBox>
-      </mesh>
+      <RoundedBox 
+        args={[1.26, 0.18, 0.78]} 
+        radius={0.03} 
+        smoothness={isMobileDevice ? 2 : 3} 
+        material={hipMat}
+        castShadow={!isMobileDevice} 
+        receiveShadow={!isMobileDevice} 
+      />
 
       {/* Center vertical crotch post between legs */}
-      <mesh position={[0, -0.16, 0]} castShadow>
-        <RoundedBox args={[0.12, 0.38, 0.74]} radius={0.03} smoothness={3}>
-          <meshPhysicalMaterial
-            color={color}
-            roughness={0.16}
-            clearcoat={0.95}
-          />
-        </RoundedBox>
-      </mesh>
+      <RoundedBox 
+        position={[0, -0.16, 0]} 
+        args={[0.12, 0.38, 0.74]} 
+        radius={0.03} 
+        smoothness={isMobileDevice ? 2 : 3} 
+        material={hipMat}
+        castShadow={!isMobileDevice} 
+      />
 
       {/* Horizontal pivot hinge cylinders */}
-      <mesh position={[0, -0.06, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
-        <cylinderGeometry args={[0.22, 0.22, 1.22, 24]} />
-        <meshPhysicalMaterial
-          color={color}
-          roughness={0.16}
-          clearcoat={0.95}
-        />
+      <mesh position={[0, -0.06, 0]} rotation={[0, 0, Math.PI / 2]} castShadow={!isMobileDevice} material={hipMat}>
+        <cylinderGeometry args={[0.22, 0.22, 1.22, 18]} />
       </mesh>
     </group>
   );
@@ -1061,35 +1065,48 @@ function HipPiece({ color = '#0040B8' }) {
    ═══════════════════════════════════════════════════════════════ */
 function LegoLeg({ side = 'right', color = '#0040B8', animRef }) {
   const x = side === 'right' ? -0.34 : 0.34;
-  const phase = side === 'right' ? 0 : Math.PI;
   const ref = useRef();
   const sx = useRef(0);
+  const legMat = useMemo(() => getLegoMaterial(color, isMobileDevice, { roughness: 0.16 }), [color]);
 
   useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.033);
     const t = performance.now() / 1000;
     const a = animRef?.current;
     let target = 0;
     if (a && a.isThrowing && a.throwStartTime) {
       // DYNAMIC LEG STRIDE: Right leg swings boldly forward while throwing!
       const elapsed = (performance.now() / 1000) - a.throwStartTime;
-      if (elapsed < 0.34) {
-        // Phase 1: Standing steady to snatch red brick
+      if (elapsed < 0.40) {
+        // Phase 1: Standing steady to reach for red brick
         target = 0;
-      } else if (elapsed < 0.70) {
-        // Phase 2: Wind-up: right leg lifts back loading weight
-        target = side === 'right' ? 0.32 : -0.05;
+      } else if (elapsed < 0.80) {
+        // Phase 2: Wind-up: right leg draws back loading body weight
+        const p = (elapsed - 0.40) / 0.40;
+        const ease = (1 - Math.cos(p * Math.PI)) / 2;
+        target = side === 'right' ? THREE.MathUtils.lerp(0, 0.36, ease) : THREE.MathUtils.lerp(0, -0.12, ease);
+      } else if (elapsed < 1.05) {
+        // Phase 3: Pitch & Stride: right leg swings dynamically FORWARD!
+        const p = Math.min(1.0, (elapsed - 0.80) / 0.25);
+        const ease = Math.sin((p * Math.PI) / 2);
+        target = side === 'right' ? THREE.MathUtils.lerp(0.36, -0.92, ease) : THREE.MathUtils.lerp(-0.12, 0.48, ease);
       } else {
-        // Phase 3 & 4: Pitch & Stride: right leg swings dynamically FORWARD!
-        target = side === 'right' ? -0.88 : 0.45;
+        // Phase 4: Follow-through stance
+        target = side === 'right' ? -0.88 : 0.44;
       }
-      sx.current = damp(sx.current, target, 16, delta);
-    } else if (a && a.isWalking) {
-      target = side === 'right' ? a.rightLegAngle : a.leftLegAngle;
-      sx.current = damp(sx.current, target, 14, delta);
+      sx.current = damp(sx.current, target, 16, dt);
     } else {
-      // Gentle natural idle sway matching the waving character's stance
-      target = Math.sin(t * 0.8 + phase) * 0.03;
-      sx.current = damp(sx.current, target, 4, delta);
+      // Zero-Gravity Astronaut Spacewalk Posture (Trik 1):
+      // Kaki melayang rileks di ruang hampa udara; satu kaki melayang santai ke depan, satu kaki rileks ke belakang
+      const legDrift = Math.sin(t * 1.1) * 0.045;
+      if (side === 'right') {
+        // Kaki kanan melayang santai agak ke depan (-0.16 rad)
+        target = -0.16 + legDrift;
+      } else {
+        // Kaki kiri rileks mengambang sedikit ke belakang (+0.10 rad)
+        target = 0.10 - legDrift * 0.8;
+      }
+      sx.current = damp(sx.current, target, 6, dt);
     }
     if (ref.current) ref.current.rotation.x = sx.current;
   });
@@ -1097,238 +1114,30 @@ function LegoLeg({ side = 'right', color = '#0040B8', animRef }) {
   return (
     <group ref={ref} position={[x, 1.01, 0]}>
       {/* Top rounded hip joint cylinder */}
-      <mesh position={[0, 0.37, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
-        <cylinderGeometry args={[0.22, 0.22, 0.56, 24]} />
-        <meshPhysicalMaterial
-          color={color}
-          roughness={0.16}
-          clearcoat={0.95}
-          clearcoatRoughness={0.08}
-          envMapIntensity={1.1}
-        />
+      <mesh position={[0, 0.37, 0]} rotation={[0, 0, Math.PI / 2]} castShadow={!isMobileDevice} material={legMat}>
+        <cylinderGeometry args={[0.22, 0.22, 0.56, 18]} />
       </mesh>
 
       {/* Main shin column — depth 0.76 for solid authentic Lego proportions */}
-      <mesh position={[0, -0.06, 0]} castShadow receiveShadow>
-        <RoundedBox args={[0.56, 0.84, 0.76]} radius={0.03} smoothness={3}>
-          <meshPhysicalMaterial
-            color={color}
-            roughness={0.16}
-            clearcoat={0.95}
-            clearcoatRoughness={0.08}
-            envMapIntensity={1.1}
-          />
-        </RoundedBox>
-      </mesh>
+      <RoundedBox 
+        position={[0, -0.06, 0]} 
+        args={[0.56, 0.84, 0.76]} 
+        radius={0.03} 
+        smoothness={isMobileDevice ? 2 : 3} 
+        material={legMat}
+        castShadow={!isMobileDevice} 
+        receiveShadow={!isMobileDevice} 
+      />
 
       {/* Foot toe step extension — iconic Lego foot projecting forward */}
-      <mesh position={[0, -0.38, 0.10]} castShadow>
-        <RoundedBox args={[0.56, 0.14, 0.96]} radius={0.025} smoothness={3}>
-          <meshPhysicalMaterial
-            color={color}
-            roughness={0.16}
-            clearcoat={0.95}
-            clearcoatRoughness={0.08}
-            envMapIntensity={1.1}
-          />
-        </RoundedBox>
-      </mesh>
-    </group>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   LEGO BASEPLATE — collector display stand with authentic studs
-   ═══════════════════════════════════════════════════════════════ */
-function LegoBaseplate() {
-  const width = 3.2;
-  const depth = 2.0;
-  const height = 0.12;
-  const topY = 0.53; // Exactly flush with minifigure soles
-
-  // Studs placed around the perimeter of the stand
-  const studs = useMemo(() => {
-    const list = [];
-    const xs = [-1.3, -0.85, -0.4, 0.1, 0.6];
-    const zs = [-0.7, 0, 0.7];
-    for (const x of xs) {
-      for (const z of zs) {
-        // Leave room where feet stand and keep right desk area smooth tile
-        const underFeet = Math.abs(z) < 0.35 && (Math.abs(x + 0.34) < 0.25 || Math.abs(x - 0.34) < 0.25);
-        const underDesk = x > 0.6;
-        if (!underFeet && !underDesk) {
-          list.push([x, z]);
-        }
-      }
-    }
-    return list;
-  }, []);
-
-  return (
-    <group position={[0, topY - height / 2, 0.05]}>
-      {/* Sleek dark charcoal collector stand */}
-      <mesh castShadow receiveShadow>
-        <RoundedBox args={[width, height, depth]} radius={0.03} smoothness={3}>
-          <meshPhysicalMaterial
-            color="#14161d"
-            roughness={0.25}
-            clearcoat={0.9}
-            clearcoatRoughness={0.1}
-            envMapIntensity={0.8}
-          />
-        </RoundedBox>
-      </mesh>
-
-      {/* Decorative colored accent strip on front edge */}
-      <mesh position={[0, 0, depth / 2 + 0.005]} castShadow>
-        <planeGeometry args={[width * 0.85, 0.035]} />
-        <meshBasicMaterial color="#ffd500" />
-      </mesh>
-
-      {/* Authentic LEGO studs on stand */}
-      {studs.map(([sx, sz], i) => (
-        <mesh key={i} position={[sx, height / 2 + 0.045, sz]} castShadow>
-          <cylinderGeometry args={[0.13, 0.13, 0.09, 16]} />
-          <meshPhysicalMaterial
-            color="#14161d"
-            roughness={0.25}
-            clearcoat={0.9}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   LEGO LAPTOP — developer workstation item with glowing terminal screen
-   ═══════════════════════════════════════════════════════════════ */
-function LegoLaptop({ position = [0, 0, 0], rotation = [0, 0, 0] }) {
-  return (
-    <group position={position} rotation={rotation}>
-      {/* Lower keyboard chassis */}
-      <mesh position={[0, 0.02, 0]} castShadow receiveShadow>
-        <RoundedBox args={[0.48, 0.032, 0.34]} radius={0.015} smoothness={2}>
-          <meshPhysicalMaterial
-            color="#2a2d34"
-            roughness={0.25}
-            metalness={0.3}
-            clearcoat={0.8}
-            clearcoatRoughness={0.15}
-          />
-        </RoundedBox>
-      </mesh>
-
-      {/* Keyboard recessed chiclet keys pad */}
-      <mesh position={[0, 0.037, -0.04]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[0.40, 0.18]} />
-        <meshBasicMaterial color="#14161a" />
-      </mesh>
-
-      {/* Keyboard trackpad */}
-      <mesh position={[0, 0.037, 0.10]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[0.15, 0.08]} />
-        <meshBasicMaterial color="#20232a" />
-      </mesh>
-
-      {/* Hinge bar */}
-      <mesh position={[0, 0.033, -0.17]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.016, 0.016, 0.44, 12]} />
-        <meshPhysicalMaterial color="#1a1c22" roughness={0.3} />
-      </mesh>
-
-      {/* Open Screen Lid (tilted back at ~110 degrees) */}
-      <group position={[0, 0.033, -0.17]} rotation={[0.42, 0, 0]}>
-        {/* Screen back bezel */}
-        <mesh position={[0, 0.17, 0]} castShadow>
-          <RoundedBox args={[0.48, 0.34, 0.022]} radius={0.015} smoothness={2}>
-            <meshPhysicalMaterial
-              color="#2a2d34"
-              roughness={0.25}
-              metalness={0.3}
-              clearcoat={0.8}
-            />
-          </RoundedBox>
-        </mesh>
-
-        {/* Outer lid Apple/LEGO circular stud logo on back */}
-        <mesh position={[0, 0.17, -0.015]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.035, 0.035, 0.01, 16]} />
-          <meshPhysicalMaterial color="#ffd500" roughness={0.2} />
-        </mesh>
-
-        {/* Glowing Code Screen Display */}
-        <mesh position={[0, 0.17, 0.012]}>
-          <planeGeometry args={[0.42, 0.28]} />
-          <meshBasicMaterial color="#08101a" />
-        </mesh>
-
-        {/* Code Lines on Screen (glowing cyan, yellow, emerald syntax) */}
-        <group position={[-0.17, 0.27, 0.014]}>
-          {/* Header prompt tag */}
-          <mesh position={[0.05, 0, 0]}>
-            <planeGeometry args={[0.08, 0.015]} />
-            <meshBasicMaterial color="#00e5ff" />
-          </mesh>
-          {/* Code line 1 */}
-          <mesh position={[0.15, -0.035, 0]}>
-            <planeGeometry args={[0.22, 0.012]} />
-            <meshBasicMaterial color="#34d399" />
-          </mesh>
-          {/* Code line 2 (indented) */}
-          <mesh position={[0.18, -0.07, 0]}>
-            <planeGeometry args={[0.18, 0.012]} />
-            <meshBasicMaterial color="#ffd500" />
-          </mesh>
-          {/* Code line 3 */}
-          <mesh position={[0.13, -0.105, 0]}>
-            <planeGeometry args={[0.20, 0.012]} />
-            <meshBasicMaterial color="#60a5fa" />
-          </mesh>
-          {/* Code line 4 (return tag) */}
-          <mesh position={[0.10, -0.14, 0]}>
-            <planeGeometry args={[0.12, 0.012]} />
-            <meshBasicMaterial color="#f472b6" />
-          </mesh>
-        </group>
-      </group>
-    </group>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   LEGO COFFEE MUG — iconic developer fuel prop
-   ═══════════════════════════════════════════════════════════════ */
-function LegoCoffeeMug({ position = [0, 0, 0], color = '#E3000B' }) {
-  return (
-    <group position={position}>
-      {/* Mug cylindrical body */}
-      <mesh position={[0, 0.10, 0]} castShadow>
-        <cylinderGeometry args={[0.09, 0.075, 0.20, 20]} />
-        <meshPhysicalMaterial {...PLASTIC(color)} />
-      </mesh>
-
-      {/* Mug rim lip */}
-      <mesh position={[0, 0.20, 0]} castShadow>
-        <cylinderGeometry args={[0.092, 0.09, 0.02, 20]} />
-        <meshPhysicalMaterial {...PLASTIC(color)} />
-      </mesh>
-
-      {/* Coffee liquid surface inside mug */}
-      <mesh position={[0, 0.18, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.075, 18]} />
-        <meshPhysicalMaterial
-          color="#1e1008"
-          roughness={0.1}
-          clearcoat={1.0}
-        />
-      </mesh>
-
-      {/* Classic C-shaped Mug Handle */}
-      <mesh position={[-0.10, 0.10, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
-        <torusGeometry args={[0.055, 0.022, 12, 18, Math.PI * 1.3]} />
-        <meshPhysicalMaterial {...PLASTIC(color)} />
-      </mesh>
+      <RoundedBox 
+        position={[0, -0.38, 0.10]} 
+        args={[0.56, 0.14, 0.96]} 
+        radius={0.025} 
+        smoothness={isMobileDevice ? 2 : 3} 
+        material={legMat}
+        castShadow={!isMobileDevice} 
+      />
     </group>
   );
 }
@@ -1336,177 +1145,81 @@ function LegoCoffeeMug({ position = [0, 0, 0], color = '#E3000B' }) {
 /* ═══════════════════════════════════════════════════════════════
    FULL MINIFIGURE & WORKSTATION — assembled with developer props
    ═══════════════════════════════════════════════════════════════ */
-function Minifigure({ animRef, isIntroActive = false }) {
+function Minifigure({ animRef }) {
   const characterRef = useRef();
 
   useFrame((_, delta) => {
     const a = animRef?.current;
     if (!a) return;
-
-    if (isIntroActive) {
-      a.startTime = null;
-      a.isWalking = true;
-      a.isIntroWave = false;
-      a.isIdle = false;
-      a.x = a.startLocalX || -9.5;
-      a.y = -0.14;
-      a.rotY = Math.PI * 0.32;
-      a.rotZ = 0;
-      a.leftLegAngle = 0;
-      a.rightLegAngle = 0;
-      a.leftArmAngle = 0;
-      a.rightArmAngle = 0;
-      if (characterRef.current) {
-        characterRef.current.position.x = a.x;
-        characterRef.current.position.y = a.y;
-        characterRef.current.rotation.y = a.rotY;
-        characterRef.current.rotation.z = a.rotZ;
-      }
-      return;
-    }
-
+    const dt = Math.min(delta, 0.033);
     const now = performance.now() / 1000;
-    if (a.startTime === null) {
-      a.startTime = now;
-    }
-
-    const elapsed = now - a.startTime;
-    const START_X = a.startLocalX || -6.5;
-    const WALK_DURATION = 3.4;
-    const WAVE_START = 3.4;
-    const WAVE_END = 6.0;
 
     if (a.isThrowing && a.throwStartTime) {
-      a.isWalking = false;
-      a.isIntroWave = false;
       a.isIdle = false;
-      a.x = 0;
-      a.y = 0;
+      a.jumpArc = 0;
+      a.hopLegAngle = 0;
       const tThrow = now - a.throwStartTime;
-      const BASE_LEFT_ROT = -0.46; // Tetap konsisten menghadap rada ke kiri (~-26.4 deg) sama seperti idle
-      if (tThrow < 0.34) {
-        // Phase 1: Torso tetap menghadap rada ke kiri saat menyambar balok merah
-        a.rotY = damp(a.rotY, BASE_LEFT_ROT, 18, delta);
-        a.rotZ = damp(a.rotZ, 0, 18, delta);
-      } else if (tThrow < 0.70) {
-        // Phase 2: Overhead wind-up di atas kepala dengan badan tetap konsisten menghadap ke kiri
-        const p = (tThrow - 0.34) / 0.36;
+
+      if (tThrow < 0.40) {
+        // Phase 1: Reaches to grab brick, torso turns slightly to meet it
+        const p = tThrow / 0.40;
+        const ease = (1 - Math.cos(p * Math.PI)) / 2;
+        a.rotY = THREE.MathUtils.lerp(a.rotY, -0.38, ease);
+        a.rotZ = damp(a.rotZ, 0, 14, dt);
+        a.rotX = damp(a.rotX || 0, 0, 14, dt);
+        a.x = 0;
+        a.y = 0;
+      } else if (tThrow < 0.80) {
+        // Phase 2: Athletic wind-up! Coils back, leans back, drops center of gravity
+        const p = (tThrow - 0.40) / 0.40;
+        const ease = (1 - Math.cos(p * Math.PI)) / 2;
+        a.rotY = THREE.MathUtils.lerp(-0.38, -0.28, ease); // opens chest
+        a.rotZ = THREE.MathUtils.lerp(0, 0.05, ease);
+        a.rotX = THREE.MathUtils.lerp(0, -0.07, ease); // leans back athletically!
+        a.y = THREE.MathUtils.lerp(0, -0.05, ease); // drops into rear leg
+      } else if (tThrow < 0.98) {
+        // Phase 3: Explosive forward pitch! Drives chest forward and down into throw
+        const p = (tThrow - 0.80) / 0.18;
         const ease = Math.sin((p * Math.PI) / 2);
-        a.rotY = THREE.MathUtils.lerp(BASE_LEFT_ROT, -0.38, ease); // sedikit coiling tapi tetap tegas menghadap kiri
-        a.rotZ = THREE.MathUtils.lerp(0, 0.04, ease);
-      } else if (tThrow < 0.88) {
-        // Phase 3: Badan mendorong maju ke depan-kiri saat mencambuk lemparan overhead & melangkah
-        const p = (tThrow - 0.70) / 0.18;
-        const ease = Math.sin((p * Math.PI) / 2);
-        a.rotY = THREE.MathUtils.lerp(-0.38, -0.56, ease); // dorongan mantap menghadap kiri
-        a.rotZ = THREE.MathUtils.lerp(0.04, -0.06, ease);
+        a.rotY = THREE.MathUtils.lerp(-0.28, -0.58, ease); // drives forward-left
+        a.rotZ = THREE.MathUtils.lerp(0.05, -0.06, ease);
+        a.rotX = THREE.MathUtils.lerp(-0.07, 0.12, ease); // pitches chest forward!
+        a.y = THREE.MathUtils.lerp(-0.05, 0.02, ease);
       } else {
-        // Phase 4: Follow-through tetap menghadap kiri
-        a.rotY = -0.56;
-        a.rotZ = -0.06;
+        // Phase 4: Elastic follow-through & settle
+        a.rotY = damp(a.rotY, -0.54, 8, dt);
+        a.rotZ = damp(a.rotZ, -0.03, 8, dt);
+        a.rotX = damp(a.rotX || 0, 0.02, 8, dt);
+        a.y = damp(a.y, 0, 8, dt);
       }
-    } else if (elapsed < WALK_DURATION) {
-      a.isWalking = true;
-      a.isIntroWave = false;
-      a.isIdle = false;
-
-      const p = Math.min(elapsed / WALK_DURATION, 1.0);
-
-      // Smooth custom ease-out: brisk stride, gentle deceleration onto stand
-      const ease = 1 - Math.pow(1 - p, 1.75);
-      a.x = START_X * (1 - ease);
-
-      // Angled at ~32 degrees towards camera: showcases the full 3D volume, thick torso, and solid limbs
-      const turnStart = 0.76;
-      const IDLE_ROT_Y = -0.46; // Menghadap rada ke kiri (~-26.4 deg) agar terlihat dinamis 3D menghadap headline
-      if (p < turnStart) {
-        a.rotY = Math.PI * 0.32;
-      } else {
-        const turnP = (p - turnStart) / (1 - turnStart);
-        const turnEase = (1 - Math.cos(turnP * Math.PI)) / 2;
-        a.rotY = THREE.MathUtils.lerp(Math.PI * 0.32, IDLE_ROT_Y, turnEase);
-      }
-
-      // Walk swing amplitude reduces smoothly as he arrives
-      a.walkWeight = p < 0.84 ? 1.0 : (1.0 - (p - 0.84) / 0.16);
-
-      // Walk frequency: 11.2 rad/s (~1.78 steps/second)
-      a.walkPhase = elapsed * 11.2;
-
-      // Authentic Lego Minifigure Walk Cycle:
-      a.leftLegAngle = Math.sin(a.walkPhase) * 0.58 * a.walkWeight;
-      a.rightLegAngle = -Math.sin(a.walkPhase) * 0.58 * a.walkWeight;
-
-      // Opposite arm swings
-      a.leftArmAngle = -Math.sin(a.walkPhase) * 0.44 * a.walkWeight;
-      a.rightArmAngle = Math.sin(a.walkPhase) * 0.44 * a.walkWeight;
-
-      // Step up onto the baseplate (baseplate edge is around x = -1.70)
-      let stepUp = 0;
-      if (a.x < -1.75) {
-        stepUp = -0.14; // on studio floor before baseplate
-      } else if (a.x < -1.40) {
-        const stepP = (a.x - (-1.75)) / 0.35;
-        stepUp = THREE.MathUtils.lerp(-0.14, 0, (1 - Math.cos(stepP * Math.PI)) / 2);
-      } else {
-        stepUp = 0; // on top of baseplate
-      }
-
-      // Minifigure body bobbing (bounces slightly with each footstep)
-      a.y = stepUp + Math.abs(Math.sin(a.walkPhase)) * 0.065 * a.walkWeight;
-
-      // Subtle side-to-side waddle as weight shifts between legs
-      a.rotZ = Math.sin(a.walkPhase) * 0.03 * a.walkWeight;
-
-      a.introWaveLift = 0;
-    } else if (elapsed < WAVE_END) {
-      // Arrival & Greeting Wave Phase
-      const IDLE_ROT_Y = -0.46;
-      a.isWalking = false;
-      a.isIntroWave = true;
-      a.isIdle = false;
-
-      a.x = 0;
-      a.y = 0;
-      a.rotY = IDLE_ROT_Y;
-      a.rotZ = 0;
-      a.leftLegAngle = 0;
-      a.rightLegAngle = 0;
-      a.leftArmAngle = 0;
-
-      const waveElapsed = elapsed - WAVE_START;
-
-      // Arm wave envelope: raise in 0.5s, wave for 1.7s, lower in 0.6s
-      if (waveElapsed < 0.5) {
-        a.introWaveLift = (1 - Math.cos((waveElapsed / 0.5) * Math.PI)) / 2;
-      } else if (waveElapsed < 2.2) {
-        a.introWaveLift = 1.0;
-      } else {
-        const downP = (waveElapsed - 2.2) / 0.6;
-        a.introWaveLift = (1 + Math.cos(downP * Math.PI)) / 2;
-      }
-
-      a.introWaveProgress = waveElapsed;
     } else {
-      // Idle Phase
-      const IDLE_ROT_Y = -0.46;
-      a.isWalking = false;
-      a.isIntroWave = false;
+      // TRIK 1: ZERO-GRAVITY ASTRONAUT SPACEWALK FLOAT:
+      // Mengambang bebas di gravitasi nol tanpa papan/hoverpad — 100% bersih & estetik Classic Space
       a.isIdle = true;
+      const t = now;
 
-      a.x = 0;
-      a.y = 0;
-      a.rotY = IDLE_ROT_Y;
-      a.rotZ = 0;
-      a.leftLegAngle = 0;
-      a.rightLegAngle = 0;
-      a.leftArmAngle = 0;
-      a.introWaveLift = 0;
+      // 1. Torso Friendly Swivel & Micro-Roll in Zero-G
+      const swivelY = -0.46 + Math.sin(t * 1.1) * 0.11 + Math.cos(t * 0.55) * 0.04;
+      const rollZ = Math.sin(t * 0.85) * 0.038;
+      const pitchX = Math.cos(t * 1.15) * 0.032;
+
+      // 2. Continuous Buoyant Space Hover (Murni melayang di ruang hampa)
+      const floatY = Math.sin(t * 1.1) * 0.14 + Math.sin(t * 0.55) * 0.04;
+      const floatX = Math.cos(t * 0.7) * 0.03;
+
+      a.x = damp(a.x || 0, floatX, 6, dt);
+      a.y = damp(a.y || 0, floatY, 6, dt);
+      a.rotX = damp(a.rotX || 0, pitchX, 6, dt);
+      a.rotY = damp(a.rotY, swivelY, 8, dt);
+      a.rotZ = damp(a.rotZ, rollZ, 6, dt);
+      a.hopLegAngle = 0;
+      a.jumpArc = 0;
     }
 
     if (characterRef.current) {
       characterRef.current.position.x = a.x;
       characterRef.current.position.y = a.y;
+      characterRef.current.rotation.x = a.rotX || 0;
       characterRef.current.rotation.y = a.rotY;
       characterRef.current.rotation.z = a.rotZ;
     }
@@ -1514,20 +1227,16 @@ function Minifigure({ animRef, isIntroActive = false }) {
 
   return (
     <group>
-      {/* 1. Stationary Workstation: Baseplate Pedestal, Laptop, Coffee Mug */}
-      <LegoBaseplate />
-      <LegoLaptop position={[1.15, 0.53, 0.22]} rotation={[0, -0.32, 0]} />
-      <LegoCoffeeMug position={[1.10, 0.53, -0.42]} color="#E3000B" />
-
-      {/* 2. Animated Character Minifigure: walks in from left across screen onto baseplate */}
+      {/* Animated Character Minifigure */}
       <group ref={characterRef}>
         <LegoHead color="#FFD000" animRef={animRef} />
-        <LegoTorso bodyColor="#ffffff" />
+        <LegoTorso bodyColor="#F8FAFC" />
         <LegoArm side="left" armColor="#0040B8" handColor="#FFD000" animRef={animRef} />
         <LegoArm side="right" armColor="#0040B8" handColor="#FFD000" animRef={animRef} />
         <HipPiece color="#0040B8" />
         <LegoLeg side="left" color="#0040B8" animRef={animRef} />
         <LegoLeg side="right" color="#0040B8" animRef={animRef} />
+
       </group>
     </group>
   );
@@ -1593,8 +1302,8 @@ function ThrownLegoBrick({ animRef, onComplete, stationPosRef }) {
 
     const now = performance.now() / 1000;
     const elapsed = now - a.throwStartTime;
-    const RELEASE_TIME = 0.88;
-    const IMPACT_TIME = 1.28;
+    const RELEASE_TIME = 0.98;
+    const IMPACT_TIME = 1.38;
     const FLIGHT_DURATION = IMPACT_TIME - RELEASE_TIME;
 
     const stX = stationPosRef.current ? stationPosRef.current.x : 0;
@@ -1604,21 +1313,21 @@ function ThrownLegoBrick({ animRef, onComplete, stationPosRef }) {
       // Balok masih digenggam kuat di tangan kanan (LegoArm heldBrickRef)
       if (brickRef.current) brickRef.current.visible = false;
     } else if (elapsed <= IMPACT_TIME + 0.04) {
-      // Balok dilepas dari tangan dan melesat ke arah layar kamera!
+      // Balok dilepas dari tangan dan melesat mulus ke arah layar kamera!
       if (brickRef.current) {
         brickRef.current.visible = true;
         const flightT = Math.min(1.0, (elapsed - RELEASE_TIME) / FLIGHT_DURATION);
-        const ease = Math.pow(flightT, 1.35);
+        const ease = Math.pow(flightT, 1.45);
 
-        // Posisi rilis persis dari tangan kanan yang mencambuk ke depan
-        const startX = stX - 0.72;
-        const startY = stY + 2.45;
-        const startZ = 1.15;
+        // Posisi rilis persis dari tangan kanan yang mencambuk ke depan (menggunakan world position asli hand jika ada)
+        const startX = a.releaseWorldPos ? a.releaseWorldPos.x : (stX - 0.72);
+        const startY = a.releaseWorldPos ? a.releaseWorldPos.y : (stY + 2.45);
+        const startZ = a.releaseWorldPos ? a.releaseWorldPos.z : 1.15;
 
-        // Target kamera di tengah layar pada z = 10.15 (menutup pandangan lensa kamera tepat sebelum pecah)
+        // Target kamera di tengah layar pada z = 10.20 (menutup pandangan lensa kamera tepat sebelum pecah)
         const currX = THREE.MathUtils.lerp(startX, 0, ease);
-        const currY = THREE.MathUtils.lerp(startY, 0.15, ease) + Math.sin(flightT * Math.PI) * 0.20;
-        const currZ = THREE.MathUtils.lerp(startZ, 10.15, ease);
+        const currY = THREE.MathUtils.lerp(startY, 0.15, ease) + Math.sin(flightT * Math.PI) * 0.26;
+        const currZ = THREE.MathUtils.lerp(startZ, 10.20, ease);
 
         brickRef.current.position.set(currX, currY, currZ);
 
@@ -1627,8 +1336,8 @@ function ThrownLegoBrick({ animRef, onComplete, stationPosRef }) {
         brickRef.current.rotation.y = -0.36 + flightT * Math.PI * 4.8;
         brickRef.current.rotation.z = flightT * Math.PI * 3.2;
 
-        // Skala membesar saat mendekati kamera hingga menutup layar tepat sebelum meledak pecah menjadi balok-balok kecil 3D
-        const scale = THREE.MathUtils.lerp(0.20, 2.2, Math.pow(flightT, 1.6));
+        // Skala membesar saat mendekati kamera hingga menutup layar tepat sebelum meledak pecah
+        const scale = THREE.MathUtils.lerp(0.20, 2.3, Math.pow(flightT, 1.6));
         brickRef.current.scale.set(scale, scale, scale);
 
         // Pecah saat menghantam layar kamera: pemicu transisi ledakan balok 3D
@@ -1649,7 +1358,7 @@ function ThrownLegoBrick({ animRef, onComplete, stationPosRef }) {
 
   return (
     <group ref={brickRef} visible={false}>
-      <LegoBrick3D type="2x2" color="#E3000B" />
+      <LegoBrick3D type="2x2" color="#E3000B" material={getLegoMaterial('#E3000B')} />
     </group>
   );
 }
@@ -1657,36 +1366,49 @@ function ThrownLegoBrick({ animRef, onComplete, stationPosRef }) {
 function FloatingBricks({ animRef }) {
   const orbitRef = useRef();
   const redBrickRef = useRef();
+  const { size } = useThree();
+  const isMobile = size.width < 1024;
 
-  // Aktif memutar orbit balok-balok LEGO mengelilingi karakter (360 derajat)
+  // Memutar orbit balok-balok LEGO melayang secara halus & mandiri (tidak terpengaruh oleh lompatan)
   useFrame((_, delta) => {
-    if (orbitRef.current) {
-      orbitRef.current.rotation.y += delta * 0.42;
+    const a = animRef?.current;
+    if (orbitRef.current && (!a || !a.isThrowing)) {
+      orbitRef.current.rotation.y += delta * 0.38;
     }
 
     if (redBrickRef.current) {
-      const a = animRef?.current;
       if (a && a.isThrowing && a.throwStartTime) {
         const elapsed = (performance.now() / 1000) - a.throwStartTime;
-        if (elapsed < 0.34) {
-          // Balok merah meluncur mulus dari orbit ke tangan kanan yang meraihnya
+        if (!a.redBrickGrabStart) {
+          a.redBrickGrabStart = {
+            x: redBrickRef.current.position.x,
+            y: redBrickRef.current.position.y,
+            z: redBrickRef.current.position.z,
+            scale: redBrickRef.current.scale.x || (isMobileDevice ? 0.18 : 0.28),
+            rotX: redBrickRef.current.rotation.x,
+            rotY: redBrickRef.current.rotation.y,
+            rotZ: redBrickRef.current.rotation.z,
+          };
+        }
+
+        if (elapsed < 0.40) {
+          // Balok merah meluncur mulus dari posisi aslinya saat ini ke tangan kanan
           redBrickRef.current.visible = true;
-          const p = elapsed / 0.34;
+          const p = elapsed / 0.40;
           const ease = p * p * (3 - 2 * p); // smoothstep curve
-          const startX = isMobileDevice ? -0.85 : -1.65;
-          const startY = isMobileDevice ? 1.85 : 2.85;
-          const startZ = isMobileDevice ? 0.90 : 1.35;
-          const handX = -0.72;
-          const handY = 2.52;
-          const handZ = 0.82;
+          const handX = isMobileDevice ? -0.52 : -0.62;
+          const handY = isMobileDevice ? 2.15 : 2.24;
+          const handZ = 0.58;
           redBrickRef.current.position.set(
-            THREE.MathUtils.lerp(startX, handX, ease),
-            THREE.MathUtils.lerp(startY, handY, ease),
-            THREE.MathUtils.lerp(startZ, handZ, ease)
+            THREE.MathUtils.lerp(a.redBrickGrabStart.x, handX, ease),
+            THREE.MathUtils.lerp(a.redBrickGrabStart.y, handY, ease),
+            THREE.MathUtils.lerp(a.redBrickGrabStart.z, handZ, ease)
           );
-          redBrickRef.current.scale.setScalar(THREE.MathUtils.lerp(0.28, 0.20, ease));
+          redBrickRef.current.scale.setScalar(THREE.MathUtils.lerp(a.redBrickGrabStart.scale, 0.20, ease));
+          redBrickRef.current.rotation.x = THREE.MathUtils.lerp(a.redBrickGrabStart.rotX, 0.15, ease);
+          redBrickRef.current.rotation.y = THREE.MathUtils.lerp(a.redBrickGrabStart.rotY, -Math.PI / 2 + 0.35, ease);
         } else {
-          // Setelah t >= 0.34s, balok sudah berada di tangan kanan (heldBrickRef)
+          // Setelah t >= 0.40s, balok sudah berada di genggaman tangan kanan (heldBrickRef)
           redBrickRef.current.visible = false;
         }
       } else {
@@ -1696,32 +1418,25 @@ function FloatingBricks({ animRef }) {
   });
 
   const bricks = useMemo(() => {
-    // On mobile devices, use 3 primary Classic Space bricks with a tighter orbit radius (1.35) so they never touch text or screen boundaries
-    if (isMobileDevice) {
-      const items = [
-        { id: 'red', color: '#E3000B', type: '2x2', y: 1.8, r: 1.35, scale: 0.18, speed: 1.4 },
-        { id: 'yellow', color: '#FFD500', type: '2x4', y: 1.3, r: 1.45, scale: 0.18, speed: 1.2 },
-        { id: 'blue', color: '#0055BF', type: '2x2', y: 2.1, r: 1.40, scale: 0.18, speed: 1.5 },
-      ];
-      return items.map((item, i) => {
-        const angle = (i / 3) * Math.PI * 2;
-        return {
-          ...item,
-          pos: [Math.cos(angle) * item.r, item.y, Math.sin(angle) * item.r],
-          rot: [0.3 + (i * 0.4), 0.5 + (i * 0.6), -0.2 + (i * 0.3)],
-        };
-      });
-    }
-
-    // 5 balok LEGO warna-warni yang mengitari karakter setinggi torso, bahu, dan kepala on desktop
     const count = 5;
-    const items = [
-      { id: 'red', color: '#E3000B', type: '2x4', y: 2.7, r: 2.50, scale: 0.28, speed: 1.4 },
-      { id: 'yellow', color: '#FFD500', type: '2x4', y: 1.9, r: 2.65, scale: 0.26, speed: 1.2 },
-      { id: 'blue', color: '#0055BF', type: '2x2', y: 1.2, r: 2.45, scale: 0.28, speed: 1.5 },
-      { id: 'green', color: '#00852B', type: '2x4', y: 3.1, r: 2.60, scale: 0.25, speed: 1.1 },
-      { id: 'orange', color: '#FE8A18', type: '2x2', y: 2.2, r: 2.50, scale: 0.27, speed: 1.3 },
-    ];
+    // On mobile (<1024px), keep all 5 authentic bricks but calibrate orbit radius (1.30-1.40)
+    // and height (0.7-1.7) so they comfortably orbit around the torso/shoulders
+    // without ever swinging upwards into the button or flying off mobile screen edges.
+    const items = isMobile
+      ? [
+          { id: 'red', color: '#E3000B', type: '2x4', y: 1.5, r: 1.35, scale: 0.22, speed: 1.4 },
+          { id: 'yellow', color: '#FFD500', type: '2x4', y: 1.1, r: 1.40, scale: 0.22, speed: 1.2 },
+          { id: 'blue', color: '#0055BF', type: '2x2', y: 0.7, r: 1.30, scale: 0.22, speed: 1.5 },
+          { id: 'green', color: '#00852B', type: '2x4', y: 1.7, r: 1.35, scale: 0.20, speed: 1.1 },
+          { id: 'orange', color: '#FE8A18', type: '2x2', y: 1.3, r: 1.30, scale: 0.22, speed: 1.3 },
+        ]
+      : [
+          { id: 'red', color: '#E3000B', type: '2x4', y: 2.7, r: 2.50, scale: 0.28, speed: 1.4 },
+          { id: 'yellow', color: '#FFD500', type: '2x4', y: 1.9, r: 2.65, scale: 0.26, speed: 1.2 },
+          { id: 'blue', color: '#0055BF', type: '2x2', y: 1.2, r: 2.45, scale: 0.28, speed: 1.5 },
+          { id: 'green', color: '#00852B', type: '2x4', y: 3.1, r: 2.60, scale: 0.25, speed: 1.1 },
+          { id: 'orange', color: '#FE8A18', type: '2x2', y: 2.2, r: 2.50, scale: 0.27, speed: 1.3 },
+        ];
 
     return items.map((item, i) => {
       const angle = (i / count) * Math.PI * 2;
@@ -1731,27 +1446,38 @@ function FloatingBricks({ animRef }) {
         rot: [0.3 + (i * 0.4), 0.5 + (i * 0.6), -0.2 + (i * 0.3)],
       };
     });
-  }, []);
+  }, [isMobile]);
 
   return (
     <group ref={orbitRef}>
-      {bricks.map((b, i) => (
-        <Float
-          key={i}
-          speed={b.speed}
-          floatIntensity={0.6}
-          rotationIntensity={0.8}
-        >
+      {bricks.map((b) => {
+        const brickContent = (
           <group 
+            key={b.id}
             ref={b.id === 'red' ? redBrickRef : undefined}
             position={b.pos} 
             rotation={b.rot} 
             scale={b.scale}
           >
-            <LegoBrick3D type={b.type} color={b.color} />
+            <LegoBrick3D type={b.type} color={b.color} material={getLegoMaterial(b.color)} />
           </group>
-        </Float>
-      ))}
+        );
+
+        if (isMobileDevice) {
+          return <group key={b.id}>{brickContent}</group>;
+        }
+
+        return (
+          <Float
+            key={b.id}
+            speed={b.speed}
+            floatIntensity={0.6}
+            rotationIntensity={0.8}
+          >
+            {brickContent}
+          </Float>
+        );
+      })}
     </group>
   );
 }
@@ -1816,77 +1542,63 @@ function getGroundShadowTexture() {
   return cachedGroundShadowTexture;
 }
 
-function WalkingContactShadow({ animRef }) {
-  const shadowRef = useRef();
+function GroundShadow({ animRef, position = [0, -0.30, 0] }) {
   const texture = useMemo(() => getGroundShadowTexture(), []);
+  const groupRef = useRef();
 
   useFrame(() => {
-    if (shadowRef.current && animRef?.current) {
-      const a = animRef.current;
-      shadowRef.current.position.x = a.x;
-      if (a.isWalking && a.x < -1.5) {
-        shadowRef.current.visible = true;
-        const scale = Math.max(0.6, 1.0 - (a.y + 0.14) * 1.5);
-        shadowRef.current.scale.set(scale, scale, scale);
-      } else {
-        shadowRef.current.visible = false;
-      }
+    if (groupRef.current) {
+      const floatY = animRef?.current?.y || 0;
+      // Saat astronot melayang lebih tinggi, bayangan membesar & lebih halus; saat turun sedikit mengencang
+      const s = THREE.MathUtils.clamp(1.0 + floatY * 0.55, 0.75, 1.35);
+      groupRef.current.scale.set(s, 1, s);
     }
   });
 
   return (
-    <group ref={shadowRef} position={[-6.5, -0.14, 0]}>
-      <mesh rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[1.5, 1.0]} />
-        <meshBasicMaterial map={texture} transparent opacity={0.55} depthWrite={false} />
-      </mesh>
-    </group>
-  );
-}
-
-function GroundShadow({ position = [0, -0.34, 0] }) {
-  const texture = useMemo(() => getGroundShadowTexture(), []);
-
-  return (
-    <group position={position}>
-      {/* Primary body contact shadow */}
+    <group ref={groupRef} position={position}>
+      {/* Soft floating cosmic ambient drop shadow — terletak jauh di bawah kaki untuk menegaskan efek melayang di angkasa */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <planeGeometry args={[2.6, 1.5]} />
-        <meshBasicMaterial map={texture} transparent opacity={0.68} depthWrite={false} />
+        <planeGeometry args={[1.8, 1.3]} />
+        <meshBasicMaterial map={texture} transparent opacity={0.32} depthWrite={false} />
       </mesh>
-      {/* Broad soft ground ambient drop shadow */}
+      {/* Broad deep ambient glow/diffusion */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
-        <planeGeometry args={[4.2, 2.5]} />
-        <meshBasicMaterial map={texture} transparent opacity={0.28} depthWrite={false} />
+        <planeGeometry args={[3.0, 2.2]} />
+        <meshBasicMaterial map={texture} transparent opacity={0.14} depthWrite={false} />
       </mesh>
     </group>
   );
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SCENE
+   SCENE — Realtime Instant Rendering without Delay
    ═══════════════════════════════════════════════════════════════ */
-function RenderNotifier({ onRendered }) {
-  const rendered = useRef(false);
-  useFrame(() => {
-    if (!rendered.current) {
-      rendered.current = true;
-      if (onRendered) onRendered();
-    }
-  });
-  return null;
-}
-
-function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete, onInteractionReady }) {
+function Scene({ animRef, domElement, onThrowComplete, onInteractionReady }) {
   const stationGroupRef = useRef();
   const { viewport, size } = useThree();
 
   const isDesktop = size.width >= 1024;
   const isMobile = size.width < 768;
-  const initialScale = isDesktop ? 1.0 : (isMobile ? 0.76 : 0.86);
+  const currentScale = isDesktop ? 1.0 : (isMobile ? 0.78 : 0.86);
+  // Subtle downward bias (2.28) provides clean clearance from the button and gracefully fills the lower space above the crater
+  const centerOffset = isDesktop ? 2.02 : (2.28 * currentScale);
 
-  const initialX = isDesktop ? Math.min(3.2, Math.max(1.8, viewport.width * 0.26)) : 0;
-  const initialY = isDesktop ? -2.02 : -viewport.height * 0.26;
+  // Compute instantaneous target position directly on frame 0 to eliminate initial positioning jump
+  const targetNode = domElement && domElement.current !== undefined ? domElement.current : domElement;
+  let initialX = isDesktop ? Math.min(3.2, Math.max(1.8, viewport.width * 0.26)) : 0;
+  let initialY = isDesktop ? -2.02 : (-viewport.height * 0.26 - centerOffset * 0.35);
+
+  if (targetNode && typeof window !== 'undefined') {
+    const rect = targetNode.getBoundingClientRect();
+    const px = rect.left + rect.width / 2;
+    const py = rect.top + rect.height / 2;
+    const ndcX = (px / size.width) * 2 - 1;
+    const ndcY = -(py / size.height) * 2 + 1;
+    initialX = (ndcX * viewport.width) / 2;
+    initialY = isDesktop ? (((ndcY * viewport.height) / 2) - 2.02) : (((ndcY * viewport.height) / 2) - centerOffset);
+  }
+
   const stationPosRef = useRef({ x: initialX, y: initialY });
 
   // Smooth rotation interaction
@@ -1897,10 +1609,11 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
   const reportedReady = useRef(false);
 
   useEffect(() => {
-    if (!domElement) return;
+    const el = domElement && domElement.current !== undefined ? domElement.current : domElement;
+    if (!el) return;
 
     const onDown = (e) => {
-      // ONLY allow dragging if minifigure has completed walk-in and is settled into idle, and not throwing!
+      // Allow dragging when minifigure is ready and not throwing
       if (!animRef?.current || !animRef.current.isIdle || animRef.current.isThrowing) return;
       isDragging.current = true;
       prevPointer.current = { x: e.clientX, y: e.clientY };
@@ -1924,30 +1637,28 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
       isDragging.current = false;
     };
 
-    domElement.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointerdown', onDown);
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
     window.addEventListener('pointercancel', onUp);
 
     return () => {
-      domElement.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointerdown', onDown);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
       window.removeEventListener('pointercancel', onUp);
     };
-  }, [domElement]);
+  }, [domElement, animRef]);
 
   useFrame((_, delta) => {
-    const isDesktop = size.width >= 1024;
-    const isMobile = size.width < 768;
-    const currentScale = isDesktop ? 1.0 : (isMobile ? 0.76 : 0.86);
+    const dt = Math.min(delta, 0.033);
 
-    let targetX = isDesktop ? Math.min(3.2, Math.max(1.8, viewport.width * 0.26)) : 0;
-    const centerOffset = 1.7 * currentScale;
-    let targetY = isDesktop ? -2.02 : (-viewport.height * 0.26 - centerOffset * 0.35);
+    let targetX = initialX;
+    let targetY = initialY;
 
-    if (domElement) {
-      const rect = domElement.getBoundingClientRect();
+    const el = domElement && domElement.current !== undefined ? domElement.current : domElement;
+    if (el) {
+      const rect = el.getBoundingClientRect();
       const px = rect.left + rect.width / 2;
       const py = rect.top + rect.height / 2;
       const ndcX = (px / size.width) * 2 - 1;
@@ -1967,14 +1678,14 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
       rotTarget.current.x = 0;
       rotTarget.current.y = 0;
       isDragging.current = false;
-      rotCurrent.current.x = damp(rotCurrent.current.x, 0, 18, delta);
-      rotCurrent.current.y = damp(rotCurrent.current.y, 0, 18, delta);
+      rotCurrent.current.x = damp(rotCurrent.current.x, 0, 18, dt);
+      rotCurrent.current.y = damp(rotCurrent.current.y, 0, 18, dt);
     } else {
-      rotCurrent.current.x = damp(rotCurrent.current.x, rotTarget.current.x, 8, delta);
-      rotCurrent.current.y = damp(rotCurrent.current.y, rotTarget.current.y, 8, delta);
+      rotCurrent.current.x = damp(rotCurrent.current.x, rotTarget.current.x, 8, dt);
+      rotCurrent.current.y = damp(rotCurrent.current.y, rotTarget.current.y, 8, dt);
     }
 
-    // Notify parent when minifigure is in idle and ready for interaction
+    // Notify parent immediately when minifigure is ready for interaction
     if (animRef?.current?.isIdle && !reportedReady.current) {
       reportedReady.current = true;
       if (onInteractionReady) onInteractionReady(true);
@@ -1987,20 +1698,10 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
       stationGroupRef.current.rotation.x = rotCurrent.current.x;
       stationGroupRef.current.rotation.y = rotCurrent.current.y;
     }
-
-    // Dynamic start position starting off the far left edge of the screen
-    if (animRef?.current) {
-      const worldLeftEdge = -viewport.width / 2 - 1.5;
-      animRef.current.startLocalX = (worldLeftEdge - targetX) / currentScale;
-      if (animRef.current.startTime === null) {
-        animRef.current.x = animRef.current.startLocalX;
-      }
-    }
   });
 
   return (
     <>
-      <RenderNotifier onRendered={onRendered} />
       {/* High-Performance Instant Studio Lighting — Zero Network Latency */}
       <hemisphereLight args={['#ffffff', '#181e2e', isMobileDevice ? 0.8 : 0.65]} />
       <directionalLight
@@ -2011,27 +1712,21 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
         shadow-bias={-0.0008}
         color="#ffffff"
       />
-      <directionalLight position={[-5, 4, 3]} intensity={0.7} color="#93c5fd" />
+      <directionalLight position={[-5, 4, 3]} intensity={0.65} color="#ffffff" />
       <directionalLight position={[0, 6, -6]} intensity={0.8} color="#ffffff" />
-      <pointLight position={[0, -0.5, 3.0]} intensity={0.4} color="#ffd500" />
-      <ambientLight intensity={isMobileDevice ? 0.55 : 0.45} color="#ffffff" />
+      <ambientLight intensity={isMobileDevice ? 0.60 : 0.52} color="#ffffff" />
 
-      {/* Unified 3D Workstation & Character Group */}
-      <group ref={stationGroupRef} position={[initialX, initialY, 0]} scale={initialScale}>
-        <Minifigure animRef={animRef} isIntroActive={isIntroActive} />
-        {/* Decor — only the bricks float and tumble */}
+      {/* Unified 3D Character Group */}
+      <group ref={stationGroupRef} position={[initialX, initialY, 0]} scale={currentScale}>
+        <Minifigure animRef={animRef} />
+        {/* Decor — only the authentic colorful bricks float and tumble */}
         <FloatingBricks animRef={animRef} />
-        {/* Walking contact shadow follows character as he walks across floor */}
-        <WalkingContactShadow animRef={animRef} />
-        {/* Soft Procedural Ground Contact Shadow under workstation stand */}
-        <GroundShadow position={[0, -0.34, 0]} />
+        {/* Soft Procedural Ground Contact Shadow under Minifigure feet */}
+        <GroundShadow animRef={animRef} position={[0, -0.30, 0]} />
       </group>
 
       {/* 3D Thrown Lego Brick hurtling straight into camera lens on Discover More click */}
       <ThrownLegoBrick animRef={animRef} onComplete={onThrowComplete} stationPosRef={stationPosRef} />
-
-      {/* Ambient background particles */}
-      <Particles />
     </>
   );
 }
@@ -2039,37 +1734,70 @@ function Scene({ onRendered, animRef, domElement, isIntroActive, onThrowComplete
 /* ═══════════════════════════════════════════════════════════════
    EXPORT — Robust WebGL with Auto-Recovery & Interactive Poses
    ═══════════════════════════════════════════════════════════════ */
-export default function LegoMinifigure({ domTarget, isIntroActive = false, isThrowing = false, onThrowComplete, onInteractionReady }) {
+export default function LegoMinifigure({ domTarget, isThrowing = false, onThrowComplete, onInteractionReady, isHome = true }) {
   const glRef = useRef(null);
   const [contextLost, setContextLost] = useState(false);
   const [webGLError, setWebGLError] = useState(!isWebGLAvailable());
   const [canvasKey, setCanvasKey] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(false);
   const lostCountRef = useRef(0);
 
-  // Central animation state coordinator for walk-in sequence & brick throw
+  // Central animation state coordinator for in-place acting & brick throw
   const animRef = useRef({
-    startTime: null,
-    isWalking: true,
-    isIntroWave: false,
-    isIdle: false,
+    isIdle: true,
     isThrowing: false,
     throwStartTime: null,
     hasCompletedThrow: false,
-    startLocalX: -6.5,
-    x: -6.5,
+    x: 0,
     y: 0,
-    rotY: Math.PI * 0.32,
+    rotX: 0,
+    rotY: -0.46,
     rotZ: 0,
-    walkPhase: 0,
-    walkWeight: 1,
-    leftLegAngle: 0,
-    rightLegAngle: 0,
-    leftArmAngle: 0,
-    rightArmAngle: 0,
-    introWaveLift: 0,
-    introWaveProgress: 0,
+    hopLegAngle: 0,
+    jumpArc: 0,
+    redBrickGrabStart: null,
+    releaseWorldPos: null,
   });
+
+  const handleCanvasError = () => {
+    if (lostCountRef.current < 2) {
+      lostCountRef.current += 1;
+      setCanvasKey(prev => prev + 1);
+    } else {
+      setWebGLError(true);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      lostCountRef.current = 0;
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [canvasKey]);
+
+  // Graceful frameloop control: Keep running during exit animation (300ms) then sleep to save GPU
+  const [shouldRender, setShouldRender] = useState(isHome);
+  useEffect(() => {
+    if (isHome) {
+      setShouldRender(true);
+    } else {
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isHome]);
+
+  // Automatically reset throw state when returning to Home
+  useEffect(() => {
+    if (isHome && animRef.current) {
+      animRef.current.isThrowing = false;
+      animRef.current.isIdle = true;
+      animRef.current.throwStartTime = null;
+      animRef.current.hasCompletedThrow = false;
+      animRef.current.x = 0;
+      animRef.current.y = 0;
+    }
+  }, [isHome]);
 
   // Trigger throw sequence when isThrowing becomes true
   useEffect(() => {
@@ -2077,24 +1805,18 @@ export default function LegoMinifigure({ domTarget, isIntroActive = false, isThr
       animRef.current.isThrowing = true;
       animRef.current.throwStartTime = performance.now() / 1000;
       animRef.current.hasCompletedThrow = false;
+      animRef.current.redBrickGrabStart = null;
+      animRef.current.releaseWorldPos = null;
     }
   }, [isThrowing]);
 
-  // Automatically start walk-in sequence as soon as airplane intro curtain reveals the screen
   useEffect(() => {
-    if (!isIntroActive && animRef.current) {
-      const t = setTimeout(() => {
-        if (animRef.current) {
-          animRef.current.startTime = performance.now() / 1000;
-          animRef.current.isWalking = true;
-          animRef.current.isIntroWave = false;
-          animRef.current.isIdle = false;
-          animRef.current.x = animRef.current.startLocalX || -9.5;
-        }
-      }, 100);
-      return () => clearTimeout(t);
+    if (animRef.current) {
+      animRef.current.isIdle = true;
+      animRef.current.x = 0;
+      animRef.current.y = 0;
     }
-  }, [isIntroActive]);
+  }, []);
 
   // Cleanly handle browser tab close without destroying active context during client-side route navigation
   useEffect(() => {
@@ -2127,13 +1849,14 @@ export default function LegoMinifigure({ domTarget, isIntroActive = false, isThr
   }
 
   return (
-    <div className="w-full h-full relative bg-transparent transition-opacity duration-500 ease-out" style={{ opacity: isLoaded ? 1 : 0 }}>
+    <div className="w-full h-full relative bg-transparent pointer-events-auto">
       {contextLost && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#0B0C10]/60 backdrop-blur-xs">
           <div className="w-8 h-8 border-2 border-[#FFD500]/20 border-t-[#FFD500] rounded-full animate-spin" />
         </div>
       )}
       <CanvasErrorBoundary 
+        resetKey={canvasKey}
         fallback={
           <LegoFallbackAvatar 
             isThrowing={isThrowing} 
@@ -2141,10 +1864,11 @@ export default function LegoMinifigure({ domTarget, isIntroActive = false, isThr
             onInteractionReady={onInteractionReady} 
           />
         }
-        onError={() => setWebGLError(true)}
+        onError={handleCanvasError}
       >
         <Canvas
           key={canvasKey}
+          frameloop={shouldRender ? 'always' : 'never'}
           shadows={!isMobileDevice}
           camera={{ position: [0, 0.2, 10.8], fov: 28 }}
           dpr={isMobileDevice ? 1 : [1, 1.5]}
@@ -2167,29 +1891,22 @@ export default function LegoMinifigure({ domTarget, isIntroActive = false, isThr
             } catch {
               // ignore
             }
-            requestAnimationFrame(() => {
-              setIsLoaded(true);
-            });
 
             const canvasEl = gl.domElement;
             const handleContextLost = (event) => {
               event.preventDefault();
-              lostCountRef.current += 1;
-              console.warn(`WebGL context lost (count: ${lostCountRef.current}).`);
-              if (lostCountRef.current > 2) {
-                console.warn('WebGL context lost repeatedly. Falling back to lightweight SVG avatar.');
-                setWebGLError(true);
-                return;
-              }
+              console.warn('WebGL context temporarily lost. Entering safe recovery mode...');
               setContextLost(true);
-              setTimeout(() => {
-                setCanvasKey(prev => prev + 1);
-                setContextLost(false);
-              }, 200);
             };
 
             const handleContextRestored = () => {
+              console.info('WebGL context successfully restored.');
               setContextLost(false);
+              try {
+                gl.compile(scene, camera);
+              } catch {
+                // ignore
+              }
             };
 
             canvasEl.addEventListener('webglcontextlost', handleContextLost, false);
@@ -2199,10 +1916,8 @@ export default function LegoMinifigure({ domTarget, isIntroActive = false, isThr
         >
           <Suspense fallback={null}>
             <Scene 
-              onRendered={() => setIsLoaded(true)} 
               animRef={animRef} 
               domElement={domTarget} 
-              isIntroActive={isIntroActive} 
               onThrowComplete={onThrowComplete}
               onInteractionReady={onInteractionReady}
             />

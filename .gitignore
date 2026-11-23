@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Temporary scratch & profiling directories
+scratch/
+scratch
+audit-components.cjs
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

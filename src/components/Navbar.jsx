@@ -4,15 +4,15 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useState, useEffect } from 'react';
 
 
-// Iconic Classic LEGO Minifigure Head Vector Icon with interactive "melet" (tongue-out) on hover
+// Iconic Classic LEGO Minifigure Head Vector Icon with interactive playful wink on hover
 function LegoMinifigIcon() {
   return (
-    <div className="relative w-7 h-7 flex-shrink-0 flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300 select-none cursor-pointer">
+    <div className="relative w-8 h-8 rounded-xl bg-[#070B19] border border-[#FFD500]/50 shadow-[0_0_12px_rgba(255,213,0,0.18)] flex-shrink-0 flex items-center justify-center group-hover:scale-105 group-hover:border-[#FFD500] group-hover:shadow-[0_0_16px_rgba(255,213,0,0.35)] transition-all duration-300 select-none cursor-pointer p-1">
       <svg 
         viewBox="0 0 32 36" 
         fill="none" 
         xmlns="http://www.w3.org/2000/svg" 
-        className="w-full h-full drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]"
+        className="w-full h-full drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)] group-hover:-rotate-3 transition-transform duration-300"
       >
         {/* Top Stud */}
         <rect x="11" y="1.5" width="10" height="4" rx="1.5" fill="#FFD500" stroke="#B8860B" strokeWidth="1.2" />

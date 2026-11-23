@@ -2,16 +2,15 @@ import { BrowserRouter as Router, useRoutes, useLocation } from 'react-router-do
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
-import Home from './components/Home';
+import HomePage from './components/HomePage';
 import AboutPage from './components/AboutPage';
 import ProjectsPage from './components/ProjectsPage';
 import ContactPage from './components/ContactPage';
-import LegoCurtainLoader from './components/LegoCurtainLoader';
-import LegoShatterImpact from './components/LegoShatterImpact';
+import LegoLoader from './components/LegoLoader';
+import LegoTransition from './components/LegoTransition';
 import { IntroContext } from './context/IntroContext';
 
-const routeConfig = [
-  { path: '/', element: <Home /> },
+const otherRouteConfig = [
   { path: '/about', element: <AboutPage /> },
   { path: '/projects', element: <ProjectsPage /> },
   { path: '/contact', element: <ContactPage /> },
@@ -37,14 +36,18 @@ function RouteWrapper({ children }) {
       window.__lenis.scrollTo(0, { immediate: true });
     }
 
-    if (isHome) {
+    const isDesktop = window.innerWidth >= 1024;
+    if (isHome && isDesktop) {
       document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
       if (window.__lenis) window.__lenis.stop();
     } else {
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
-      if (window.__lenis) window.__lenis.start();
+      if (window.__lenis) {
+        if (isHome) window.__lenis.stop();
+        else window.__lenis.start();
+      }
     }
 
     return () => {
@@ -57,34 +60,63 @@ function RouteWrapper({ children }) {
 }
 
 /**
- * Clean, Subtle, & Snappy Page Transition (Vercel / Linear / Apple Grade)
- * - Ultra-fast (~0.22s) silky smooth route change
- * - Old page gently recedes: opacity: 0, y: -4px
- * - New page floats into focus: opacity: 0 -> 1, y: 8px -> 0px
- * - Zero screen-blocking shutter: feels featherlight, instant, and frictionless
+ * MainNavigationRoutes:
+ * - Persistent Zero-Jank Home Page: Remains warm in memory across route changes.
+ *   Three.js WebGL context, compiled shaders, and text NEVER re-mount from scratch.
+ * - Instantly live & realtime on return (0ms delay, 0ms freeze).
+ * - Smooth cross-fade transitions for /about, /projects, and /contact.
  */
-function AnimatedRoutes() {
+function MainNavigationRoutes() {
   const location = useLocation();
-  const element = useRoutes(routeConfig, location);
+  const otherRoutesElement = useRoutes(otherRouteConfig, location);
   const isHome = location.pathname === '/';
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      {element && (
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.10, ease: [0.16, 1, 0.3, 1] }}
-          className={`relative w-full ${isHome ? 'h-screen h-[100dvh] overflow-hidden' : 'min-h-screen overflow-x-clip'}`}
-        >
-          <RouteWrapper>
-            {element}
-          </RouteWrapper>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="relative w-full min-h-screen">
+      {/* Persistent Zero-Jank Home Page with Featherlight Micro-Glide */}
+      <motion.div 
+        initial={false}
+        animate={isHome ? {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          pointerEvents: 'auto',
+          visibility: 'visible',
+          transition: { duration: 0.20, ease: [0.16, 1, 0.3, 1] }
+        } : {
+          opacity: 0,
+          y: -6,
+          scale: 0.995,
+          pointerEvents: 'none',
+          transitionEnd: { visibility: 'hidden' },
+          transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] }
+        }}
+        className="fixed inset-0 w-full h-full z-10 will-change-transform"
+        aria-hidden={!isHome}
+      >
+        <RouteWrapper>
+          <HomePage isHome={isHome} />
+        </RouteWrapper>
+      </motion.div>
+
+      {/* Cross-Page Transitions for /about, /projects, /contact with Featherlight Micro-Glide */}
+      <AnimatePresence mode="wait" initial={false}>
+        {!isHome && otherRoutesElement && (
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full min-h-screen overflow-x-clip z-20 will-change-transform"
+          >
+            <RouteWrapper>
+              {otherRoutesElement}
+            </RouteWrapper>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -95,13 +127,13 @@ function App() {
 
   const startBrickWipe = (onMidpoint) => {
     setBrickWipeActive(true);
-    // Instantaneous route transition without arbitrary delay so About renders directly beneath the flying shards
-    requestAnimationFrame(() => {
+    // Give the shatter burst 80ms to reach full visual velocity before swapping routes
+    setTimeout(() => {
       if (onMidpoint) onMidpoint();
-    });
+    }, 80);
     setTimeout(() => {
       setBrickWipeActive(false);
-    }, 600);
+    }, 550);
   };
 
   // Nonaktifkan scroll restoration otomatis browser agar posisi halaman tidak tertinggal saat reload
@@ -147,24 +179,24 @@ function App() {
       <Router>
         <AnimatePresence mode="wait">
           {showIntro && (
-            <LegoCurtainLoader key="lego-curtain-loader" onComplete={() => setShowIntro(false)} />
+            <LegoLoader key="lego-loader" onComplete={() => setShowIntro(false)} />
           )}
         </AnimatePresence>
 
         {/* Global Lego Red Brick Impact & Shatter Explosion Overlay */}
         <AnimatePresence>
-          {brickWipeActive && <LegoShatterImpact />}
+          {brickWipeActive && <LegoTransition />}
         </AnimatePresence>
 
         {/* Menerapkan font 'Plus Jakarta Sans' sebagai font default aplikasi */}
         <div 
-          className="font-sans bg-[#090b12] text-white transition-opacity duration-500 ease-out"
+          className="font-sans bg-[#060a17] text-white transition-opacity duration-500 ease-out"
           style={{
             opacity: showIntro ? 0 : 1,
             pointerEvents: showIntro ? 'none' : 'auto',
           }}
         >
-          <AnimatedRoutes />
+          <MainNavigationRoutes />
         </div>
       </Router>
     </IntroContext.Provider>

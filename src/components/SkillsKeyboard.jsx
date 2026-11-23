@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform, useScroll } from 'framer-motion';
+import { motion, AnimatePresence, useTransform, useScroll } from 'framer-motion';
 
 // Official, world-standard high-contrast vector icons from Simple Icons & FontAwesome
 import {
