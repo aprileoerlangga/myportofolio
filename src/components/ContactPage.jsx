@@ -1,14 +1,15 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  SiGithub, 
-  SiLinkedin, 
-  SiInstagram, 
-  SiWhatsapp, 
-  SiGmail 
+import {
+  SiGithub,
+  SiLinkedin,
+  SiInstagram,
+  SiWhatsapp,
+  SiGmail,
 } from 'react-icons/si';
-import Navbar from './Navbar';
 import Footer from './Footer';
+import SpaceBackground, { ClassicSpaceHoloInsignia } from './SpaceBackground';
+import { IsoLegoBrick } from './LegoLoader';
 
 const contactLinks = [
   {
@@ -44,187 +45,130 @@ const contactLinks = [
 ];
 
 function ContactPage() {
-  const spotlightRef = useRef(null);
-
-  const handleMouseMove = (e) => {
-    if (!spotlightRef.current) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    spotlightRef.current.style.background = `radial-gradient(550px circle at ${x}px ${y}px, rgba(255, 213, 0, 0.045), transparent 60%)`;
-  };
-
-  const handleMouseEnter = () => {
-    if (spotlightRef.current) spotlightRef.current.style.opacity = '1';
-  };
-
-  const handleMouseLeave = () => {
-    if (spotlightRef.current) spotlightRef.current.style.opacity = '0';
-  };
-
   return (
-    <div className="text-white min-h-screen relative bg-[#060a17] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip flex flex-col justify-between">
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* CLASSIC SPACE COSMIC BACKDROP (HARMONIZED WITH ABOUT & LOADING)        */}
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        {/* 1. Deep Orbital Void & Nebula Lighting (Royal Blue, Cosmic Violet & Solar Amber) */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: `
-              radial-gradient(circle 950px at 80% 20%, rgba(0, 85, 191, 0.30), transparent 70%),
-              radial-gradient(circle 850px at 15% 45%, rgba(121, 40, 202, 0.22), transparent 65%),
-              radial-gradient(circle 1000px at 50% 90%, rgba(255, 213, 0, 0.12), transparent 70%),
-              linear-gradient(180deg, #060a17 0%, #0a0e22 55%, #040711 100%)
-            `
-          }}
-        />
-
-        {/* 2. Universal Twinkling Space Stars Field */}
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-70"
-          style={{
-            backgroundImage: `
-              radial-gradient(1px 1px at 25px 35px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1.5px 1.5px at 120px 80px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 240px 190px, #ffd500, rgba(0,0,0,0)),
-              radial-gradient(2px 2px at 380px 120px, #61dafb, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 490px 310px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1.5px 1.5px at 620px 220px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 750px 90px, #ffd500, rgba(0,0,0,0)),
-              radial-gradient(2px 2px at 890px 270px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 1020px 150px, #61dafb, rgba(0,0,0,0)),
-              radial-gradient(1.5px 1.5px at 1180px 320px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 1310px 180px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1.5px 1.5px at 1410px 70px, #ffd500, rgba(0,0,0,0))
-            `,
-            backgroundSize: '1440px 420px'
-          }}
-        />
-
-        {/* 3. Stylized Classic Space Celestial Planet (Top-Right) */}
-        <div 
-          className="absolute top-8 -right-20 md:right-4 w-72 h-72 md:w-96 md:h-96 rounded-full pointer-events-none opacity-75"
-          style={{
-            background: 'radial-gradient(circle at 35% 35%, rgba(0, 240, 255, 0.85) 0%, rgba(0, 85, 191, 0.8) 45%, rgba(121, 40, 202, 0.85) 75%, rgba(255, 0, 128, 0.7) 100%)',
-            boxShadow: '0 0 55px rgba(0, 240, 255, 0.32), inset -20px -20px 40px rgba(0, 0, 0, 0.85), inset 15px 15px 30px rgba(255, 255, 255, 0.35)',
-            transform: 'translateZ(0)',
-          }}
-        >
-          <div 
-            className="absolute inset-0 rounded-full opacity-30"
-            style={{
-              background: 'radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.8) 0%, transparent 60%)'
-            }}
-          />
-        </div>
-
-        {/* 4. Classic Space Perspective Cyber Launchpad Grid on Floor */}
-        <div 
-          className="absolute inset-x-0 bottom-0 h-[420px] pointer-events-none opacity-30"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(0, 240, 255, 0.35) 1.5px, transparent 1.5px),
-              linear-gradient(to bottom, rgba(255, 213, 0, 0.25) 1.5px, transparent 1.5px)
-            `,
-            backgroundSize: '54px 54px',
-            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)',
-            transform: 'perspective(550px) rotateX(52deg)',
-            transformOrigin: 'bottom center'
-          }}
-        />
-      </div>
+    <div className="text-white min-h-screen relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip flex flex-col justify-between">
+      {/* Unified Classic Space Cosmic Background (Obsidian Void, Starfield & Lunar Horizon) */}
+      <SpaceBackground showCraters={true} />
 
       <div className="relative z-10 flex flex-col min-h-screen justify-between">
-        <Navbar />
-        
-        <main className="flex-1 flex items-center justify-center py-16 sm:py-20 px-6 sm:px-10 lg:px-12">
-          <section id="contact" className="w-full max-w-4xl mx-auto">
-            
-            {/* Header Title */}
-            <motion.div 
+        <main className="flex-1 flex flex-col justify-center pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20 px-6 sm:px-10 lg:px-12 relative">
+          {/* Subtle Tablet Corner Bricks */}
+          <div className="hidden sm:block lg:hidden pointer-events-none">
+            <div className="absolute top-28 left-6 w-12 h-10 opacity-55 pointer-events-auto">
+              <IsoLegoBrick shape="1x2" color="blue" floatY={5} floatDuration={6.4} initialRotate={-14} />
+            </div>
+            <div className="absolute bottom-24 right-8 w-14 h-11 opacity-55 pointer-events-auto">
+              <IsoLegoBrick shape="2x2" color="yellow" floatY={6} floatDuration={7.2} floatDelay={0.6} initialRotate={12} />
+            </div>
+          </div>
+
+          <section
+            id="contact"
+            className="w-full max-w-4xl mx-auto relative text-slate-200"
+          >
+            {/* Header Title (Harmonized with About Me, Tech Stack & My Projects) */}
+            <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-10 sm:mb-12"
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col items-center text-center mb-12 sm:mb-14 select-none relative z-10"
             >
-              <h1 
-                className="font-pixel text-4xl sm:text-5xl md:text-6xl font-normal tracking-wider text-white uppercase select-none mb-3"
-                style={{ fontFamily: "'Arcadepix', monospace" }}
-              >
-                CONNECT <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">WITH ME</span>
+              <h1 className="font-pixel font-bold text-3xl sm:text-4xl md:text-5xl tracking-wide text-white uppercase select-none">
+                GET IN <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">TOUCH</span>
               </h1>
-              <p className="text-slate-400 text-sm sm:text-base max-w-md mx-auto">
-                Tertarik berkolaborasi atau sekadar berdiskusi tentang arsitektur kode? Hubungi saya melalui tautan di bawah.
+
+              <p className="text-slate-300 font-sans text-xs sm:text-sm md:text-base font-normal mt-2.5 sm:mt-3 max-w-xl mx-auto leading-relaxed">
+                Have a project in mind, a collaboration inquiry, or simply want to connect? Reach out directly through any platform below.
               </p>
             </motion.div>
 
-            {/* Interactive Tactile Contact Grid Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 24, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.65, delay: 0.1 }}
-              onMouseMove={handleMouseMove}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              className="relative rounded-2xl sm:rounded-3xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-6 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden"
-            >
-              {/* Dynamic Spotlight Effect Following Cursor */}
-              <div 
-                ref={spotlightRef}
-                className="absolute inset-0 pointer-events-none transition-opacity duration-300 opacity-0"
-                style={{
-                  background: 'radial-gradient(550px circle at 0px 0px, rgba(255, 213, 0, 0.045), transparent 60%)',
-                }}
-              />
+            {/* Minimalist Editorial 2-Column Links Framed with Classic Space Objects */}
+            <div className="relative max-w-3xl mx-auto w-full z-10">
+              {/* Left Desktop Flank: 1979 Classic Space Emblem + Floating Blue Brick */}
+              <div className="hidden lg:flex flex-col items-center gap-12 absolute right-full mr-8 xl:mr-14 top-1/2 -translate-y-1/2 pointer-events-none">
+                <motion.div
+                  initial={{ opacity: 0, x: -20, scale: 0.92 }}
+                  animate={{ opacity: 0.8, x: 0, scale: 1 }}
+                  transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <ClassicSpaceHoloInsignia className="w-20 xl:w-28 h-20 xl:h-28" />
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 0.85, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  className="w-16 xl:w-20 h-14 xl:h-16 pointer-events-auto"
+                >
+                  <IsoLegoBrick shape="1x2" color="blue" floatY={7} floatDuration={6.2} floatDelay={0.5} initialRotate={-12} />
+                </motion.div>
+              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 relative z-10">
+              {/* Right Desktop Flank: Interactive Zero-G Isometric LEGO Bricks */}
+              <div className="hidden lg:flex flex-col items-center gap-16 absolute left-full ml-8 xl:ml-14 top-1/2 -translate-y-1/2 pointer-events-none">
+                <motion.div
+                  initial={{ opacity: 0, x: 20, scale: 0.92 }}
+                  animate={{ opacity: 0.88, x: 0, scale: 1 }}
+                  transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="w-20 xl:w-24 h-16 xl:h-20 pointer-events-auto"
+                >
+                  <IsoLegoBrick shape="2x2" color="yellow" floatY={8} floatDuration={5.6} initialRotate={10} />
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 0.82, x: 0 }}
+                  transition={{ duration: 0.7, delay: 0.34, ease: [0.16, 1, 0.3, 1] }}
+                  className="w-14 xl:w-16 h-12 xl:h-14 -ml-4 pointer-events-auto"
+                >
+                  <IsoLegoBrick shape="1x2" color="red" floatY={6} floatDuration={6.8} floatDelay={1.1} initialRotate={-16} />
+                </motion.div>
+              </div>
+
+              {/* Subtle Architectural Corner Accents */}
+              <span className="absolute -top-4 -left-4 text-zinc-600 font-mono text-xs select-none pointer-events-none opacity-40 hidden sm:block">+</span>
+              <span className="absolute -top-4 -right-4 text-zinc-600 font-mono text-xs select-none pointer-events-none opacity-40 hidden sm:block">+</span>
+              <span className="absolute -bottom-4 -left-4 text-zinc-600 font-mono text-xs select-none pointer-events-none opacity-40 hidden sm:block">+</span>
+              <span className="absolute -bottom-4 -right-4 text-zinc-600 font-mono text-xs select-none pointer-events-none opacity-40 hidden sm:block">+</span>
+
+              <div className="flex flex-col divide-y divide-white/[0.06]">
                 {contactLinks.map((item, idx) => {
                   const Icon = item.icon;
-                  const isEmail = item.name === 'Email';
-                  
+                  const isExternal = item.href.startsWith('http');
+
                   return (
                     <motion.a
                       key={item.name}
                       href={item.href}
-                      target={isEmail ? '_self' : '_blank'}
-                      rel={isEmail ? '' : 'noopener noreferrer'}
-                      initial={{ opacity: 0, y: 15 }}
+                      target={isExternal ? '_blank' : undefined}
+                      rel={isExternal ? 'noopener noreferrer' : undefined}
+                      initial={{ opacity: 0, y: 14 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.45, delay: 0.15 + idx * 0.06 }}
-                      whileHover={{ y: -3, scale: 1.01 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={`group relative flex items-center gap-4 p-4 sm:p-5 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.06] hover:border-[#FFD500]/40 transition-all duration-200 select-none ${
-                        isEmail ? 'sm:col-span-2' : ''
-                      }`}
+                      transition={{
+                        duration: 0.45,
+                        delay: 0.12 + idx * 0.05,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      whileTap={{ scale: 0.99 }}
+                      className="group flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-6 py-3.5 sm:py-4 px-3 -mx-3 rounded-xl hover:bg-white/[0.03] active:bg-white/[0.05] cursor-pointer select-none transition-colors duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/30"
                     >
-                      {/* Left Icon with subtle glow */}
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-800/80 border border-white/10 flex items-center justify-center text-[#FFD500] group-hover:scale-110 group-hover:bg-[#FFD500] group-hover:text-zinc-950 transition-all duration-200 shadow-md">
-                        <Icon className="text-xl sm:text-2xl" />
+                      {/* Platform Icon Tile + Title */}
+                      <div className="flex items-center gap-3.5 sm:gap-4 transition-transform duration-200 ease-out group-hover:translate-x-1.5">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/[0.04] border border-white/[0.08] border-b-2 border-b-black/70 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:border-white/25 group-hover:bg-white/[0.07] transition-all duration-200 flex-shrink-0">
+                          <Icon className="w-[18px] h-[18px] sm:w-5 sm:h-5 transition-transform duration-200 group-hover:scale-105" />
+                        </div>
+                        <span className="text-lg sm:text-xl font-bold tracking-tight text-white">
+                          {item.name}
+                        </span>
                       </div>
 
-                      {/* Text Details */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-sm sm:text-base text-white group-hover:text-[#FFD500] transition-colors duration-150">
-                            {item.name}
-                          </span>
-                          <span className="text-xs text-slate-500 group-hover:text-slate-300 transition-colors duration-150">
-                            &rarr;
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-sm text-slate-400 truncate mt-0.5 font-mono">
-                          {item.url.replace('https://', '')}
-                        </p>
-                      </div>
+                      {/* Full URL */}
+                      <span className="text-zinc-400 group-hover:text-zinc-200 transition-colors duration-200 font-mono text-xs sm:text-sm truncate pl-[54px] sm:pl-0">
+                        {item.url}
+                      </span>
                     </motion.a>
                   );
                 })}
               </div>
-            </motion.div>
-
+            </div>
           </section>
         </main>
 

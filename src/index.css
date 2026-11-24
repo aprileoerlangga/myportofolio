@@ -295,3 +295,22 @@ canvas {
 .font-righteous {
   font-family: 'Righteous', cursive, sans-serif !important;
 }
+
+/* Lightweight GPU-Composited Twinkling Stars for SpaceBackground */
+@keyframes sbStarTwinkle {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.15);
+  }
+}
+
+.sb-twinkle-star {
+  animation-name: sbStarTwinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}

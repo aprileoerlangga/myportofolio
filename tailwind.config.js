@@ -8,13 +8,14 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-        heading: ['"Plus Jakarta Sans"', 'sans-serif'],
+        space: ['"Space Grotesk"', 'sans-serif'],
+        heading: ['"Space Grotesk"', 'sans-serif'],
         jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
         montserrat: ['"Plus Jakarta Sans"', 'sans-serif'],
         poppins: ['"Plus Jakarta Sans"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
         jetbrains: ['"JetBrains Mono"', 'monospace'],
-        pixel: ['"Arcadepix"', 'monospace'],
+        pixel: ['"Pixelify Sans"', 'sans-serif'],
       },
     },
   },

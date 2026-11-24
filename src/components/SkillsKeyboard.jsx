@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence, useTransform, useScroll } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Official, world-standard high-contrast vector icons from Simple Icons & FontAwesome
 import {
@@ -631,27 +631,36 @@ export const KEYBOARD_SKILLS = [
   },
 ];
 
+// Smooth Editorial Scroll-Reveal Variants for Section Header (Silky 60fps Entrance)
+const headerContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.16,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const headerItemVariants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.85,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
 export default function SkillsKeyboard() {
   // Start with React active by default
   const [activeSkill, setActiveSkill] = useState(
     () => KEYBOARD_SKILLS.find(s => s.id === 'react') || KEYBOARD_SKILLS[4]
   );
   const containerRef = useRef(null);
-
-  // Scroll kinematics matching user reference:
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start 96%", "center 52%"]
-  });
-
-  // Settled angle matching user reference:
-  // rotateX: 46deg, rotateY: -6deg, rotateZ: -36deg
-  // Rock-steady under the mouse cursor so clicks NEVER miss!
-  const scrollRotateX = useTransform(scrollYProgress, [0, 0.45, 1], [70, 56, 46]);
-  const scrollRotateY = useTransform(scrollYProgress, [0, 0.45, 1], [-22, -14, -6]);
-  const scrollRotateZ = useTransform(scrollYProgress, [0, 0.45, 1], [-65, -48, -36]);
-  const scrollScale = useTransform(scrollYProgress, [0, 0.35, 1], [0.46, 0.72, 1]);
-  const scrollY = useTransform(scrollYProgress, [0, 1], [-220, 0]);
 
   // Guaranteed Instant Trigger Function
   // Updates inspector immediately with zero delay and triggers visual tactile bounce
@@ -709,27 +718,18 @@ export default function SkillsKeyboard() {
         .keycap-btn {
           position: relative;
           transform: translate3d(0, 0, 0);
-          /* ONLY transition transform on GPU Compositor! Zero 16-layer box-shadow blur interpolation! */
+          /* ONLY transition transform on GPU Compositor! */
           transition: transform 0.05s cubic-bezier(0.2, 0.8, 0.2, 1);
           transform-style: preserve-3d;
+          backface-visibility: hidden;
           box-shadow:
-            0 1px 1.5px rgba(255, 255, 255, 0.5) inset,
-            -1px 1px 0 var(--key-side),
+            0 1px 1px rgba(255, 255, 255, 0.5) inset,
             -2px 2px 0 var(--key-side),
-            -3px 3px 0 var(--key-side),
             -4px 4px 0 var(--key-side),
-            -5px 5px 0 var(--key-side),
-            -6px 6px 0 var(--key-side),
-            -7px 7px 0 var(--key-side-dark),
+            -6px 6px 0 var(--key-side-dark),
             -8px 8px 0 var(--key-side-dark),
-            -9px 9px 0 var(--key-side-dark),
-            -10px 10px 0 var(--key-side-dark),
-            -11px 11px 0 #080c14,
-            -12px 12px 0 #05070c,
-            -13px 13px 0 #020306,
-            -14px 14px 0 #000002,
-            -18px 20px 28px rgba(0, 0, 0, 0.98),
-            -8px 10px 14px rgba(0, 0, 0, 0.88);
+            -10px 10px 0 #05070c,
+            -14px 16px 20px rgba(0, 0, 0, 0.92);
           user-select: none;
           -webkit-user-select: none;
           -webkit-user-drag: none;
@@ -752,35 +752,26 @@ export default function SkillsKeyboard() {
       `}</style>
 
       {/* ============================================================ */}
-      {/* SECTION TOP HEADER: "SKILLS & TECHNOLOGIES"                   */}
-      {/* Pixel font matching ABOUT ME header + smooth entrance transitions */}
+      {/* SECTION TOP HEADER: "TECH STACK"                             */}
       {/* ============================================================ */}
       <motion.div 
-        initial={{ opacity: 0, y: 28 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="flex flex-col items-center text-center mb-10 sm:mb-16 select-none relative z-20"
+        variants={headerContainerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.35, margin: "0px 0px -80px 0px" }}
+        className="flex flex-col items-center text-center mb-8 sm:mb-14 select-none relative z-20"
       >
-        {/* Pixel Headline matching ABOUT ME: "TECH STACK" */}
         <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.65, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="font-pixel text-4xl sm:text-5xl md:text-6xl font-normal tracking-wider text-white uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)]"
-          style={{ fontFamily: "'Arcadepix', monospace" }}
+          variants={headerItemVariants}
+          className="font-pixel font-bold text-3xl sm:text-4xl md:text-5xl tracking-wide text-white uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)]"
         >
           TECH <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">STACK</span>
         </motion.h2>
 
-        {/* Subtitle */}
+        {/* Subtitle with soft gradual entrance */}
         <motion.p 
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-slate-300 text-sm sm:text-base font-normal mt-3.5 max-w-2xl mx-auto leading-relaxed"
+          variants={headerItemVariants}
+          className="text-slate-300 font-sans text-sm sm:text-base font-normal mt-3 max-w-xl mx-auto leading-relaxed"
         >
           A collection of technologies I use to turn ideas into digital experiences.
         </motion.p>
@@ -799,11 +790,11 @@ export default function SkillsKeyboard() {
           {/* Shifted rightward toward center so it's not clinging to edge */}
           {/* ------------------------------------------------------------ */}
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full lg:w-[380px] xl:w-[420px] flex flex-col justify-center min-h-[160px] sm:min-h-[200px] relative z-20 text-left"
+            initial={{ opacity: 0, y: 36, x: -12 }}
+            whileInView={{ opacity: 1, y: 0, x: 0 }}
+            viewport={{ once: true, amount: 0.25, margin: "0px 0px -60px 0px" }}
+            transition={{ duration: 0.85, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full lg:w-[380px] xl:w-[420px] flex flex-col justify-center min-h-[160px] sm:min-h-[200px] relative z-20 text-left will-change-transform"
           >
             {/* Active Skill Details styled symmetrically with Motivational Quotes */}
             <AnimatePresence mode="wait">
@@ -823,13 +814,13 @@ export default function SkillsKeyboard() {
                   </span>
                 </div>
 
-                {/* Monumental Skill Title (Option 1: Plus Jakarta Sans Black 900) */}
+                {/* Refined Proportional Skill Title (Plus Jakarta Sans Black 900) */}
                 <h3 
-                  className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white select-none whitespace-normal leading-[1.1] pb-1 transition-all duration-200 text-left max-w-sm"
+                  className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-white select-none whitespace-normal leading-[1.15] pb-1 transition-all duration-200 text-left max-w-sm"
                   style={{
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    letterSpacing: "-0.025em",
-                    textShadow: `0 4px 24px rgba(0,0,0,0.9), 0 0 35px ${activeSkill.bg}60`
+                    letterSpacing: "-0.02em",
+                    textShadow: `0 4px 20px rgba(0,0,0,0.9), 0 0 30px ${activeSkill.bg}50`
                   }}
                 >
                   {activeSkill.name}
@@ -851,15 +842,19 @@ export default function SkillsKeyboard() {
           {/* ------------------------------------------------------------ */}
           {/* RIGHT COLUMN: 3D ISOMETRIC MECHANICAL KEYPAD MATRIX          */}
           {/* ------------------------------------------------------------ */}
-          <div className="flex items-center justify-center relative z-20 py-4 sm:py-6 flex-shrink-0">
-            
+          <motion.div 
+            initial={{ opacity: 0, y: 44, scale: 0.96 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.2, margin: "0px 0px -60px 0px" }}
+            transition={{ duration: 0.85, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center justify-center relative z-20 py-4 sm:py-6 flex-shrink-0 will-change-transform"
+          >
             {/* Ambient RGB underglow spillage (Isolated GPU Compositor Layer) */}
             <div 
               className="absolute inset-0 pointer-events-none rounded-3xl opacity-20"
               style={{
                 background: `radial-gradient(circle at 50% 50%, ${activeSkill.bg} 0%, transparent 70%)`,
                 transform: 'translateZ(0)',
-                willChange: 'background',
               }}
             />
 
@@ -871,26 +866,21 @@ export default function SkillsKeyboard() {
                 perspectiveOrigin: '45% 40%',
               }}
             >
-              {/* 
-                Direct 3D Mechanical Keycaps Grid:
-                Floating directly in 3D space with high-profile keycaps and deep travel!
-                Uses pure scroll kinematics for rock-solid stability under cursor!
-              */}
-              <motion.div 
+              {/* Clean Borderless 3D Isometric Keycaps Grid */}
+              <div 
                 className="relative"
                 style={{
-                  scale: scrollScale,
-                  y: scrollY,
-                  rotateX: scrollRotateX,
-                  rotateY: scrollRotateY,
-                  rotateZ: scrollRotateZ,
+                  transform: 'rotateX(46deg) rotateY(-6deg) rotateZ(-36deg)',
                   transformStyle: 'preserve-3d',
+                  backfaceVisibility: 'hidden',
                 }}
               >
+                {/* 24 Mechanical Keycaps Matrix */}
                 <div 
                   className="grid grid-cols-6 gap-1.5 min-[370px]:gap-2 sm:gap-2.5"
                   style={{
-                    transformStyle: 'preserve-3d'
+                    transformStyle: 'preserve-3d',
+                    backfaceVisibility: 'hidden',
                   }}
                 >
                   {KEYBOARD_SKILLS.map((skill) => {
@@ -906,9 +896,9 @@ export default function SkillsKeyboard() {
                     );
                   })}
                 </div>
-              </motion.div>
+              </div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>

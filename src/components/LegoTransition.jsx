@@ -160,8 +160,7 @@ export default function LegoTransition({ mode = 'burst' }) {
         }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(255,213,0,0.85) 0%, rgba(227,0,11,0.65) 45%, transparent 75%)',
-          filter: 'blur(16px)',
+          background: 'radial-gradient(circle, rgba(255,213,0,0.8) 0%, rgba(227,0,11,0.55) 38%, transparent 70%)',
         }}
       />
 

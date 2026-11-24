@@ -1,27 +1,17 @@
 // src/components/Footer.jsx
 
-import { motion } from 'framer-motion';
 import { SiGithub } from 'react-icons/si';
 
 function Footer() {
   return (
-    <footer className="relative bg-[#090b12]/92 backdrop-blur-xl border-t border-cyan-400/30 overflow-hidden shadow-[0_-10px_35px_rgba(0,0,0,0.8)] z-20">
-      {/* Aksen Laser Emas LEGO di Bagian Tengah Batas */}
-      <div className="absolute top-0 left-1/4 right-1/4 h-[1.5px] bg-gradient-to-r from-transparent via-[#FFD500] to-transparent shadow-[0_0_12px_rgba(255,213,0,0.7)]" />
-      {/* Ambient Glow Halus di Batas Atas Footer */}
-      <div 
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 max-w-xl h-10 pointer-events-none opacity-30"
-        style={{
-          background: 'radial-gradient(ellipse 60% 100% at 50% 0%, rgba(0, 240, 255, 0.45) 0%, rgba(255, 213, 0, 0.25) 50%, transparent 75%)'
-        }}
-      />
+    <footer className="relative bg-transparent border-t border-white/[0.06] overflow-hidden z-20 font-space">
+      {/* Aksen Horizon Emas Lembut Menyelaraskan dengan Top Navbar */}
+      <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#FFD500]/30 to-transparent pointer-events-none" />
 
-      <div className="max-w-3xl mx-auto px-6 py-4 sm:py-5 flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-6 text-center relative z-20">
-        <p className="text-xs sm:text-sm text-slate-400 font-medium tracking-wide">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex flex-col sm:flex-row justify-between items-center gap-3 relative z-20">
+        <p className="text-xs sm:text-sm text-slate-400 font-medium tracking-wide text-center sm:text-left">
           © 2026 Aprileo Erlangga
         </p>
-
-        <span className="hidden sm:inline-block text-slate-600 select-none">•</span>
 
         <a
           href="https://github.com/aprileoerlangga"

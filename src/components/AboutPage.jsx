@@ -1,247 +1,231 @@
-import React from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { FaFilePdf, FaDownload } from 'react-icons/fa';
-import Navbar from './Navbar';
 import Footer from './Footer';
-import AboutBackground from './AboutBackground';
-import ProfilePortrait from './ProfilePortrait';
-import QuotesSection from './QuotesSection';
 import SkillsKeyboard from './SkillsKeyboard';
+import SpaceBackground, { ClassicSpaceHoloInsignia } from './SpaceBackground';
+import fotoProfilCutout from '../assets/fotoku-removebg-preview.png';
 
 /**
- * AboutPage with High-Performance Scroll-Driven Background Transitions
- * (Hardware-accelerated, zero blur-filters, 120 FPS buttery smooth)
+ * ProfilePortrait — Pure Zero-G Floating Cutout
+ */
+function ProfilePortrait({ scrollYProgress }) {
+  const containerRef = useRef(null);
+  const { scrollYProgress: internalScroll } = useScroll();
+  const activeScroll = scrollYProgress || internalScroll;
+
+  // Mouse tilt tracking
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Buttery spring dampening
+  const springX = useSpring(mouseX, { stiffness: 180, damping: 22 });
+  const springY = useSpring(mouseY, { stiffness: 180, damping: 22 });
+
+  // Portrait 3D subtle tilt
+  const portraitRotateX = useTransform(springY, [-150, 150], [6, -6]);
+  const portraitRotateY = useTransform(springX, [-150, 150], [-7, 7]);
+
+  // Zero-G Astronaut Drift
+  const portraitDriftY = useTransform(activeScroll, [0, 0.45], [0, -50]);
+  const portraitDriftScale = useTransform(activeScroll, [0, 0.35], [1, 1.025]);
+
+  const handleMouseMove = (e) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left - rect.width / 2);
+    mouseY.set(e.clientY - rect.top - rect.height / 2);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  return (
+    <div 
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative w-full max-w-[320px] sm:max-w-[360px] flex flex-col items-center justify-center select-none py-2"
+      style={{ perspective: 1200 }}
+    >
+      <motion.div
+        style={{
+          y: portraitDriftY,
+          scale: portraitDriftScale,
+          rotateX: portraitRotateX,
+          rotateY: portraitRotateY,
+          transformStyle: 'preserve-3d',
+          willChange: 'transform',
+        }}
+        className="relative flex items-center justify-center group"
+      >
+        {/* Soft Ambient Cosmic Backlight Glow */}
+        <div 
+          className="absolute -inset-4 rounded-full pointer-events-none opacity-50 blur-3xl group-hover:opacity-75 transition-opacity duration-700"
+          style={{
+            background: 'radial-gradient(ellipse 70% 65% at 50% 45%, rgba(56,189,248,0.28) 0%, rgba(255,213,0,0.1) 45%, rgba(0,85,191,0.06) 75%, transparent 90%)',
+          }}
+        />
+
+        {/* Transparent Cutout Container */}
+        <div 
+          className="relative w-[235px] sm:w-[265px] lg:w-[285px] pointer-events-auto filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.95)] drop-shadow-[0_0_25px_rgba(56,189,248,0.2)] group-hover:drop-shadow-[0_0_35px_rgba(56,189,248,0.35)] transition-all duration-500"
+          style={{
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 82%, transparent 100%)',
+            maskImage: 'linear-gradient(to bottom, black 0%, black 82%, transparent 100%)',
+          }}
+        >
+          <img
+            src={fotoProfilCutout}
+            alt="Aprileo Erlangga - Fullstack Developer"
+            decoding="async"
+            className="w-full h-auto object-contain select-none group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+          />
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+/**
+ * AboutPage — Cohesive Classic Space Cosmic Background
+ * (100% harmonized with Home: Deep Obsidian Void #060814 + Multi-Depth Starlight + Lunar Crater Terrain)
  * 
- * - Section 1 (Top Hero): Classic Space Deep Orbital Void (#060a17) with glowing planet & twinkling stars.
- * - Section 2 (Middle / Motivation): BOLD transition into Cosmic Dawn & Solar Amber Horizon (#1b0e36 to #251246).
- * - Section 3 (Bottom / Skills): High-contrast Lunar Command Deck (#02040a) with perspective cyber launchpad grid.
+ * Design Philosophy:
+ * - ZERO AI-Slop: Zero rotating radars, zero fake CAD labels, zero distracting flashlights.
+ * - 100% Cohesive with Home: Shares the exact palette (#060814), starlight density, and visual DNA.
+ * - High Reading Comfort: Deep, serene space void providing effortless contrast for text and photo.
+ * - Grounded Lunar Horizon: Anchors the bottom of the page where the Skills Keyboard lives.
  */
 function AboutPage() {
   const { scrollYProgress } = useScroll();
 
-  // Zone 1: Active at top hero, smoothly dissolves as user scrolls into mid
-  const bgZone1Opacity = useTransform(scrollYProgress, [0.12, 0.25], [1, 0]);
-
-  // Zone 2: Cosmic Dawn & Solar Amber Horizon - peaks around Act 2 (Builder Creed Quotes 1, 2 & 3)
-  const bgZone2Opacity = useTransform(scrollYProgress, [0.16, 0.26, 0.76, 0.86], [0, 1, 1, 0]);
-
-  // Zone 3: Lunar Command Deck & Cyber Grid - takes over seamlessly at Act 3 (Tech Stack) through to Footer
-  const bgZone3Opacity = useTransform(scrollYProgress, [0.76, 0.88], [0, 1]);
-
-  // Planet Parallax: Smoothly recedes and dims into the distance as user leaves Hero into Creed
-  const planetY = useTransform(scrollYProgress, [0, 0.6], [0, 220]);
-  const planetScale = useTransform(scrollYProgress, [0, 0.6], [1, 0.75]);
-  const planetOpacity = useTransform(scrollYProgress, [0, 0.22, 0.45], [0.90, 0.25, 0.0]);
-
-  // Subtle storytelling typography parallax for bio
-  const bioScrollY = useTransform(scrollYProgress, [0, 0.45], [0, -20]);
-
   return (
-    <div className="text-white min-h-screen relative bg-[#060a17] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
+    <div className="text-white min-h-screen relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
       
       {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* ZONE 1: CLASSIC SPACE DEEP ORBITAL VOID (Top Hero)                    */}
+      {/* UNIFIED CLASSIC SPACE COSMIC BACKGROUND & PARALLAX EXPEDITION         */}
       {/* ══════════════════════════════════════════════════════════════════════ */}
-      <motion.div 
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{ opacity: bgZone1Opacity, willChange: 'opacity' }}
-      >
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: `
-              radial-gradient(circle 950px at 80% 20%, rgba(0, 85, 191, 0.28), transparent 70%),
-              radial-gradient(circle 850px at 15% 45%, rgba(121, 40, 202, 0.18), transparent 65%),
-              radial-gradient(circle 1000px at 50% 90%, rgba(255, 213, 0, 0.10), transparent 70%),
-              #060a17
-            `
-          }}
-        />
-
-        {/* Universal Twinkling Space Stars Field */}
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-60"
-          style={{
-            backgroundImage: `
-              radial-gradient(1px 1px at 25px 35px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1.5px 1.5px at 120px 80px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 240px 190px, #ffd500, rgba(0,0,0,0)),
-              radial-gradient(2px 2px at 380px 120px, #61dafb, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 490px 310px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1.5px 1.5px at 620px 220px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 750px 90px, #ffd500, rgba(0,0,0,0)),
-              radial-gradient(2px 2px at 890px 270px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 1020px 150px, #61dafb, rgba(0,0,0,0)),
-              radial-gradient(1.5px 1.5px at 1180px 320px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1px 1px at 1310px 180px, #ffffff, rgba(0,0,0,0)),
-              radial-gradient(1.5px 1.5px at 1410px 70px, #ffd500, rgba(0,0,0,0))
-            `,
-            backgroundSize: '1440px 420px'
-          }}
-        />
-      </motion.div>
-
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* ZONE 2: COSMIC DAWN & SOLAR AMBER HORIZON (Middle Creed Quotes)       */}
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      <motion.div 
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{ opacity: bgZone2Opacity, willChange: 'opacity' }}
-      >
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: `
-              radial-gradient(circle 900px at 50% 35%, rgba(255, 170, 0, 0.24), transparent 70%),
-              radial-gradient(circle 1100px at 15% 50%, rgba(227, 0, 11, 0.18), transparent 70%),
-              radial-gradient(circle 1000px at 85% 55%, rgba(121, 40, 202, 0.22), transparent 70%),
-              linear-gradient(180deg, #0d061a 0%, #1c0e35 40%, #2a1147 65%, #150928 100%)
-            `
-          }}
-        />
-        {/* Warm Solar Atmospheric Glow Strip */}
-        <div 
-          className="absolute inset-x-0 top-1/4 h-[500px] pointer-events-none opacity-30"
-          style={{
-            background: 'radial-gradient(ellipse 100% 60% at 50% 50%, rgba(255, 213, 0, 0.28) 0%, rgba(255, 107, 0, 0.12) 50%, transparent 80%)',
-            transform: 'translateZ(0)'
-          }}
-        />
-      </motion.div>
-
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* ZONE 3: LUNAR COMMAND DECK & CYBER LAUNCHPAD GRID (Bottom Skills)     */}
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      <motion.div 
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{ opacity: bgZone3Opacity, willChange: 'opacity' }}
-      >
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: `
-              radial-gradient(circle 1000px at 50% 90%, rgba(0, 85, 191, 0.35), transparent 75%),
-              radial-gradient(circle 800px at 20% 75%, rgba(0, 240, 255, 0.16), transparent 70%),
-              radial-gradient(circle 750px at 80% 80%, rgba(255, 213, 0, 0.12), transparent 70%),
-              linear-gradient(180deg, #070311 0%, #030612 35%, #02040a 100%)
-            `
-          }}
-        />
-
-        {/* Perspective Cyber Launchpad Grid (Floor Deck of Skills Keyboard) */}
-        <div 
-          className="absolute inset-x-0 bottom-0 h-[480px] pointer-events-none opacity-35"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(0, 240, 255, 0.35) 1.5px, transparent 1.5px),
-              linear-gradient(to bottom, rgba(255, 213, 0, 0.25) 1.5px, transparent 1.5px)
-            `,
-            backgroundSize: '54px 54px',
-            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)',
-            transform: 'perspective(550px) rotateX(52deg)',
-            transformOrigin: 'bottom center'
-          }}
-        />
-      </motion.div>
-
-      {/* Stylized Classic Space Celestial Planet (Top-Right Parallax) */}
-      <motion.div 
-        className="fixed top-8 -right-20 md:right-4 w-72 h-72 md:w-96 md:h-96 rounded-full pointer-events-none z-0"
-        style={{
-          y: planetY,
-          scale: planetScale,
-          opacity: planetOpacity,
-          background: 'radial-gradient(circle at 35% 35%, rgba(0, 240, 255, 0.85) 0%, rgba(0, 85, 191, 0.8) 45%, rgba(121, 40, 202, 0.85) 75%, rgba(255, 0, 128, 0.7) 100%)',
-          boxShadow: '0 0 55px rgba(0, 240, 255, 0.32), inset -20px -20px 40px rgba(0, 0, 0, 0.85), inset 15px 15px 30px rgba(255, 255, 255, 0.35)',
-          transform: 'translateZ(0)',
-          willChange: 'transform, opacity'
-        }}
-      >
-        <div 
-          className="absolute inset-0 rounded-full opacity-30"
-          style={{
-            background: 'radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.8) 0%, transparent 60%)'
-          }}
-        />
-      </motion.div>
-
-      {/* Morphing Classic Space Lego 3D Scene (Background WebGL Layer) */}
-      <AboutBackground />
+      <SpaceBackground variant="about" scrollYProgress={scrollYProgress} />
 
       {/* Foreground Content */}
       <div className="relative z-10">
-        <Navbar />
-        
         <main>
           {/* ============================================================ */}
           {/* ACT 1: MASTER BUILDER PROFILE (Full Initial Viewport Hero)   */}
           {/* ============================================================ */}
           <section id="about" className="bg-transparent text-slate-200 overflow-x-clip relative">
-            <div className="min-h-[calc(100vh-4.5rem)] min-h-[calc(100dvh-4.5rem)] flex flex-col justify-center max-w-5xl mx-auto px-6 sm:px-10 lg:px-12 w-full pt-16 sm:pt-20 pb-12 sm:pb-16 relative z-20">
+            <div className="min-h-[calc(100vh-4.5rem)] min-h-[calc(100dvh-4.5rem)] flex flex-col justify-center max-w-5xl mx-auto px-6 sm:px-10 lg:px-12 w-full pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20 relative z-20">
               
               {/* Header Title */}
               <motion.div 
-                initial={{ opacity: 0, y: -24 }}
+                initial={{ opacity: 0, y: -20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-                className="flex items-center justify-center mb-8 sm:mb-10 text-center"
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="flex items-center justify-center mb-10 sm:mb-12 lg:mb-14 text-center select-none"
               >
-                <div className="flex flex-col items-center justify-center group cursor-pointer text-center" title="Aprileo Erlangga // Classic Space">
-                  <h2 
-                    className="font-pixel text-4xl sm:text-5xl md:text-6xl font-normal tracking-wider text-white uppercase select-none"
-                    style={{ fontFamily: "'Arcadepix', monospace" }}
-                  >
-                    ABOUT <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">ME</span>
-                  </h2>
-                </div>
+                <h2 
+                  className="font-pixel font-bold text-3xl sm:text-4xl md:text-5xl tracking-wide text-white uppercase select-none"
+                >
+                  ABOUT <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">ME</span>
+                </h2>
               </motion.div>
 
-              {/* Bio & Polaroid Photo Grid */}
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14 relative z-20">
+              {/* Bio & Profile Photo Grid — Natural Scroll Flow (Mobile: Foto di atas teks, Desktop: Teks di kiri, Foto di kanan) */}
+              <div 
+                className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 lg:gap-14 relative z-20"
+              >
                 
-                {/* SISI KIRI: BORDERLESS STORYTELLING TYPOGRAPHY */}
-                <motion.div 
-                  className="w-full lg:w-7/12 flex flex-col justify-center relative"
-                  style={{ y: bioScrollY, willChange: 'transform' }}
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  {/* Clean Flowing Paragraphs */}
-                  <div className="space-y-3.5 text-slate-300 leading-relaxed text-sm sm:text-base font-normal">
-                    <p className="text-base sm:text-[17px] text-white font-normal leading-relaxed">
-                      Hi, I'm <strong className="text-white font-semibold">Aprileo Muhammad David Erlangga</strong>! I grew up in Lamongan, a small city full of inspiration and natural beauty that sparked my lifelong curiosity about technology and digital craftsmanship.
-                    </p>
-                    <p>
-                      Through self-driven exploration, I discovered a strong passion for software architecture. Today, as a Fullstack Developer, I build scalable web applications with high performance and polished, tactile user experiences.
-                    </p>
-                    <p className="text-slate-400 text-sm sm:text-[15px]">
-                      I'm passionate about turning complex architectural ideas into intuitive, engaging digital products — one brick of code at a time.
-                    </p>
-                  </div>
+                {/* SISI KIRI (Desktop) / BAWAH FOTO (Mobile): CLEAN STORYTELLING TYPOGRAPHY */}
+                <div className="w-full lg:w-7/12 flex flex-col justify-center relative order-2 lg:order-1">
+                  {/* ══════════════════════════════════════════════════════════════════════════ */}
+                  {/* ANIMASI BACKGROUND KIRI: DILUAR TEKS & PERSIS DI TENGAH TINGGI TEKS       */}
+                  {/* - `right-full`: Seluruh elemen berada 100% di luar batas kiri teks        */}
+                  {/* - `mr-6 sm:mr-8 lg:mr-12 xl:mr-16`: Jarak bebas agar membaca nyaman      */}
+                  {/* - `top-1/2 -translate-y-1/2`: Terkunci persis di tengah tinggi bio       */}
+                  {/* ══════════════════════════════════════════════════════════════════════════ */}
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20, scale: 0.92 }}
+                    whileInView={{ opacity: 0.75, x: 0, scale: 1 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.7, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute top-1/2 -translate-y-1/2 right-full mr-6 sm:mr-8 lg:mr-12 xl:mr-16 pointer-events-none z-0 select-none hidden md:block"
+                    aria-hidden="true"
+                  >
+                    <div className="relative opacity-60 lg:opacity-75 xl:opacity-85 transition-opacity">
+                      {/* Ambient Cosmic Corona Glow (Terkurung rapi tanpa mengganggu teks) */}
+                      <div 
+                        className="absolute -inset-3 rounded-full pointer-events-none opacity-35 blur-xl"
+                        style={{
+                          background: 'radial-gradient(circle at 50% 50%, rgba(255,213,0,0.25) 0%, rgba(56,189,248,0.18) 50%, transparent 75%)',
+                        }}
+                      />
+                      <ClassicSpaceHoloInsignia className="w-20 sm:w-24 lg:w-28 xl:w-32 h-20 sm:h-24 lg:h-28 xl:h-32" />
+                    </div>
+                  </motion.div>
 
-                  {/* Compact, Sleek 3D Tactile Lego Resume Button */}
-                  <div className="mt-6 flex items-center">
-                    <a
-                      href="/resume.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="relative inline-flex items-center gap-2 px-4.5 py-2 sm:px-5 sm:py-2.5 bg-[#FFD500] hover:bg-[#FFE033] text-zinc-950 font-mono font-semibold text-xs sm:text-[13px] tracking-wider uppercase rounded-lg border-t border-white/70 shadow-[0_2px_0_0_#C99700,0_6px_16px_rgba(255,213,0,0.22)] hover:shadow-[0_2px_0_0_#C99700,0_10px_22px_rgba(255,213,0,0.32)] active:translate-y-[2px] active:shadow-none transform hover:-translate-y-0.5 transition-all duration-150 group overflow-hidden cursor-pointer select-none"
+                  {/* Clean Flowing Paragraphs — Editorial Line-Height & Letter-Spacing */}
+                  <div className="space-y-5 text-slate-200 leading-[1.8] sm:leading-[1.85] tracking-[0.015em] font-sans text-base sm:text-[16.5px] relative z-10">
+                    <motion.p
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{ duration: 0.65, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      <FaFilePdf className="text-sm text-zinc-950 group-hover:scale-110 transition-transform duration-200" />
-                      <span className="relative z-10 font-bold tracking-wider">My Resume</span>
-                      <FaDownload className="text-[11px] text-zinc-900/80 group-hover:translate-y-0.5 transition-transform duration-200" />
-                    </a>
+                      Hi, I'm Aprileo Muhammad David Erlangga! I grew up in Lamongan, a small city full of inspiration and natural beauty that sparked my lifelong curiosity about technology and digital craftsmanship.
+                    </motion.p>
+                    <motion.p
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{ duration: 0.65, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      Through continuous learning and hands-on experience, I developed a passion for software development and building digital solutions. Today, as a Fullstack Developer, I focus on creating scalable web applications with efficient functionality and thoughtful user experiences.
+                    </motion.p>
+                    <motion.p
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{ duration: 0.65, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      I'm passionate about transforming ideas into meaningful digital products — one brick of code at a time.
+                    </motion.p>
                   </div>
-                </motion.div>
 
-                {/* SISI KANAN: PROFILE PORTRAIT WITH FLOATING 3D LEGO BRICKS */}
+                  {/* Actions Row */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 14, scale: 0.95 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 420,
+                      damping: 22,
+                      mass: 0.7,
+                      delay: 0.32,
+                    }}
+                    className="pt-5 sm:pt-6 flex flex-wrap items-center gap-4 relative z-10 will-change-transform"
+                  >
+                    <a 
+                      href="/resume.pdf" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="group relative inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#FFD500] hover:bg-[#FFE033] text-zinc-950 font-sans font-semibold text-xs sm:text-sm tracking-wide border-t border-white/60 shadow-[0_2px_0_0_#C99700,0_4px_14px_rgba(255,213,0,0.2)] hover:shadow-[0_2px_0_0_#C99700,0_8px_20px_rgba(255,213,0,0.3)] active:translate-y-[2px] active:shadow-none transform hover:-translate-y-0.5 transition-all duration-150 overflow-hidden whitespace-nowrap"
+                    >
+                      <FaFilePdf className="text-red-700 text-sm flex-shrink-0" />
+                      <span className="leading-none">My Resume</span>
+                      <FaDownload className="text-[11px] text-zinc-800 opacity-70 group-hover:opacity-100 group-hover:translate-y-0.5 transition-all duration-150 flex-shrink-0" />
+                    </a>
+                  </motion.div>
+                </div>
+
+                {/* SISI KANAN (Desktop) / ATAS TEKS (Mobile): PROFILE PORTRAIT */}
                 <motion.div 
-                  className="w-full lg:w-5/12 flex flex-col items-center justify-center relative"
-                  initial={{ opacity: 0, x: 30, scale: 0.95 }}
+                  className="w-full lg:w-5/12 flex justify-center lg:justify-start items-center relative lg:-ml-8 xl:-ml-14 order-1 lg:order-2"
+                  initial={{ opacity: 0, x: 20, scale: 0.96 }}
                   whileInView={{ opacity: 1, x: 0, scale: 1 }}
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
@@ -252,16 +236,9 @@ function AboutPage() {
             </div>
 
             {/* ============================================================ */}
-            {/* ACT 2: MOTIVATIONAL QUOTES (SCROLL-DRIVEN EDITORIAL CREED)  */}
+            {/* ACT 2: SKILLS SECTION: 3D MECHANICAL KEYBOARD MATRIX          */}
             {/* ============================================================ */}
-            <div id="quotes-section" className="relative z-20 w-full">
-              <QuotesSection />
-            </div>
-
-            {/* ============================================================ */}
-            {/* ACT 3: SKILLS SECTION: 3D MECHANICAL KEYBOARD MATRIX          */}
-            {/* ============================================================ */}
-            <div className="relative z-20 pt-12 sm:pt-20 pb-20 sm:pb-28">
+            <div className="relative z-20 pt-10 sm:pt-20 lg:pt-24 pb-20 sm:pb-28">
               <SkillsKeyboard />
             </div>
 

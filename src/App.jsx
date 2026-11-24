@@ -1,11 +1,12 @@
 import { BrowserRouter as Router, useRoutes, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
 import HomePage from './components/HomePage';
 import AboutPage from './components/AboutPage';
 import ProjectsPage from './components/ProjectsPage';
 import ContactPage from './components/ContactPage';
+import Navbar from './components/Navbar';
 import LegoLoader from './components/LegoLoader';
 import LegoTransition from './components/LegoTransition';
 import { IntroContext } from './context/IntroContext';
@@ -36,21 +37,27 @@ function RouteWrapper({ children }) {
       window.__lenis.scrollTo(0, { immediate: true });
     }
 
-    const isDesktop = window.innerWidth >= 1024;
-    if (isHome && isDesktop) {
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-      if (window.__lenis) window.__lenis.stop();
-    } else {
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-      if (window.__lenis) {
-        if (isHome) window.__lenis.stop();
-        else window.__lenis.start();
+    const syncScrollLock = () => {
+      const isDesktop = window.innerWidth >= 1024;
+      if (isHome && isDesktop) {
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+        if (window.__lenis) window.__lenis.stop();
+      } else {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        if (window.__lenis) {
+          if (isHome) window.__lenis.stop();
+          else window.__lenis.start();
+        }
       }
-    }
+    };
+
+    syncScrollLock();
+    window.addEventListener('resize', syncScrollLock);
 
     return () => {
+      window.removeEventListener('resize', syncScrollLock);
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
@@ -99,6 +106,11 @@ function MainNavigationRoutes() {
         </RouteWrapper>
       </motion.div>
 
+      {/* Persistent Global Navbar for /about, /projects, /contact (never reloads between page clicks) */}
+      <AnimatePresence initial={false}>
+        {!isHome && <Navbar key="persistent-navbar" />}
+      </AnimatePresence>
+
       {/* Cross-Page Transitions for /about, /projects, /contact with Featherlight Micro-Glide */}
       <AnimatePresence mode="wait" initial={false}>
         {!isHome && otherRoutesElement && (
@@ -124,17 +136,26 @@ function App() {
   // Selalu aktif saat browser direload / dibuka pertama kali di semua halaman
   const [showIntro, setShowIntro] = useState(true);
   const [brickWipeActive, setBrickWipeActive] = useState(false);
+  const wipeTimersRef = useRef([]);
 
   const startBrickWipe = (onMidpoint) => {
+    wipeTimersRef.current.forEach(clearTimeout);
     setBrickWipeActive(true);
     // Give the shatter burst 80ms to reach full visual velocity before swapping routes
-    setTimeout(() => {
+    const t1 = setTimeout(() => {
       if (onMidpoint) onMidpoint();
     }, 80);
-    setTimeout(() => {
+    const t2 = setTimeout(() => {
       setBrickWipeActive(false);
     }, 550);
+    wipeTimersRef.current = [t1, t2];
   };
+
+  useEffect(() => {
+    return () => {
+      wipeTimersRef.current.forEach(clearTimeout);
+    };
+  }, []);
 
   // Nonaktifkan scroll restoration otomatis browser agar posisi halaman tidak tertinggal saat reload
   useEffect(() => {
@@ -166,12 +187,15 @@ function App() {
     };
   }, []);
 
-  // Kunci scroll body saat intro aktif agar halaman di belakang tidak bergeser secara tidak sengaja
+  // Kunci scroll body saat intro aktif lalu kembalikan saat intro selesai
   useEffect(() => {
-    if (showIntro) {
-      window.scrollTo(0, 0);
-      document.body.style.overflow = 'hidden';
-    }
+    if (!showIntro) return;
+    window.scrollTo(0, 0);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
   }, [showIntro]);
 
   return (

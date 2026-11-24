@@ -6,7 +6,99 @@ import {
 import { useRef, useMemo, useState, useEffect, Suspense, Component } from 'react';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
-import { LegoBrick3D } from './LegoBricks';
+import { RoundedBoxGeometry } from 'three-stdlib';
+
+/**
+ * Singleton Geometry Pool for Lego Bricks
+ * Allocates buffer geometries once at module load to guarantee zero runtime allocation
+ */
+const LEGO_BRICK_GEOMS = {
+  box2x4: new RoundedBoxGeometry(3.2, 0.96, 1.6, 2, 0.06),
+  box2x2: new RoundedBoxGeometry(1.6, 0.96, 1.6, 2, 0.06),
+  box1x2: new RoundedBoxGeometry(1.6, 0.96, 0.8, 2, 0.06),
+  box1x1: new RoundedBoxGeometry(0.8, 0.96, 0.8, 2, 0.06),
+  studCylinder: new THREE.CylinderGeometry(0.24, 0.24, 0.20, 16),
+  studBoss: new THREE.CylinderGeometry(0.38, 0.38, 0.32, 18),
+  studCap: new THREE.CylinderGeometry(0.22, 0.22, 0.14, 16),
+};
+
+function createLegoBrickMaterial(color = '#E3000B') {
+  return new THREE.MeshStandardMaterial({
+    color,
+    roughness: 0.18,
+    metalness: 0.04,
+    envMapIntensity: 1.0,
+  });
+}
+
+const STUD_OFFSETS = {
+  '2x4': [
+    [-1.2, 0.58, -0.4], [-0.4, 0.58, -0.4], [0.4, 0.58, -0.4], [1.2, 0.58, -0.4],
+    [-1.2, 0.58, 0.4], [-0.4, 0.58, 0.4], [0.4, 0.58, 0.4], [1.2, 0.58, 0.4]
+  ],
+  '2x2': [
+    [-0.4, 0.58, -0.4], [0.4, 0.58, -0.4],
+    [-0.4, 0.58, 0.4], [0.4, 0.58, 0.4]
+  ],
+  '1x2': [
+    [-0.4, 0.58, 0], [0.4, 0.58, 0]
+  ],
+  '1x1': [
+    [0, 0.58, 0]
+  ]
+};
+
+export function LegoBrick3D({ type = '2x2', color = '#E3000B', material, castShadow = false, receiveShadow = false }) {
+  const localMat = useMemo(() => (!material ? createLegoBrickMaterial(color) : null), [material, color]);
+  const mat = material || localMat;
+
+  if (type === 'stud') {
+    return (
+      <group>
+        <mesh 
+          geometry={LEGO_BRICK_GEOMS.studBoss} 
+          material={mat} 
+          castShadow={castShadow} 
+          receiveShadow={receiveShadow} 
+        />
+        <mesh 
+          geometry={LEGO_BRICK_GEOMS.studCap} 
+          material={mat} 
+          position={[0, 0.20, 0]} 
+          castShadow={castShadow} 
+          receiveShadow={receiveShadow} 
+        />
+      </group>
+    );
+  }
+
+  const geom = LEGO_BRICK_GEOMS[`box${type}`] || LEGO_BRICK_GEOMS.box2x2;
+  const studs = STUD_OFFSETS[type] || STUD_OFFSETS['2x2'];
+
+  return (
+    <group>
+      {/* Brick Body */}
+      <mesh 
+        geometry={geom} 
+        material={mat} 
+        castShadow={castShadow} 
+        receiveShadow={receiveShadow} 
+      />
+
+      {/* Brick Studs */}
+      {studs.map((pos, idx) => (
+        <mesh 
+          key={idx} 
+          geometry={LEGO_BRICK_GEOMS.studCylinder} 
+          material={mat} 
+          position={pos} 
+          castShadow={castShadow} 
+          receiveShadow={receiveShadow} 
+        />
+      ))}
+    </group>
+  );
+}
 
 export const isMobileDevice = typeof window !== 'undefined' && (
   /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
@@ -87,7 +179,7 @@ function LegoFallbackAvatar({ isThrowing, onThrowComplete, onInteractionReady })
         <div className="absolute w-36 h-36 rounded-full bg-[#FFD500]/15 blur-2xl pointer-events-none" />
 
         {/* Vector Classic Space Lego Minifigure */}
-        <svg viewBox="0 0 200 240" className="w-48 h-56 sm:w-56 sm:h-64 drop-shadow-[0_16px_32px_rgba(0,0,0,0.85)] overflow-visible">
+        <svg viewBox="0 0 200 240" className="w-44 h-52 sm:w-56 sm:h-64 drop-shadow-[0_16px_32px_rgba(0,0,0,0.85)] overflow-visible">
           <defs>
             <linearGradient id="fbHead" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#FFF275" />
@@ -1580,9 +1672,9 @@ function Scene({ animRef, domElement, onThrowComplete, onInteractionReady }) {
 
   const isDesktop = size.width >= 1024;
   const isMobile = size.width < 768;
-  const currentScale = isDesktop ? 1.0 : (isMobile ? 0.78 : 0.86);
-  // Subtle downward bias (2.28) provides clean clearance from the button and gracefully fills the lower space above the crater
-  const centerOffset = isDesktop ? 2.02 : (2.28 * currentScale);
+  const currentScale = isDesktop ? 1.0 : (isMobile ? 0.70 : 0.82);
+  // Subtle downward bias provides clean clearance from the CTA button on mobile
+  const centerOffset = isDesktop ? 2.02 : (2.24 * currentScale);
 
   // Compute instantaneous target position directly on frame 0 to eliminate initial positioning jump
   const targetNode = domElement && domElement.current !== undefined ? domElement.current : domElement;
@@ -1607,6 +1699,43 @@ function Scene({ animRef, domElement, onThrowComplete, onInteractionReady }) {
   const isDragging = useRef(false);
   const prevPointer = useRef({ x: 0, y: 0 });
   const reportedReady = useRef(false);
+
+  // Cache DOM target world coordinates on mount/resize/ResizeObserver
+  // so useFrame performs zero per-frame getBoundingClientRect() layout reads.
+  useEffect(() => {
+    const el = domElement && domElement.current !== undefined ? domElement.current : domElement;
+
+    const updateTargetPos = () => {
+      if (!el || !size.width || !size.height) {
+        stationPosRef.current = { x: initialX, y: initialY };
+        return;
+      }
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) return;
+      const px = rect.left + rect.width / 2;
+      const py = rect.top + rect.height / 2;
+      const ndcX = (px / size.width) * 2 - 1;
+      const ndcY = -(py / size.height) * 2 + 1;
+      stationPosRef.current = {
+        x: (ndcX * viewport.width) / 2,
+        y: isDesktop ? ((ndcY * viewport.height) / 2) - 2.02 : ((ndcY * viewport.height) / 2) - centerOffset,
+      };
+    };
+
+    updateTargetPos();
+    window.addEventListener('resize', updateTargetPos);
+
+    let observer;
+    if (el && typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(updateTargetPos);
+      observer.observe(el);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateTargetPos);
+      if (observer) observer.disconnect();
+    };
+  }, [domElement, size.width, size.height, viewport.width, viewport.height, isDesktop, centerOffset, initialX, initialY]);
 
   useEffect(() => {
     const el = domElement && domElement.current !== undefined ? domElement.current : domElement;
@@ -1652,26 +1781,7 @@ function Scene({ animRef, domElement, onThrowComplete, onInteractionReady }) {
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.033);
-
-    let targetX = initialX;
-    let targetY = initialY;
-
-    const el = domElement && domElement.current !== undefined ? domElement.current : domElement;
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const px = rect.left + rect.width / 2;
-      const py = rect.top + rect.height / 2;
-      const ndcX = (px / size.width) * 2 - 1;
-      const ndcY = -(py / size.height) * 2 + 1;
-      
-      const worldX = (ndcX * viewport.width) / 2;
-      const worldY = (ndcY * viewport.height) / 2;
-
-      targetX = worldX;
-      targetY = isDesktop ? (worldY - 2.02) : (worldY - centerOffset);
-    }
-
-    stationPosRef.current = { x: targetX, y: targetY };
+    const { x: targetX, y: targetY } = stationPosRef.current;
 
     // Automatically snap back to facing front when throwing, otherwise smoothly track drag rotation
     if (animRef?.current?.isThrowing) {
@@ -1736,7 +1846,6 @@ function Scene({ animRef, domElement, onThrowComplete, onInteractionReady }) {
    ═══════════════════════════════════════════════════════════════ */
 export default function LegoMinifigure({ domTarget, isThrowing = false, onThrowComplete, onInteractionReady, isHome = true }) {
   const glRef = useRef(null);
-  const [contextLost, setContextLost] = useState(false);
   const [webGLError, setWebGLError] = useState(!isWebGLAvailable());
   const [canvasKey, setCanvasKey] = useState(0);
   const lostCountRef = useRef(0);
@@ -1850,11 +1959,6 @@ export default function LegoMinifigure({ domTarget, isThrowing = false, onThrowC
 
   return (
     <div className="w-full h-full relative bg-transparent pointer-events-auto">
-      {contextLost && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#0B0C10]/60 backdrop-blur-xs">
-          <div className="w-8 h-8 border-2 border-[#FFD500]/20 border-t-[#FFD500] rounded-full animate-spin" />
-        </div>
-      )}
       <CanvasErrorBoundary 
         resetKey={canvasKey}
         fallback={
@@ -1895,13 +1999,14 @@ export default function LegoMinifigure({ domTarget, isThrowing = false, onThrowC
             const canvasEl = gl.domElement;
             const handleContextLost = (event) => {
               event.preventDefault();
-              console.warn('WebGL context temporarily lost. Entering safe recovery mode...');
-              setContextLost(true);
+              console.warn('WebGL context temporarily lost. Safely remounting canvas...');
+              setTimeout(() => {
+                setCanvasKey(prev => prev + 1);
+              }, 400);
             };
 
             const handleContextRestored = () => {
               console.info('WebGL context successfully restored.');
-              setContextLost(false);
               try {
                 gl.compile(scene, camera);
               } catch {
@@ -1909,8 +2014,8 @@ export default function LegoMinifigure({ domTarget, isThrowing = false, onThrowC
               }
             };
 
-            canvasEl.addEventListener('webglcontextlost', handleContextLost, false);
-            canvasEl.addEventListener('webglcontextrestored', handleContextRestored, false);
+            canvasEl.addEventListener('webglcontextlost', handleContextLost, { once: true });
+            canvasEl.addEventListener('webglcontextrestored', handleContextRestored, { once: true });
           }}
           style={{ width: '100%', height: '100%', background: 'transparent', pointerEvents: 'none' }}
         >
