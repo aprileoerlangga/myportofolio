@@ -1,20 +1,20 @@
-import React, { useRef } from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { FaFilePdf, FaDownload } from 'react-icons/fa';
 import Footer from './Footer';
-import SkillsKeyboard from './SkillsKeyboard';
 import SpaceBackground, { ClassicSpaceHoloInsignia } from './SpaceBackground';
 import fotoProfilCutout from '../assets/fotoku-removebg-preview.png';
+
+const loadSkillsKeyboard = () => import('./SkillsKeyboard');
+const SkillsKeyboard = lazy(loadSkillsKeyboard);
 
 /**
  * ProfilePortrait — Pure Zero-G Floating Cutout
  */
-function ProfilePortrait({ scrollYProgress }) {
+function ProfilePortrait({ scrollYProgress, enableTilt = true }) {
   const containerRef = useRef(null);
-  const { scrollYProgress: internalScroll } = useScroll();
-  const activeScroll = scrollYProgress || internalScroll;
 
-  // Mouse tilt tracking
+  // Mouse tilt tracking (desktop only)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -27,17 +27,18 @@ function ProfilePortrait({ scrollYProgress }) {
   const portraitRotateY = useTransform(springX, [-150, 150], [-7, 7]);
 
   // Zero-G Astronaut Drift
-  const portraitDriftY = useTransform(activeScroll, [0, 0.45], [0, -50]);
-  const portraitDriftScale = useTransform(activeScroll, [0, 0.35], [1, 1.025]);
+  const portraitDriftY = useTransform(scrollYProgress, [0, 0.45], [0, -50]);
+  const portraitDriftScale = useTransform(scrollYProgress, [0, 0.35], [1, 1.025]);
 
   const handleMouseMove = (e) => {
-    if (!containerRef.current) return;
+    if (!enableTilt || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     mouseX.set(e.clientX - rect.left - rect.width / 2);
     mouseY.set(e.clientY - rect.top - rect.height / 2);
   };
 
   const handleMouseLeave = () => {
+    if (!enableTilt) return;
     mouseX.set(0);
     mouseY.set(0);
   };
@@ -45,33 +46,37 @@ function ProfilePortrait({ scrollYProgress }) {
   return (
     <div 
       ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={enableTilt ? handleMouseMove : undefined}
+      onMouseLeave={enableTilt ? handleMouseLeave : undefined}
       className="relative w-full max-w-[320px] sm:max-w-[360px] flex flex-col items-center justify-center select-none py-2"
-      style={{ perspective: 1200 }}
+      style={enableTilt ? { perspective: 1200 } : undefined}
     >
       <motion.div
-        style={{
+        style={enableTilt ? {
           y: portraitDriftY,
           scale: portraitDriftScale,
           rotateX: portraitRotateX,
           rotateY: portraitRotateY,
           transformStyle: 'preserve-3d',
           willChange: 'transform',
+        } : {
+          y: portraitDriftY,
+          scale: portraitDriftScale,
+          willChange: 'transform',
         }}
         className="relative flex items-center justify-center group"
       >
-        {/* Soft Ambient Cosmic Backlight Glow */}
+        {/* Soft Ambient Cosmic Backlight Glow (pure multi-stop radial, zero blur-3xl GPU overhead) */}
         <div 
-          className="absolute -inset-4 rounded-full pointer-events-none opacity-50 blur-3xl group-hover:opacity-75 transition-opacity duration-700"
+          className="absolute -inset-12 rounded-full pointer-events-none opacity-65 group-hover:opacity-90 transition-opacity duration-700"
           style={{
-            background: 'radial-gradient(ellipse 70% 65% at 50% 45%, rgba(56,189,248,0.28) 0%, rgba(255,213,0,0.1) 45%, rgba(0,85,191,0.06) 75%, transparent 90%)',
+            background: 'radial-gradient(ellipse 65% 60% at 50% 45%, rgba(56,189,248,0.22) 0%, rgba(255,213,0,0.08) 38%, rgba(0,85,191,0.04) 62%, transparent 76%)',
           }}
         />
 
-        {/* Transparent Cutout Container */}
+        {/* Transparent Cutout Container (zero alpha drop-shadow pass on mobile touch screens) */}
         <div 
-          className="relative w-[235px] sm:w-[265px] lg:w-[285px] pointer-events-auto filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.95)] drop-shadow-[0_0_25px_rgba(56,189,248,0.2)] group-hover:drop-shadow-[0_0_35px_rgba(56,189,248,0.35)] transition-all duration-500"
+          className="relative w-[235px] sm:w-[265px] lg:w-[285px] pointer-events-auto md:drop-shadow-[0_20px_35px_rgba(0,0,0,0.95)] transition-transform duration-500"
           style={{
             WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 82%, transparent 100%)',
             maskImage: 'linear-gradient(to bottom, black 0%, black 82%, transparent 100%)',
@@ -101,6 +106,27 @@ function ProfilePortrait({ scrollYProgress }) {
  */
 function AboutPage() {
   const { scrollYProgress } = useScroll();
+  const [shouldMountSkills, setShouldMountSkills] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(
+    () => (typeof window !== 'undefined' ? window.innerWidth >= 768 : true)
+  );
+
+  // Track viewport breakpoint & defer Act 2 (24 shadowed keycaps + SVGs) until after shatter transition
+  useEffect(() => {
+    const syncDesktop = () => setIsDesktop(window.innerWidth >= 768);
+    window.addEventListener('resize', syncDesktop);
+
+    const delay = window.innerWidth < 768 ? 460 : 200;
+    const timer = setTimeout(() => {
+      loadSkillsKeyboard();
+      setShouldMountSkills(true);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', syncDesktop);
+    };
+  }, []);
 
   return (
     <div className="text-white min-h-screen relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
@@ -149,22 +175,13 @@ function AboutPage() {
                   {/* ══════════════════════════════════════════════════════════════════════════ */}
                   <motion.div 
                     initial={{ opacity: 0, x: -20, scale: 0.92 }}
-                    whileInView={{ opacity: 0.75, x: 0, scale: 1 }}
+                    whileInView={{ opacity: 0.72, x: 0, scale: 1 }}
                     viewport={{ once: true, amount: 0.2 }}
                     transition={{ duration: 0.7, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute top-1/2 -translate-y-1/2 right-full mr-6 sm:mr-8 lg:mr-12 xl:mr-16 pointer-events-none z-0 select-none hidden md:block"
+                    className="absolute top-1/2 -translate-y-1/2 right-full mr-5 xl:mr-14 pointer-events-none z-0 select-none hidden lg:block"
                     aria-hidden="true"
                   >
-                    <div className="relative opacity-60 lg:opacity-75 xl:opacity-85 transition-opacity">
-                      {/* Ambient Cosmic Corona Glow (Terkurung rapi tanpa mengganggu teks) */}
-                      <div 
-                        className="absolute -inset-3 rounded-full pointer-events-none opacity-35 blur-xl"
-                        style={{
-                          background: 'radial-gradient(circle at 50% 50%, rgba(255,213,0,0.25) 0%, rgba(56,189,248,0.18) 50%, transparent 75%)',
-                        }}
-                      />
-                      <ClassicSpaceHoloInsignia className="w-20 sm:w-24 lg:w-28 xl:w-32 h-20 sm:h-24 lg:h-28 xl:h-32" />
-                    </div>
+                    <ClassicSpaceHoloInsignia className="w-20 xl:w-28 h-20 xl:h-28 opacity-80" />
                   </motion.div>
 
                   {/* Clean Flowing Paragraphs — Editorial Line-Height & Letter-Spacing */}
@@ -230,7 +247,7 @@ function AboutPage() {
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <ProfilePortrait scrollYProgress={scrollYProgress} />
+                  <ProfilePortrait scrollYProgress={scrollYProgress} enableTilt={isDesktop} />
                 </motion.div>
               </div>
             </div>
@@ -238,8 +255,14 @@ function AboutPage() {
             {/* ============================================================ */}
             {/* ACT 2: SKILLS SECTION: 3D MECHANICAL KEYBOARD MATRIX          */}
             {/* ============================================================ */}
-            <div className="relative z-20 pt-10 sm:pt-20 lg:pt-24 pb-20 sm:pb-28">
-              <SkillsKeyboard />
+            <div className="relative z-20 pt-10 sm:pt-20 lg:pt-24 pb-20 sm:pb-28 min-h-[520px] sm:min-h-[580px]">
+              {shouldMountSkills ? (
+                <Suspense fallback={<div className="min-h-[420px]" aria-hidden="true" />}>
+                  <SkillsKeyboard />
+                </Suspense>
+              ) : (
+                <div className="min-h-[420px]" aria-hidden="true" />
+              )}
             </div>
 
           </section>

@@ -194,7 +194,7 @@ function CosmicNebulaSilhouettes({ scrollYProgress }) {
 
 // ═════════════════════════════════════════════════════════════════════
 // 3. CLASSIC SPACE HOLOGRAPHIC INSIGNIA (Named Export)
-// Iconic 1979 Lego Classic Space Emblem (Yellow Planet + Flying Red Spaceship)
+// Iconic 1979 Lego Classic Space Emblem (Clean Vector Planet + Red Rocket)
 // ═════════════════════════════════════════════════════════════════════
 export function ClassicSpaceHoloInsignia({ className = '', style }) {
   return (
@@ -204,28 +204,20 @@ export function ClassicSpaceHoloInsignia({ className = '', style }) {
     >
       <motion.div
         animate={{
-          y: [-6, 6, -6],
-          rotate: [-3, 3, -3],
+          y: [-5, 5, -5],
+          rotate: [-2.5, 2.5, -2.5],
         }}
         transition={{
-          duration: 5.2,
+          duration: 5.8,
           repeat: Infinity,
           ease: "easeInOut",
         }}
         className="relative flex items-center justify-center w-full h-full"
       >
-        {/* Soft Ambient Golden & Cyan Corona Glow */}
-        <div 
-          className="absolute -inset-3 rounded-full pointer-events-none opacity-45 blur-lg"
-          style={{
-            background: 'radial-gradient(circle at 50% 50%, rgba(255,213,0,0.3) 0%, rgba(56,189,248,0.2) 50%, transparent 75%)',
-          }}
-        />
-
-        {/* Vector 1979 Classic Space Insignia */}
+        {/* Clean Vector 1979 Classic Space Insignia (Zero dashed HUD rings or heavy blur glow) */}
         <svg 
           viewBox="0 0 160 160" 
-          className="w-full h-full filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)] drop-shadow-[0_0_15px_rgba(255,213,0,0.3)]" 
+          className="w-full h-full filter drop-shadow-[0_10px_18px_rgba(0,0,0,0.85)]" 
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -248,26 +240,22 @@ export function ClassicSpaceHoloInsignia({ className = '', style }) {
             {/* Comet Swoosh Trail Gradient */}
             <linearGradient id="swooshTrailInsignia" x1="0%" y1="100%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
-              <stop offset="30%" stopColor="#38BDF8" stopOpacity="0.45" />
-              <stop offset="70%" stopColor="#FFFFFF" stopOpacity="0.85" />
+              <stop offset="30%" stopColor="#38BDF8" stopOpacity="0.4" />
+              <stop offset="70%" stopColor="#FFFFFF" stopOpacity="0.82" />
               <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.95" />
             </linearGradient>
           </defs>
 
-          {/* 1. Subtle Holographic Compass / Orbit Ring */}
-          <circle cx="80" cy="80" r="74" stroke="rgba(56,189,248,0.3)" strokeWidth="1" strokeDasharray="3 5" />
-          <circle cx="80" cy="80" r="69" stroke="rgba(255,213,0,0.2)" strokeWidth="0.8" />
-
-          {/* 2. The Golden Planet */}
+          {/* 1. The Golden Planet */}
           <circle cx="75" cy="85" r="38" fill="url(#planetGoldInsignia)" />
           {/* Planet Inner Spherical Shadow Crescent */}
           <path
             d="M 75 47 A 38 38 0 0 1 113 85 A 38 38 0 0 1 75 123 C 95 115 105 95 105 85 C 105 75 95 55 75 47 Z"
             fill="#060A17"
-            opacity="0.32"
+            opacity="0.34"
           />
 
-          {/* 3. The Iconic Orbital Swoosh (White Comet Trail) */}
+          {/* 2. The Iconic Orbital Swoosh (White Comet Trail) */}
           <path
             d="M 32 108 C 24 94, 30 70, 52 56 C 75 42, 105 45, 126 62 C 138 72, 142 86, 134 96 C 124 108, 96 112, 72 104 C 54 98, 44 88, 48 76 C 52 64, 72 52, 104 42 L 132 30"
             stroke="url(#swooshTrailInsignia)"
@@ -280,10 +268,10 @@ export function ClassicSpaceHoloInsignia({ className = '', style }) {
             stroke="#FFFFFF"
             strokeWidth="1.2"
             strokeLinecap="round"
-            opacity="0.9"
+            opacity="0.88"
           />
 
-          {/* 4. The Classic Red Spaceship in Flight */}
+          {/* 3. The Classic Red Spaceship in Flight */}
           <g transform="translate(122, 22) rotate(42)">
             {/* Spaceship Main Delta Wings & Fuselage */}
             <polygon points="12,0 24,24 12,20 0,24" fill="url(#shipRedInsignia)" stroke="#7A0005" strokeWidth="0.8" />
@@ -292,18 +280,6 @@ export function ClassicSpaceHoloInsignia({ className = '', style }) {
             <ellipse cx="12" cy="10" rx="1.2" ry="3.5" fill="#FFFFFF" opacity="0.8" />
             {/* Thruster Flame Spark */}
             <polygon points="10,21 12,28 14,21" fill="#38BDF8" opacity="0.85" />
-          </g>
-
-          {/* 5. Classic Starlight Glint Crosses */}
-          <g transform="translate(38, 38)">
-            <line x1="0" y1="-5" x2="0" y2="5" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" />
-            <line x1="-5" y1="0" x2="5" y2="0" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" />
-            <circle cx="0" cy="0" r="1.5" fill="#FFD500" />
-          </g>
-          <g transform="translate(120, 118)">
-            <line x1="0" y1="-4" x2="0" y2="4" stroke="#FFFFFF" strokeWidth="1" strokeLinecap="round" />
-            <line x1="-4" y1="0" x2="4" y2="0" stroke="#FFFFFF" strokeWidth="1" strokeLinecap="round" />
-            <circle cx="0" cy="0" r="1.2" fill="#38BDF8" />
           </g>
         </svg>
       </motion.div>
@@ -315,10 +291,11 @@ function CosmicParallaxLayer({ scrollYProgress }) {
   const { scrollYProgress: internalScroll } = useScroll();
   const activeScroll = scrollYProgress || internalScroll;
 
-  const planetY = useTransform(activeScroll, [0, 1], [0, 240]);
-  const planetX = useTransform(activeScroll, [0, 1], [0, -35]);
-  const planetScale = useTransform(activeScroll, [0, 0.5, 1], [1, 0.92, 0.82]);
-  const planetOpacity = useTransform(activeScroll, [0, 0.55, 1], [0.95, 0.75, 0.35]);
+  const planetY = useTransform(activeScroll, [0, 1], [0, 210]);
+  const planetX = useTransform(activeScroll, [0, 1], [0, -28]);
+  const planetScale = useTransform(activeScroll, [0, 0.45, 0.8], [1, 0.9, 0.8]);
+  // Fade gracefully to 0 before reaching Tech Stack so it never lingers behind keyboard
+  const planetOpacity = useTransform(activeScroll, [0, 0.28, 0.56], [0.85, 0.48, 0]);
 
   const ambientHeroOpacity = useTransform(activeScroll, [0.10, 0.40], [1, 0.2]);
   const ambientSkillsOpacity = useTransform(activeScroll, [0.30, 0.60], [0, 0.8]);
@@ -350,9 +327,9 @@ function CosmicParallaxLayer({ scrollYProgress }) {
       {/* Stylized Cosmic Nebula Silhouettes */}
       <CosmicNebulaSilhouettes scrollYProgress={activeScroll} />
 
-      {/* Authentic Retro Space Planet (Liquid Parallax Descent) */}
+      {/* Calm Retro Space Planet (Subtle & translucent on mobile, fades out before Tech Stack) */}
       <motion.div
-        className="fixed top-[74px] sm:top-[82px] lg:top-[88px] right-[2%] sm:right-[3%] lg:right-[3.5%] pointer-events-none z-0"
+        className="fixed top-[68px] sm:top-[80px] lg:top-[88px] -right-4 sm:right-[1.5%] lg:right-[2.5%] pointer-events-none z-0"
         style={{
           y: planetY,
           x: planetX,
@@ -363,16 +340,17 @@ function CosmicParallaxLayer({ scrollYProgress }) {
       >
         <motion.div
           animate={{
-            y: [-6, 6, -6],
-            rotate: [-1.5, 1.5, -1.5],
+            y: [-5, 5, -5],
+            rotate: [-1.2, 1.2, -1.2],
           }}
           transition={{
             duration: 18,
             repeat: Infinity,
             ease: "easeInOut",
           }}
+          className="opacity-35 sm:opacity-60 lg:opacity-85 transition-opacity"
         >
-          <RetroSpacePlanet className="w-36 sm:w-48 md:w-56 lg:w-60 h-36 sm:h-48 md:h-56 lg:h-60" />
+          <RetroSpacePlanet className="w-24 h-24 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-52 lg:h-52" />
         </motion.div>
       </motion.div>
     </>

@@ -1406,7 +1406,7 @@ function ThrownLegoBrick({ animRef, onComplete, stationPosRef }) {
       if (brickRef.current) brickRef.current.visible = false;
     } else if (elapsed <= IMPACT_TIME + 0.04) {
       // Balok dilepas dari tangan dan melesat mulus ke arah layar kamera!
-      if (brickRef.current) {
+      if (brickRef.current && !a.hasCompletedThrow) {
         brickRef.current.visible = true;
         const flightT = Math.min(1.0, (elapsed - RELEASE_TIME) / FLIGHT_DURATION);
         const ease = Math.pow(flightT, 1.45);
@@ -1429,12 +1429,15 @@ function ThrownLegoBrick({ animRef, onComplete, stationPosRef }) {
         brickRef.current.rotation.z = flightT * Math.PI * 3.2;
 
         // Skala membesar saat mendekati kamera hingga menutup layar tepat sebelum meledak pecah
-        const scale = THREE.MathUtils.lerp(0.20, 2.3, Math.pow(flightT, 1.6));
+        // Di mobile batasi skala maksimum agar fragment shader WebGL tidak membebani GPU saat pecah
+        const targetMaxScale = typeof window !== 'undefined' && window.innerWidth < 768 ? 1.55 : 2.3;
+        const scale = THREE.MathUtils.lerp(0.20, targetMaxScale, Math.pow(flightT, 1.6));
         brickRef.current.scale.set(scale, scale, scale);
 
-        // Pecah saat menghantam layar kamera: pemicu transisi ledakan balok 3D
+        // Pecah saat menghantam layar kamera: pemicu transisi ledakan balok 3D & langsung sembunyikan mesh
         if (flightT >= 0.97 && !a.hasCompletedThrow) {
           a.hasCompletedThrow = true;
+          brickRef.current.visible = false;
           if (onComplete) onComplete();
         }
       }
@@ -1883,12 +1886,17 @@ export default function LegoMinifigure({ domTarget, isThrowing = false, onThrowC
     return () => clearTimeout(timer);
   }, [canvasKey]);
 
-  // Graceful frameloop control: Keep running during exit animation (300ms) then sleep to save GPU
+  // Graceful frameloop control: tidur instan di mobile saat meninggalkan Home agar transisi bebas lag
   const [shouldRender, setShouldRender] = useState(isHome);
   useEffect(() => {
     if (isHome) {
       setShouldRender(true);
     } else {
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+      if (isMobile) {
+        setShouldRender(false);
+        return;
+      }
       const timer = setTimeout(() => {
         setShouldRender(false);
       }, 300);

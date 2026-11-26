@@ -3,7 +3,7 @@
 // Part 1: 3D Cylindrical Arc Carousel (Spin & Zoom)
 // Part 2: Isometric Stacking Cards (Scroll down -> cards fly up one by one revealing next project)
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import {
   motion,
   useScroll,
@@ -13,12 +13,12 @@ import {
 import Footer from './Footer';
 import SpaceBackground from './SpaceBackground';
 
-// Project Screenshots & Enhanced Studio Showcases
-import fishAiShowcase from '../assets/fish-ai-showcase.jpg';
-import rosaStoreShowcase from '../assets/rosa-store-showcase.jpg';
-import iwakmartShowcase from '../assets/iwakmart-showcase.jpg';
-import iotImage from '../assets/iot-tracker.png';
-import portokuImage from '../assets/web-portfolio.jpeg';
+// Project Screenshots & Enhanced Studio Showcases (Optimized sizes for fast mobile/desktop decode)
+import fishAiShowcase from '../assets/fish-ai-showcase-opt.jpg';
+import rosaStoreShowcase from '../assets/rosa-store-showcase-opt.jpg';
+import iwakmartShowcase from '../assets/iwakmart-showcase-opt.jpg';
+import iotImage from '../assets/iot-tracker-opt.jpg';
+import portokuImage from '../assets/web-portfolio-opt.jpg';
 
 // The 5 Portfolio Projects
 const projectSets = [
@@ -173,8 +173,13 @@ function ProjectsPage() {
   const centerTitleRef = useRef(null);
   const stackedContainerRef = useRef(null);
   const arcActiveRef = useRef(true);
+  const lastCenterSizeRef = useRef({ w: 0, h: 0 });
+  const mountStackedRef = useRef(false);
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [mountStacked, setMountStacked] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    () => (typeof window !== 'undefined' ? window.innerWidth < 768 : false)
+  );
   const [windowDimensions, setWindowDimensions] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 1200,
     height: typeof window !== 'undefined' ? window.innerHeight : 800,
@@ -254,6 +259,12 @@ function ProjectsPage() {
   // DIRECT HIGH-PERFORMANCE DOM STYLE UPDATES (Locked 60/120 FPS, No React lag)
   // ════════════════════════════════════════════════════════════════════════════
   const updateVisuals = (scrollP) => {
+    // Mount Phase 2 stacked cards slightly before the 0.34 hand-off so initial /projects entry stays lightweight
+    if (scrollP >= 0.12 && !mountStackedRef.current) {
+      mountStackedRef.current = true;
+      setMountStacked(true);
+    }
+
     // ──────────────────────────────────────────────────────────────────────────
     // PHASE 1: ARC STAGE (scrollP from 0.00 to 0.34)
     // Smooth overlapping transition: spin winds down (0..0.72) as zoom starts (0.50..1.0)
@@ -306,11 +317,15 @@ function ProjectsPage() {
 
         if (isTargetCenter) {
           const H = vt(Z);
-          const currW = yt(cardWidth, targetWidth, H);
-          const currH = yt(cardHeight, targetHeight, H);
+          const currW = Math.round(yt(cardWidth, targetWidth, H) * 10) / 10;
+          const currH = Math.round(yt(cardHeight, targetHeight, H) * 10) / 10;
           const currY = arcOffsetY * (1 - H);
-          cardEl.style.width = `${currW}px`;
-          cardEl.style.height = `${currH}px`;
+          if (lastCenterSizeRef.current.w !== currW || lastCenterSizeRef.current.h !== currH) {
+            lastCenterSizeRef.current.w = currW;
+            lastCenterSizeRef.current.h = currH;
+            cardEl.style.width = `${currW}px`;
+            cardEl.style.height = `${currH}px`;
+          }
           cardEl.style.opacity = String(W);
           cardEl.style.zIndex = '30';
           cardEl.style.transform = `translate(-50%, -50%) translate3d(${L * (1 - H)}px, ${currY}px, 0) perspective(${te}px) translateZ(${j * (1 - H)}px) rotateY(${rotY * (1 - H)}deg)`;
@@ -376,14 +391,30 @@ function ProjectsPage() {
     updateVisuals(latest);
   });
 
-  // Sync visuals and Lenis scroll bounds on mount and viewport resize
+  // Mount Phase 2 deck quietly after initial entrance settles (450ms) so route entry stays instant
   useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!mountStackedRef.current) {
+        mountStackedRef.current = true;
+        setMountStacked(true);
+      }
+    }, 450);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Re-sync scroll transforms synchronously before paint whenever stacked phase mounts or layout changes
+  useLayoutEffect(() => {
     arcActiveRef.current = true;
+    lastCenterSizeRef.current = { w: 0, h: 0 };
     updateVisuals(scrollYProgress.get());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mountStacked, cardWidth, cardHeight, targetWidth, targetHeight, arcOffsetY]);
+
+  // Keep Lenis scroll bounds synced on viewport dimension changes
+  useEffect(() => {
     if (typeof window !== 'undefined' && window.__lenis) {
       window.__lenis.resize();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardWidth, cardHeight, targetWidth, targetHeight, arcOffsetY]);
 
   return (
@@ -433,6 +464,9 @@ function ProjectsPage() {
                   className="relative flex-1 w-full h-full flex items-center justify-center min-h-0 z-10 pointer-events-auto"
                 >
                   {virtualCards.map((project, idx) => {
+                    // ue only sweeps [3..10] with cutoff wt=3.1, so indices > 13 are never visible
+                    if (idx > 13) return null;
+
                     const init = initialStyles[idx] || {};
                     const initialCenter = TARGET_CENTER_INDEX - SPIN_CARDS_COUNT;
                     const distFromInitialCenter = Math.abs(idx - initialCenter);
@@ -461,13 +495,13 @@ function ProjectsPage() {
                             delay: isInitiallyVisible ? 0.12 + distFromInitialCenter * 0.055 : 0,
                             ease: [0.16, 1, 0.3, 1],
                           }}
-                          className="relative w-full h-full rounded-[16px] sm:rounded-[22px] overflow-hidden bg-[#070b16] border border-white/20 shadow-[0_16px_40px_rgba(0,0,0,0.85)]"
+                          className="relative w-full h-full rounded-[16px] sm:rounded-[22px] overflow-hidden bg-[#070b16] border border-white/20 shadow-[0_8px_20px_rgba(0,0,0,0.75)] sm:shadow-[0_16px_40px_rgba(0,0,0,0.85)]"
                         >
-                          <ProjectCardVisual project={project} />
+                          <ProjectCardVisual project={project} isMobile={isMobile} />
 
                           <div
                             ref={idx === TARGET_CENTER_INDEX ? centerHoverRef : undefined}
-                            className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-30 flex flex-col justify-end p-4 sm:p-5"
+                            className="hidden sm:flex absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-30 flex-col justify-end p-4 sm:p-5"
                           >
                             <span className="text-[#FFD500] font-mono text-[10px] tracking-wider uppercase font-semibold">
                               {project.category}
@@ -503,17 +537,20 @@ function ProjectsPage() {
                     visibility: 'hidden',
                   }}
                 >
-                  <div className="relative w-full h-full">
-                    {projectSets.map((project, index) => (
-                      <StackedIsoCard
-                        key={project.id}
-                        project={project}
-                        index={index}
-                        total={projectSets.length}
-                        scrollProgress={scrollYProgress}
-                      />
-                    ))}
-                  </div>
+                  {mountStacked && (
+                    <div className="relative w-full h-full">
+                      {projectSets.map((project, index) => (
+                        <StackedIsoCard
+                          key={project.id}
+                          project={project}
+                          index={index}
+                          total={projectSets.length}
+                          scrollProgress={scrollYProgress}
+                          isMobile={isMobile}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -533,7 +570,7 @@ function ProjectsPage() {
 // SHARED PROJECT CARD VISUAL (Unified Dark Studio Showcase Presentation)
 // Clean tilted studio framing matching the mobile showcase aesthetic (zero HUD clutter)
 // ══════════════════════════════════════════════════════════════════════════════
-function ProjectCardVisual({ project }) {
+function ProjectCardVisual({ project, isMobile = false }) {
   const accent = project.accentColor || '#38bdf8';
 
   if (project.hasStudioRender) {
@@ -549,14 +586,24 @@ function ProjectCardVisual({ project }) {
           src={project.thumbnail}
           alt={project.title}
           decoding="async"
+          draggable={false}
           className="relative z-10 w-full h-full object-contain"
-          style={{
+          style={isMobile ? undefined : {
             WebkitMaskImage:
               'radial-gradient(ellipse 96% 94% at 50% 50%, black 78%, transparent 100%)',
             maskImage:
               'radial-gradient(ellipse 96% 94% at 50% 50%, black 78%, transparent 100%)',
           }}
         />
+        {isMobile && (
+          <div
+            className="absolute inset-0 pointer-events-none z-20"
+            style={{
+              background:
+                'radial-gradient(ellipse 96% 94% at 50% 50%, transparent 76%, #070b16 100%)',
+            }}
+          />
+        )}
       </div>
     );
   }
@@ -574,10 +621,12 @@ function ProjectCardVisual({ project }) {
         }}
       />
 
-      {/* Sleek 3D Angled Space-Black Laptop Studio Mockup */}
+      {/* Sleek 3D Angled Space-Black Laptop Studio Mockup (flattened transform on mobile to avoid nested preserve-3d lag) */}
       <div
         className="relative z-10 w-[82%] sm:w-auto sm:h-[72%] sm:max-w-[82%] aspect-[16/10] flex flex-col items-center"
-        style={{
+        style={isMobile ? {
+          transform: `translateY(-4%) rotate(${isLeftTilt ? -1 : 1}deg)`,
+        } : {
           transform: `translateY(-6%) perspective(1400px) rotateY(${isLeftTilt ? -10 : 10}deg) rotateX(2.5deg) rotateZ(${isLeftTilt ? -0.5 : 0.5}deg)`,
           transformStyle: 'preserve-3d',
         }}
@@ -588,7 +637,9 @@ function ProjectCardVisual({ project }) {
           style={{
             border: `1px solid ${accent}48`,
             borderBottom: 'none',
-            boxShadow: `0 20px 50px rgba(0, 0, 0, 0.92), 0 0 42px ${accent}30, inset 0 1px 0 rgba(255, 255, 255, 0.28)`,
+            boxShadow: isMobile
+              ? `0 8px 18px rgba(0, 0, 0, 0.78), inset 0 1px 0 rgba(255, 255, 255, 0.22)`
+              : `0 20px 50px rgba(0, 0, 0, 0.92), 0 0 42px ${accent}30, inset 0 1px 0 rgba(255, 255, 255, 0.28)`,
           }}
         >
           {/* Inner Screen Glass */}
@@ -597,6 +648,7 @@ function ProjectCardVisual({ project }) {
               src={project.thumbnail}
               alt={project.title}
               decoding="async"
+              draggable={false}
               className={`w-full h-full object-cover ${
                 isTelemetry
                   ? 'object-top brightness-[1.06] contrast-[1.06] saturate-[1.16]'
@@ -620,37 +672,44 @@ function ProjectCardVisual({ project }) {
           className="relative w-[112%] h-[7px] sm:h-[11px] rounded-t-[2px] rounded-b-[6px] sm:rounded-b-[9px] flex items-start justify-center flex-shrink-0"
           style={{
             background: 'linear-gradient(180deg, #64748b 0%, #334155 18%, #161e2e 65%, #080c16 100%)',
-            boxShadow: `0 12px 28px rgba(0, 0, 0, 0.96), 0 2px 18px ${accent}25`,
+            boxShadow: isMobile
+              ? '0 6px 14px rgba(0, 0, 0, 0.85)'
+              : `0 12px 28px rgba(0, 0, 0, 0.96), 0 2px 18px ${accent}25`,
           }}
         >
           {/* Subtle Center Thumb-Open Notch */}
           <div className="w-[14%] h-[3px] sm:h-[4px] rounded-b-full bg-[#090d16]/85 border-b border-white/10" />
         </div>
 
-        {/* Glossy Dark Studio Floor Reflection (no CSS blur filter inside preserve-3d for glitch-free mobile GPU compositing) */}
-        <div
-          className="absolute top-[calc(100%+7px)] inset-x-0 h-[28%] rounded-[10px] overflow-hidden opacity-20 pointer-events-none"
-          style={{
-            transform: 'scaleY(-1)',
-            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 82%)',
-            maskImage: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 82%)',
-          }}
-        >
-          <img
-            src={project.thumbnail}
-            alt=""
-            decoding="async"
-            className={`absolute bottom-0 left-0 w-full h-[357%] object-cover ${
-              isTelemetry ? 'object-top' : 'object-center'
-            }`}
-          />
-        </div>
+        {/* Glossy Dark Studio Floor Reflection (desktop only; saves duplicate img & mask pass on mobile) */}
+        {!isMobile && (
+          <div
+            className="absolute top-[calc(100%+7px)] inset-x-0 h-[28%] rounded-[10px] overflow-hidden opacity-20 pointer-events-none"
+            style={{
+              transform: 'scaleY(-1)',
+              WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 82%)',
+              maskImage: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 82%)',
+            }}
+          >
+            <img
+              src={project.thumbnail}
+              alt=""
+              decoding="async"
+              draggable={false}
+              className={`absolute bottom-0 left-0 w-full h-[357%] object-cover ${
+                isTelemetry ? 'object-top' : 'object-center'
+              }`}
+            />
+          </div>
+        )}
       </div>
 
       {/* Smooth Outer Edge Vignette into #070b16 */}
       <div
         className="absolute inset-0 pointer-events-none z-20"
-        style={{ boxShadow: 'inset 0 0 38px 10px #070b16' }}
+        style={{
+          boxShadow: isMobile ? 'inset 0 0 18px 4px #070b16' : 'inset 0 0 38px 10px #070b16',
+        }}
       />
     </div>
   );
@@ -685,6 +744,7 @@ function StackedIsoCard({
   index,
   total,
   scrollProgress,
+  isMobile = false,
 }) {
   const stackStart = 0.38;
   const stackEnd = 0.94;
@@ -757,10 +817,10 @@ function StackedIsoCard({
         pointerEvents: pointerEventsProgress,
         willChange: 'transform, opacity',
       }}
-      className="absolute inset-0 m-auto w-full h-full rounded-[20px] sm:rounded-[28px] overflow-hidden bg-[#070b16] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.85)] cursor-default select-none group"
+      className="absolute inset-0 m-auto w-full h-full rounded-[20px] sm:rounded-[28px] overflow-hidden bg-[#070b16] border border-white/20 shadow-[0_12px_28px_rgba(0,0,0,0.75)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.85)] cursor-default select-none group"
     >
       {/* Edge-to-Edge Project Showcase (Shared across Arc & Stacked Deck) */}
-      <ProjectCardVisual project={project} />
+      <ProjectCardVisual project={project} isMobile={isMobile} />
 
       {/* Title overlay: always visible automatically in zoom/stacked position */}
       <div className="absolute inset-x-0 bottom-0 z-30 pointer-events-none">
