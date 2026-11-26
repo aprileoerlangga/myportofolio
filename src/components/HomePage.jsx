@@ -127,7 +127,7 @@ function HomePage({ isHome = true }) {
       {/* ========================================================================= */}
       {/* CLASSIC SPACE COSMIC & MISSION COMMAND BACKGROUND                         */}
       {/* ========================================================================= */}
-      <SpaceBackground />
+      <SpaceBackground paused={!isHome} />
 
       {/* ========================================================================= */}
       {/* FULL-HERO 3D LEGO CANVAS LAYER                                            */}

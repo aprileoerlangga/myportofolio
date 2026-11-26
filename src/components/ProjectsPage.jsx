@@ -7,7 +7,6 @@ import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import {
   motion,
   useScroll,
-  useTransform,
   useMotionValueEvent,
 } from 'framer-motion';
 import Footer from './Footer';
@@ -172,8 +171,8 @@ function ProjectsPage() {
   const centerHoverRef = useRef(null);
   const centerTitleRef = useRef(null);
   const stackedContainerRef = useRef(null);
+  const stackedCardRefs = useRef([]);
   const arcActiveRef = useRef(true);
-  const lastCenterSizeRef = useRef({ w: 0, h: 0 });
   const mountStackedRef = useRef(false);
 
   const [mountStacked, setMountStacked] = useState(false);
@@ -214,17 +213,20 @@ function ProjectsPage() {
     offset: ['start start', 'end end'],
   });
 
-  // Dimensions for Arc and Zoom Target - Aesthetic studio framing (perfect vertical centering, zero cut-off)
+  // Dimensions for Arc and Zoom Target - Proportion-locked so center card zooms purely via GPU scale() (zero width/height reflow)
+  const targetWidth = isMobile
+    ? Math.min(340, windowDimensions.width - 32)
+    : Math.min(820, Math.max(600, windowDimensions.width * 0.56));
+  const targetHeight = isMobile
+    ? Math.min(300, Math.round(targetWidth * 0.82))
+    : Math.min(520, Math.max(340, windowDimensions.height * 0.54));
   const cardWidth = isMobile
     ? Math.min(260, windowDimensions.width * 0.68)
     : Math.min(360, Math.max(280, windowDimensions.width * 0.22));
-  const cardHeight = (cardWidth * 273) / 382;
-  const targetWidth = isMobile
-    ? Math.min(340, windowDimensions.width - 32)
-    : Math.min(820, Math.max(620, windowDimensions.width * 0.56));
-  const targetHeight = isMobile
-    ? Math.min(380, windowDimensions.height * 0.48)
-    : Math.min(520, Math.max(340, windowDimensions.height * 0.54));
+  const cardHeight = (cardWidth * targetHeight) / targetWidth;
+  const centerBaseScale = cardWidth / targetWidth;
+  const mobileArcCutoff = isMobile ? 2.35 : wt;
+
   // Initial downward arc offset so cards clear "MY PROJECTS" + subtitle cleanly,
   // smoothly interpolating back to 0px (true dead center) as the card zooms in.
   const arcOffsetY = windowDimensions.width >= 1024 ? 96 : windowDimensions.width >= 640 ? 80 : 52;
@@ -239,8 +241,9 @@ function ProjectsPage() {
     return virtualCards.map((_, x) => {
       const h = ie0[x];
       const y = Math.abs(h);
-      if (y > wt) {
-        return { opacity: 0, visibility: 'hidden', zIndex: 0, transform: 'translate(-50%, -50%) scale(0)' };
+      const scalePrefix = x === TARGET_CENTER_INDEX ? ` scale(${centerBaseScale})` : '';
+      if (y > mobileArcCutoff) {
+        return { opacity: 0, visibility: 'hidden', zIndex: 0, transform: `translate(-50%, -50%) scale(0)` };
       }
       const L = ne0[x];
       const j = Vt * cardWidth * Zt(h);
@@ -250,10 +253,10 @@ function ProjectsPage() {
         opacity: W,
         visibility: 'visible',
         zIndex: 10 - Math.min(5, Math.round(y)),
-        transform: `translate(-50%, -50%) translate3d(${L}px, ${arcOffsetY}px, 0) perspective(${te0}px) translateZ(${j}px) rotateY(${rotY}deg)`,
+        transform: `translate(-50%, -50%) translate3d(${L}px, ${arcOffsetY}px, 0) perspective(${te0}px) translateZ(${j}px) rotateY(${rotY}deg)${scalePrefix}`,
       };
     });
-  }, [cardWidth, arcOffsetY]);
+  }, [cardWidth, arcOffsetY, centerBaseScale, mobileArcCutoff]);
 
   // ════════════════════════════════════════════════════════════════════════════
   // DIRECT HIGH-PERFORMANCE DOM STYLE UPDATES (Locked 60/120 FPS, No React lag)
@@ -297,7 +300,7 @@ function ProjectsPage() {
         const h = ie[x];
         const y = Math.abs(h);
 
-        if (y > wt) {
+        if (y > mobileArcCutoff) {
           if (cardEl.style.visibility !== 'hidden') {
             cardEl.style.opacity = '0';
             cardEl.style.visibility = 'hidden';
@@ -317,18 +320,11 @@ function ProjectsPage() {
 
         if (isTargetCenter) {
           const H = vt(Z);
-          const currW = Math.round(yt(cardWidth, targetWidth, H) * 10) / 10;
-          const currH = Math.round(yt(cardHeight, targetHeight, H) * 10) / 10;
+          const currScale = yt(centerBaseScale, 1, H);
           const currY = arcOffsetY * (1 - H);
-          if (lastCenterSizeRef.current.w !== currW || lastCenterSizeRef.current.h !== currH) {
-            lastCenterSizeRef.current.w = currW;
-            lastCenterSizeRef.current.h = currH;
-            cardEl.style.width = `${currW}px`;
-            cardEl.style.height = `${currH}px`;
-          }
           cardEl.style.opacity = String(W);
           cardEl.style.zIndex = '30';
-          cardEl.style.transform = `translate(-50%, -50%) translate3d(${L * (1 - H)}px, ${currY}px, 0) perspective(${te}px) translateZ(${j * (1 - H)}px) rotateY(${rotY * (1 - H)}deg)`;
+          cardEl.style.transform = `translate(-50%, -50%) translate3d(${L * (1 - H)}px, ${currY}px, 0) perspective(${te}px) translateZ(${j * (1 - H)}px) rotateY(${rotY * (1 - H)}deg) scale(${currScale})`;
 
           if (centerTitleRef.current) {
             centerTitleRef.current.style.opacity = String(H);
@@ -349,7 +345,8 @@ function ProjectsPage() {
     }
 
     // ──────────────────────────────────────────────────────────────────────────
-    // PHASE 2: SEAMLESS 1:1 HAND-OFF TO STACKED DECK (0.34 -> 0.375)
+    // PHASE 2: SEAMLESS 1:1 HAND-OFF TO STACKED DECK (0.34 -> 0.94)
+    // Directly drives card CSS transforms on GPU without 25 React Motion callbacks
     // ──────────────────────────────────────────────────────────────────────────
     if (arcCardsContainerRef.current) {
       if (scrollP > 0.38) {
@@ -384,6 +381,75 @@ function ProjectsPage() {
         stackedContainerRef.current.style.visibility = 'visible';
       }
     }
+
+    // Direct GPU updates for Stacked Cards only when Phase 2 is approaching or active
+    if (scrollP >= 0.33) {
+      const stackStart = 0.38;
+      const stackEnd = 0.94;
+      const total = projectSets.length;
+      const slotDuration = (stackEnd - stackStart) / (total - 1);
+
+      for (let i = 0; i < total; i++) {
+        const el = stackedCardRefs.current[i];
+        if (!el) continue;
+
+        const cardStart = stackStart + i * slotDuration;
+        const cardEnd = cardStart + slotDuration;
+        const prevCardStart = stackStart + (i - 1) * slotDuration;
+
+        let opacity = 1;
+        if (i > 0) {
+          if (scrollP <= prevCardStart) opacity = 0;
+          else if (scrollP < prevCardStart + slotDuration * 0.12) {
+            opacity = Te((scrollP - prevCardStart) / (slotDuration * 0.12));
+          }
+        }
+        if (opacity > 0 && i < total - 1 && scrollP > cardStart) {
+          if (scrollP >= cardEnd) opacity = 0;
+          else {
+            const p = (scrollP - cardStart) / slotDuration;
+            opacity = 1 - vt(Te((p - 0.12) / 0.88));
+          }
+        }
+
+        if (opacity <= 0.005) {
+          if (el.style.visibility !== 'hidden') {
+            el.style.opacity = '0';
+            el.style.visibility = 'hidden';
+            el.style.pointerEvents = 'none';
+          }
+          continue;
+        }
+
+        if (el.style.visibility !== 'visible') {
+          el.style.visibility = 'visible';
+        }
+
+        let yPct = 0;
+        let rotDeg = 0;
+        if (i < total - 1 && scrollP > cardStart) {
+          const dir = i % 2 === 0 ? -3.5 : 3.5;
+          if (scrollP >= cardEnd) {
+            yPct = -115;
+            rotDeg = dir;
+          } else {
+            const eased = vt((scrollP - cardStart) / slotDuration);
+            yPct = -eased * 115;
+            rotDeg = eased * dir;
+          }
+        }
+
+        let scale = 1;
+        if (i > 0 && scrollP < cardStart) {
+          if (scrollP <= prevCardStart) scale = 0.95;
+          else scale = 0.95 + vt((scrollP - prevCardStart) / slotDuration) * 0.05;
+        }
+
+        el.style.opacity = String(opacity);
+        el.style.pointerEvents = (i === total - 1 || scrollP < cardStart + slotDuration * 0.6) ? 'auto' : 'none';
+        el.style.transform = `translate3d(0, ${yPct}%, 0) scale(${scale}) rotate(${rotDeg}deg)`;
+      }
+    }
   };
 
   // Attach Lenis-synced scroll event directly (zero double-spring lag)
@@ -405,7 +471,6 @@ function ProjectsPage() {
   // Re-sync scroll transforms synchronously before paint whenever stacked phase mounts or layout changes
   useLayoutEffect(() => {
     arcActiveRef.current = true;
-    lastCenterSizeRef.current = { w: 0, h: 0 };
     updateVisuals(scrollYProgress.get());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mountStacked, cardWidth, cardHeight, targetWidth, targetHeight, arcOffsetY]);
@@ -418,7 +483,7 @@ function ProjectsPage() {
   }, [cardWidth, cardHeight, targetWidth, targetHeight, arcOffsetY]);
 
   return (
-    <div className="text-white min-h-screen relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
+    <div className="text-white min-h-screen min-h-[100dvh] relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
       {/* Unified Classic Space Cosmic Canvas (Opsi 2: Grounded Horizon — Kawah Bulan di Bawah) */}
       <SpaceBackground showCraters={true} />
       
@@ -431,7 +496,7 @@ function ProjectsPage() {
             <div
               ref={containerRef}
               id="projects-stage"
-              className="relative w-full h-[460vh] sm:h-[500vh] bg-transparent text-white"
+              className="relative w-full h-[380vh] sm:h-[500vh] bg-transparent text-white"
             >
               {/* Sticky Viewport (100vh / 100dvh - Perfectly centered vertically across iOS & Android) */}
               <div className="sticky top-0 h-screen h-[100dvh] w-full flex items-center justify-center overflow-hidden select-none z-10 px-4">
@@ -442,9 +507,9 @@ function ProjectsPage() {
                   className="absolute top-[max(6.5rem,19dvh)] sm:top-24 lg:top-28 inset-x-0 w-full flex flex-col items-center z-20 pointer-events-none text-center px-4 select-none"
                 >
                   <motion.div
-                    initial={{ opacity: 0, y: -20 }}
+                    initial={{ opacity: 0, y: -14 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
                     className="flex flex-col items-center"
                   >
                     <h2
@@ -472,18 +537,20 @@ function ProjectsPage() {
                     const distFromInitialCenter = Math.abs(idx - initialCenter);
                     const isInitiallyVisible = distFromInitialCenter <= 3;
 
+                    const isTargetCard = idx === TARGET_CENTER_INDEX;
+
                     return (
                       <div
                         key={`${project.id}-${idx}`}
                         ref={(el) => (cardRefs.current[idx] = el)}
                         style={{
-                          width: `${cardWidth}px`,
-                          height: `${cardHeight}px`,
+                          width: `${isTargetCard ? targetWidth : cardWidth}px`,
+                          height: `${isTargetCard ? targetHeight : cardHeight}px`,
                           opacity: init.opacity ?? 0,
                           visibility: init.visibility ?? 'hidden',
                           zIndex: init.zIndex ?? 1,
                           transform: init.transform ?? 'translate(-50%, -50%)',
-                          willChange: 'transform, opacity',
+                          willChange: isTargetCard || isInitiallyVisible ? 'transform, opacity' : undefined,
                         }}
                         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-default select-none group"
                       >
@@ -542,10 +609,10 @@ function ProjectsPage() {
                       {projectSets.map((project, index) => (
                         <StackedIsoCard
                           key={project.id}
+                          cardRef={(el) => (stackedCardRefs.current[index] = el)}
                           project={project}
                           index={index}
                           total={projectSets.length}
-                          scrollProgress={scrollYProgress}
                           isMobile={isMobile}
                         />
                       ))}
@@ -740,81 +807,22 @@ function ZoomedTitleOverlay({ project }) {
 // Evenly paced transitions with zero dead-zones and GPU depth emergence
 // ══════════════════════════════════════════════════════════════════════════════
 function StackedIsoCard({
+  cardRef,
   project,
   index,
   total,
-  scrollProgress,
   isMobile = false,
 }) {
-  const stackStart = 0.38;
-  const stackEnd = 0.94;
-  const totalSlots = total - 1;
-  const slotDuration = (stackEnd - stackStart) / totalSlots;
-
-  const cardStart = stackStart + index * slotDuration;
-  const cardEnd = cardStart + slotDuration;
-  const prevCardStart = stackStart + (index - 1) * slotDuration;
-
-  // Symmetric ease-in-out glide upwards on exit (responsive immediately from scroll pixel 1)
-  const yProgress = useTransform(scrollProgress, (sp) => {
-    if (index === total - 1) return 0;
-    if (sp <= cardStart) return 0;
-    if (sp >= cardEnd) return -115;
-    const progress = (sp - cardStart) / slotDuration;
-    return -vt(progress) * 115;
-  });
-
-  // Subtle depth emergence for underlying card while previous card exits, keeping deeper cards culled
-  const scaleProgress = useTransform(scrollProgress, (sp) => {
-    if (index === 0) return 1;
-    if (sp <= prevCardStart) return 0.95;
-    if (sp >= cardStart) return 1;
-    const enterProgress = (sp - prevCardStart) / slotDuration;
-    return 0.95 + vt(enterProgress) * 0.05;
-  });
-
-  const opacityProgress = useTransform(scrollProgress, (sp) => {
-    if (index > 0) {
-      if (sp <= prevCardStart) return 0;
-      const enterFadeEnd = prevCardStart + slotDuration * 0.12;
-      if (sp < enterFadeEnd) {
-        return Te((sp - prevCardStart) / (slotDuration * 0.12));
-      }
-    }
-    if (index === total - 1) return 1;
-    if (sp <= cardStart) return 1;
-    if (sp >= cardEnd) return 0;
-    const progress = (sp - cardStart) / slotDuration;
-    const fadeProgress = Te((progress - 0.12) / 0.88);
-    return 1 - vt(fadeProgress);
-  });
-
-  const rotateProgress = useTransform(scrollProgress, (sp) => {
-    if (index === total - 1) return 0;
-    if (sp <= cardStart) return 0;
-    const dir = index % 2 === 0 ? -3.5 : 3.5;
-    if (sp >= cardEnd) return dir;
-    const progress = (sp - cardStart) / slotDuration;
-    return vt(progress) * dir;
-  });
-
-  const pointerEventsProgress = useTransform(scrollProgress, (sp) => {
-    if (index > 0 && sp < prevCardStart) return 'none';
-    if (index === total - 1) return 'auto';
-    return sp < cardStart + slotDuration * 0.6 ? 'auto' : 'none';
-  });
-
   const zIndexVal = total - index;
 
   return (
-    <motion.article
+    <article
+      ref={cardRef}
       style={{
         zIndex: zIndexVal,
-        y: yProgress,
-        scale: scaleProgress,
-        opacity: opacityProgress,
-        rotate: rotateProgress,
-        pointerEvents: pointerEventsProgress,
+        opacity: index === 0 ? 1 : 0,
+        visibility: index === 0 ? 'visible' : 'hidden',
+        transform: index === 0 ? 'translate3d(0, 0%, 0) scale(1) rotate(0deg)' : 'translate3d(0, 0%, 0) scale(0.95) rotate(0deg)',
         willChange: 'transform, opacity',
       }}
       className="absolute inset-0 m-auto w-full h-full rounded-[20px] sm:rounded-[28px] overflow-hidden bg-[#070b16] border border-white/20 shadow-[0_12px_28px_rgba(0,0,0,0.75)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.85)] cursor-default select-none group"
@@ -826,7 +834,7 @@ function StackedIsoCard({
       <div className="absolute inset-x-0 bottom-0 z-30 pointer-events-none">
         <ZoomedTitleOverlay project={project} />
       </div>
-    </motion.article>
+    </article>
   );
 }
 

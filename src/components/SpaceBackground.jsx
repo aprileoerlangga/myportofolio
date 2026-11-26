@@ -143,12 +143,12 @@ function RetroSpacePlanet({ className = '' }) {
 
 // 2. Stylized Cosmic Nebula Silhouettes
 function CosmicNebulaSilhouettes({ scrollYProgress }) {
-  // Direct GPU Parallax driven by parent's MotionValue
+  // Direct GPU Parallax driven by parent's MotionValue (hidden on small mobile screens to save SVG fill rate)
   const layer1Y = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const layer2Y = useTransform(scrollYProgress, [0, 1], [0, -200]);
 
   return (
-    <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
+    <div className="hidden sm:block absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
       {/* Distant Deep-Space Nebula Cloud (Upper Left / Mid) */}
       <motion.div
         className="absolute top-[8%] -left-[10%] w-[65vw] max-w-[700px] h-[500px] opacity-40 pointer-events-none"
@@ -293,8 +293,7 @@ function CosmicParallaxLayer({ scrollYProgress }) {
 
   const planetY = useTransform(activeScroll, [0, 1], [0, 210]);
   const planetX = useTransform(activeScroll, [0, 1], [0, -28]);
-  const planetScale = useTransform(activeScroll, [0, 0.45, 0.8], [1, 0.9, 0.8]);
-  // Fade gracefully to 0 before reaching Tech Stack so it never lingers behind keyboard
+  // Fade gracefully to 0 before reaching Tech Stack so it never lingers or forces SVG rescale during scroll
   const planetOpacity = useTransform(activeScroll, [0, 0.28, 0.56], [0.85, 0.48, 0]);
 
   const ambientHeroOpacity = useTransform(activeScroll, [0.10, 0.40], [1, 0.2]);
@@ -327,13 +326,12 @@ function CosmicParallaxLayer({ scrollYProgress }) {
       {/* Stylized Cosmic Nebula Silhouettes */}
       <CosmicNebulaSilhouettes scrollYProgress={activeScroll} />
 
-      {/* Calm Retro Space Planet (Subtle & translucent on mobile, fades out before Tech Stack) */}
+      {/* Calm Retro Space Planet (Pure translate + opacity parallax, fades out before Tech Stack) */}
       <motion.div
         className="fixed top-[68px] sm:top-[80px] lg:top-[88px] -right-4 sm:right-[1.5%] lg:right-[2.5%] pointer-events-none z-0"
         style={{
           y: planetY,
           x: planetX,
-          scale: planetScale,
           opacity: planetOpacity,
           willChange: 'transform, opacity',
         }}
@@ -381,12 +379,16 @@ export default function SpaceBackground({
   variant = 'home', 
   scrollYProgress, 
   showCraters = true,
+  paused = false,
   className = '' 
 }) {
   const isCosmic = variant === 'about' || variant === 'projects';
 
   return (
-    <div className={`fixed inset-0 z-0 pointer-events-none overflow-hidden select-none ${className}`}>
+    <div
+      className={`fixed inset-0 z-0 pointer-events-none overflow-hidden select-none ${className}`}
+      style={{ transform: 'translateZ(0)', contain: 'strict' }}
+    >
       
       {/* ── 1. DEEP OBSIDIAN SPACE CANVAS (Identik di Semua Halaman) ──────── */}
       <div 
@@ -451,6 +453,7 @@ export default function SpaceBackground({
               backgroundColor: star.color,
               animationDuration: star.duration,
               animationDelay: star.delay,
+              animationPlayState: paused ? 'paused' : 'running',
             }}
           />
         ))}

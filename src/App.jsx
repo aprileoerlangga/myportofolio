@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, useRoutes, useLocation } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
 import HomePage from './components/HomePage';
@@ -26,7 +26,7 @@ function RouteWrapper({ children }) {
   const location = useLocation();
   const isHome = location.pathname === '/';
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.scrollTo({
       top: 0,
       left: 0,
@@ -36,7 +36,9 @@ function RouteWrapper({ children }) {
     if (window.__lenis) {
       window.__lenis.scrollTo(0, { immediate: true });
     }
+  }, [location.pathname]);
 
+  useEffect(() => {
     const syncScrollLock = () => {
       const isDesktop = window.innerWidth >= 1024;
       if (isHome && isDesktop) {
@@ -80,25 +82,21 @@ function MainNavigationRoutes() {
 
   return (
     <div className="relative w-full min-h-screen">
-      {/* Persistent Zero-Jank Home Page with Featherlight Micro-Glide */}
+      {/* Persistent Zero-Jank Home Page */}
       <motion.div 
         initial={false}
         animate={isHome ? {
           opacity: 1,
-          y: 0,
-          scale: 1,
           pointerEvents: 'auto',
           visibility: 'visible',
-          transition: { duration: 0.20, ease: [0.16, 1, 0.3, 1] }
+          transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] }
         } : {
           opacity: 0,
-          y: -6,
-          scale: 0.995,
           pointerEvents: 'none',
           transitionEnd: { visibility: 'hidden' },
-          transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] }
+          transition: { duration: 0.14, ease: [0.16, 1, 0.3, 1] }
         }}
-        className="fixed inset-0 w-full h-full z-10 will-change-transform"
+        className="fixed inset-0 w-full h-full z-10"
         aria-hidden={!isHome}
       >
         <RouteWrapper>
@@ -111,16 +109,16 @@ function MainNavigationRoutes() {
         {!isHome && <Navbar key="persistent-navbar" />}
       </AnimatePresence>
 
-      {/* Cross-Page Transitions for /about, /projects, /contact with Featherlight Micro-Glide */}
+      {/* Cross-Page Transitions (Pure opacity preserves sticky compositor on mobile Projects & smooth transitions) */}
       <AnimatePresence mode="wait" initial={false}>
         {!isHome && otherRoutesElement && (
           <motion.div
             key={location.pathname}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full min-h-screen overflow-x-clip z-20 will-change-transform"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full min-h-screen min-h-[100dvh] overflow-x-clip z-20"
           >
             <RouteWrapper>
               {otherRoutesElement}
@@ -164,7 +162,15 @@ function App() {
     }
     window.scrollTo(0, 0);
 
-    // Inisialisasi Lenis Smooth Scroll untuk gerakan scroll yang mentega (buttery smooth)
+    // Hanya aktifkan Lenis Smooth Wheel di desktop non-touch; mobile memakai native touch scroll 60/120Hz tanpa rAF ekstra
+    const isTouchOnly =
+      typeof window !== 'undefined' &&
+      (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024);
+
+    if (isTouchOnly) {
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

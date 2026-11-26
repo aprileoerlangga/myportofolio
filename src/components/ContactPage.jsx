@@ -46,11 +46,11 @@ const contactLinks = [
 
 function ContactPage() {
   return (
-    <div className="text-white min-h-screen relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip flex flex-col justify-between">
+    <div className="text-white min-h-screen min-h-[100dvh] relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip flex flex-col justify-between">
       {/* Unified Classic Space Cosmic Background (Obsidian Void, Starfield & Lunar Horizon) */}
       <SpaceBackground showCraters={true} />
 
-      <div className="relative z-10 flex flex-col min-h-screen justify-between">
+      <div className="relative z-10 flex flex-col min-h-screen min-h-[100dvh] justify-between">
         <main className="flex-1 flex flex-col justify-center pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20 px-6 sm:px-10 lg:px-12 relative">
           {/* Subtle Tablet Corner Bricks */}
           <div className="hidden sm:block lg:hidden pointer-events-none">
@@ -68,10 +68,10 @@ function ContactPage() {
           >
             {/* Header Title (Harmonized with About Me, Tech Stack & My Projects) */}
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, y: -14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col items-center text-center mb-12 sm:mb-14 select-none relative z-10"
+              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col items-center text-center mb-10 sm:mb-14 select-none relative z-10"
             >
               <h1 className="font-pixel font-bold text-3xl sm:text-4xl md:text-5xl tracking-wide text-white uppercase select-none">
                 GET IN <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">TOUCH</span>
@@ -140,11 +140,11 @@ function ContactPage() {
                       href={item.href}
                       target={isExternal ? '_blank' : undefined}
                       rel={isExternal ? 'noopener noreferrer' : undefined}
-                      initial={{ opacity: 0, y: 14 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{
-                        duration: 0.45,
-                        delay: 0.12 + idx * 0.05,
+                        duration: 0.35,
+                        delay: 0.06 + idx * 0.035,
                         ease: [0.16, 1, 0.3, 1],
                       }}
                       whileTap={{ scale: 0.99 }}

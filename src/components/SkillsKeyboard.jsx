@@ -35,134 +35,143 @@ import { FaJava } from 'react-icons/fa6';
 export const KEYCAP_ICONS = {
   // JavaScript: Bold white typography 'JS'
   javascript: () => (
-    <span className="font-black text-2xl sm:text-[26px] text-white tracking-tight leading-none select-none drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]">
+    <span
+      className="font-black text-2xl sm:text-[26px] text-white tracking-tight leading-none select-none"
+      style={{ textShadow: '0 2px 3px rgba(0,0,0,0.7)' }}
+    >
       JS
     </span>
   ),
 
   // TypeScript: Bold white typography 'TS'
   typescript: () => (
-    <span className="font-black text-2xl sm:text-[26px] text-white tracking-tight leading-none select-none drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]">
+    <span
+      className="font-black text-2xl sm:text-[26px] text-white tracking-tight leading-none select-none"
+      style={{ textShadow: '0 2px 3px rgba(0,0,0,0.7)' }}
+    >
       TS
     </span>
   ),
 
   // HTML5: Official shield with '5'
   html5: () => (
-    <SiHtml5 className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiHtml5 className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // CSS3: Official shield with '3' (Now on BLUE keycap as requested!)
   css3: () => (
-    <SiCss3 className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiCss3 className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // React: Iconic atom
   react: () => (
-    <SiReact className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiReact className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // Java: Steaming coffee cup (Now on BLACK keycap as requested!)
   java: () => (
-    <FaJava className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <FaJava className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // Next.js: Official white circular badge with bold black 'N' (Exact match to reference photo!)
   nextjs: () => (
-    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white flex items-center justify-center shadow-md">
+    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white flex items-center justify-center">
       <SiNextdotjs className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-black" />
     </div>
   ),
 
   // Tailwind CSS: Twin waves
   tailwind: () => (
-    <SiTailwindcss className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiTailwindcss className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // Node.js: Stylized hexagon
   nodejs: () => (
-    <SiNodedotjs className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiNodedotjs className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // Express.js: Italic 'ex'
   express: () => (
-    <span className="font-black text-2xl sm:text-[26px] text-white tracking-tighter italic leading-none select-none drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]">
+    <span
+      className="font-black text-2xl sm:text-[26px] text-white tracking-tighter italic leading-none select-none"
+      style={{ textShadow: '0 2px 3px rgba(0,0,0,0.7)' }}
+    >
       ex
     </span>
   ),
 
   // Python: Official dual serpents
   python: () => (
-    <SiPython className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiPython className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // MongoDB: Official leaf
   mongodb: () => (
-    <SiMongodb className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiMongodb className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // Git: Official red branch inside white diamond badge (Exact match to reference photo!)
   git: () => (
-    <div className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-[4px] bg-white flex items-center justify-center rotate-45 shadow-sm">
+    <div className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-[4px] bg-white flex items-center justify-center rotate-45">
       <SiGit className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#EF4444] -rotate-45" />
     </div>
   ),
 
   // GitHub: Official black Octocat inside white circle badge (Exact match to reference photo!)
   github: () => (
-    <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-white flex items-center justify-center shadow-sm">
+    <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-white flex items-center justify-center">
       <SiGithub className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-black" />
     </div>
   ),
 
   // PostgreSQL: Official Slonik elephant head
   postgres: () => (
-    <SiPostgresql className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiPostgresql className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // npm: Official package block with cutouts
   npm: () => (
-    <SiNpm className="w-8 h-8 sm:w-9 sm:h-9 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiNpm className="w-8 h-8 sm:w-9 sm:h-9 text-white" />
   ),
 
   // MySQL: Official dolphin
   mysql: () => (
-    <SiMysql className="w-8 h-8 sm:w-9 sm:h-9 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiMysql className="w-8 h-8 sm:w-9 sm:h-9 text-white" />
   ),
 
   // PHP: Official oval emblem with PHP
   php: () => (
-    <SiPhp className="w-8 h-8 sm:w-9 sm:h-9 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiPhp className="w-8 h-8 sm:w-9 sm:h-9 text-white" />
   ),
 
   // Linux: Official Tux the penguin
   linux: () => (
-    <SiLinux className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiLinux className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // Docker: Official whale carrying containers
   docker: () => (
-    <SiDocker className="w-8 h-8 sm:w-8.5 sm:h-8.5 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiDocker className="w-8 h-8 sm:w-8.5 sm:h-8.5 text-white" />
   ),
 
   // Flutter: Official flutter wing
   flutter: () => (
-    <SiFlutter className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiFlutter className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // Dart: Official geometric dart
   dart: () => (
-    <SiDart className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiDart className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // Laravel: Official 3D geometric origami
   laravel: () => (
-    <SiLaravel className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiLaravel className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
   ),
 
   // Figma: Official emblem
   figma: () => (
-    <SiFigma className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]" />
+    <SiFigma className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
   ),
 };
 
@@ -637,19 +646,19 @@ const headerContainerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.16,
-      delayChildren: 0.05,
+      staggerChildren: 0.08,
+      delayChildren: 0.02,
     },
   },
 };
 
 const headerItemVariants = {
-  hidden: { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 18 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.85,
+      duration: 0.45,
       ease: [0.22, 1, 0.36, 1],
     },
   },
@@ -705,8 +714,6 @@ export default function SkillsKeyboard() {
     };
   }, [triggerKey]);
 
-  const ActiveInspectorLogo = INSPECTOR_LOGOS[activeSkill.logoKey];
-
   return (
     <div 
       id="skills-section"
@@ -718,23 +725,47 @@ export default function SkillsKeyboard() {
         .keycap-btn {
           position: relative;
           transform: translate3d(0, 0, 0);
-          /* ONLY transition transform on GPU Compositor! */
           transition: transform 0.05s cubic-bezier(0.2, 0.8, 0.2, 1);
-          transform-style: preserve-3d;
-          backface-visibility: hidden;
           box-shadow:
-            0 1px 1px rgba(255, 255, 255, 0.5) inset,
+            0 1px 0 rgba(255, 255, 255, 0.45) inset,
             -2px 2px 0 var(--key-side),
             -4px 4px 0 var(--key-side),
             -6px 6px 0 var(--key-side-dark),
             -8px 8px 0 var(--key-side-dark),
             -10px 10px 0 #05070c,
-            -14px 16px 20px rgba(0, 0, 0, 0.92);
+            -13px 15px 14px rgba(0, 0, 0, 0.88);
           user-select: none;
           -webkit-user-select: none;
           -webkit-user-drag: none;
           touch-action: manipulation;
           -webkit-tap-highlight-color: transparent;
+        }
+
+        .keycap-face {
+          box-shadow: 0 1px 1px rgba(255, 255, 255, 0.55) inset, 0 -1px 2px rgba(0, 0, 0, 0.5) inset;
+        }
+
+        .keycap-scoop {
+          background: radial-gradient(circle at 45% 30%, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0) 65%);
+          box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.45);
+        }
+
+        @media (max-width: 767px) {
+          .keycap-btn {
+            box-shadow:
+              0 1px 0 rgba(255, 255, 255, 0.4) inset,
+              -2px 2px 0 var(--key-side),
+              -4px 4px 0 var(--key-side),
+              -6px 6px 0 var(--key-side-dark),
+              -8px 8px 0 #05070c,
+              -10px 11px 6px rgba(0, 0, 0, 0.72);
+          }
+          .keycap-face {
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) inset;
+          }
+          .keycap-scoop {
+            box-shadow: none;
+          }
         }
 
         .keycap-btn:hover {
@@ -758,7 +789,7 @@ export default function SkillsKeyboard() {
         variants={headerContainerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.35, margin: "0px 0px -80px 0px" }}
+        viewport={{ once: true, amount: 0.15, margin: "0px 0px 40px 0px" }}
         className="flex flex-col items-center text-center mb-8 sm:mb-14 select-none relative z-20"
       >
         <motion.h2 
@@ -790,10 +821,10 @@ export default function SkillsKeyboard() {
           {/* Shifted rightward toward center so it's not clinging to edge */}
           {/* ------------------------------------------------------------ */}
           <motion.div 
-            initial={{ opacity: 0, y: 36, x: -12 }}
-            whileInView={{ opacity: 1, y: 0, x: 0 }}
-            viewport={{ once: true, amount: 0.25, margin: "0px 0px -60px 0px" }}
-            transition={{ duration: 0.85, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1, margin: "0px 0px 40px 0px" }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             className="w-full lg:w-[380px] xl:w-[420px] flex flex-col justify-center min-h-[160px] sm:min-h-[200px] relative z-20 text-left will-change-transform"
           >
             {/* Active Skill Details styled symmetrically with Motivational Quotes */}
@@ -803,7 +834,7 @@ export default function SkillsKeyboard() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-col text-left"
               >
                 {/* Category kicker */}
@@ -843,10 +874,10 @@ export default function SkillsKeyboard() {
           {/* RIGHT COLUMN: 3D ISOMETRIC MECHANICAL KEYPAD MATRIX          */}
           {/* ------------------------------------------------------------ */}
           <motion.div 
-            initial={{ opacity: 0, y: 44, scale: 0.96 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.2, margin: "0px 0px -60px 0px" }}
-            transition={{ duration: 0.85, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.08, margin: "0px 0px 60px 0px" }}
+            transition={{ duration: 0.48, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
             className="flex items-center justify-center relative z-20 py-4 sm:py-6 flex-shrink-0 will-change-transform"
           >
             {/* Ambient RGB underglow spillage (Isolated GPU Compositor Layer) */}
@@ -866,21 +897,20 @@ export default function SkillsKeyboard() {
                 perspectiveOrigin: '45% 40%',
               }}
             >
-              {/* Clean Borderless 3D Isometric Keycaps Grid */}
+              {/* Single 3D isometric container (avoids 25 nested preserve-3d GPU layers) */}
               <div 
                 className="relative"
                 style={{
                   transform: 'rotateX(46deg) rotateY(-6deg) rotateZ(-36deg)',
-                  transformStyle: 'preserve-3d',
                   backfaceVisibility: 'hidden',
+                  willChange: 'transform',
                 }}
               >
                 {/* 24 Mechanical Keycaps Matrix */}
                 <div 
                   className="grid grid-cols-6 gap-1.5 min-[370px]:gap-2 sm:gap-2.5"
                   style={{
-                    transformStyle: 'preserve-3d',
-                    backfaceVisibility: 'hidden',
+                    contain: 'layout style',
                   }}
                 >
                   {KEYBOARD_SKILLS.map((skill) => {
@@ -956,19 +986,14 @@ const KeycapButton = React.memo(function KeycapButton({ skill, isSelected, onTri
         Smaller inset rounded square with concave dish scoop and crystal-clear symbol!
       */}
       <div 
-        className="relative w-full h-full rounded-[8px] flex items-center justify-center pointer-events-none overflow-hidden"
+        className="keycap-face relative w-full h-full rounded-[8px] flex items-center justify-center pointer-events-none overflow-hidden"
         style={{
           background: skill.bg,
-          boxShadow: '0 1.5px 1px rgba(255, 255, 255, 0.65) inset, 0 -1px 2px rgba(0, 0, 0, 0.55) inset, -1px 1.5px 2px rgba(0, 0, 0, 0.4)'
         }}
       >
         {/* Concave Finger Dish Scoop on Top Surface */}
         <div 
-          className="absolute inset-[2px] rounded-[6px] pointer-events-none"
-          style={{
-            background: 'radial-gradient(circle at 45% 30%, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0) 65%)',
-            boxShadow: 'inset 0 1.5px 3px rgba(255, 255, 255, 0.45), inset 0 -1.5px 3px rgba(0, 0, 0, 0.55)'
-          }}
+          className="keycap-scoop absolute inset-[2px] rounded-[6px] pointer-events-none"
         />
 
         {/* Center Symbol: Ultra-sharp, bold vector matching artisan novelty keycaps */}
@@ -980,11 +1005,11 @@ const KeycapButton = React.memo(function KeycapButton({ skill, isSelected, onTri
 
         {/* Active Selection Glow Ring with vibrant color spill (zero DOM thrashing) */}
         <div 
-          className={`absolute inset-0 rounded-[8px] pointer-events-none ring-2 ring-white/95 ring-offset-1 ring-offset-black/50 transition-opacity duration-100 ${
+          className={`absolute inset-0 rounded-[8px] pointer-events-none ring-2 ring-white/95 transition-opacity duration-100 ${
             isSelected ? 'opacity-100' : 'opacity-0'
           }`}
           style={{
-            boxShadow: isSelected ? `0 0 16px rgba(255, 255, 255, 0.65), 0 0 24px ${skill.bg}` : 'none'
+            boxShadow: isSelected ? `0 0 12px rgba(255, 255, 255, 0.55), 0 0 18px ${skill.bg}` : 'none'
           }}
         />
       </div>

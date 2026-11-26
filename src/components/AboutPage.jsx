@@ -129,7 +129,7 @@ function AboutPage() {
   }, []);
 
   return (
-    <div className="text-white min-h-screen relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
+    <div className="text-white min-h-screen min-h-[100dvh] relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
       
       {/* ══════════════════════════════════════════════════════════════════════ */}
       {/* UNIFIED CLASSIC SPACE COSMIC BACKGROUND & PARALLAX EXPEDITION         */}
@@ -147,10 +147,9 @@ function AboutPage() {
               
               {/* Header Title */}
               <motion.div 
-                initial={{ opacity: 0, y: -20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, y: -14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
                 className="flex items-center justify-center mb-10 sm:mb-12 lg:mb-14 text-center select-none"
               >
                 <h2 
@@ -174,10 +173,9 @@ function AboutPage() {
                   {/* - `top-1/2 -translate-y-1/2`: Terkunci persis di tengah tinggi bio       */}
                   {/* ══════════════════════════════════════════════════════════════════════════ */}
                   <motion.div 
-                    initial={{ opacity: 0, x: -20, scale: 0.92 }}
-                    whileInView={{ opacity: 0.72, x: 0, scale: 1 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.7, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 0.72, x: 0 }}
+                    transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute top-1/2 -translate-y-1/2 right-full mr-5 xl:mr-14 pointer-events-none z-0 select-none hidden lg:block"
                     aria-hidden="true"
                   >
@@ -187,26 +185,23 @@ function AboutPage() {
                   {/* Clean Flowing Paragraphs — Editorial Line-Height & Letter-Spacing */}
                   <div className="space-y-5 text-slate-200 leading-[1.8] sm:leading-[1.85] tracking-[0.015em] font-sans text-base sm:text-[16.5px] relative z-10">
                     <motion.p
-                      initial={{ opacity: 0, y: 16 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.2 }}
-                      transition={{ duration: 0.65, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
                     >
                       Hi, I'm Aprileo Muhammad David Erlangga! I grew up in Lamongan, a small city full of inspiration and natural beauty that sparked my lifelong curiosity about technology and digital craftsmanship.
                     </motion.p>
                     <motion.p
-                      initial={{ opacity: 0, y: 16 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.2 }}
-                      transition={{ duration: 0.65, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
                     >
                       Through continuous learning and hands-on experience, I developed a passion for software development and building digital solutions. Today, as a Fullstack Developer, I focus on creating scalable web applications with efficient functionality and thoughtful user experiences.
                     </motion.p>
                     <motion.p
-                      initial={{ opacity: 0, y: 16 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.2 }}
-                      transition={{ duration: 0.65, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
                     >
                       I'm passionate about transforming ideas into meaningful digital products — one brick of code at a time.
                     </motion.p>
@@ -214,17 +209,14 @@ function AboutPage() {
 
                   {/* Actions Row */}
                   <motion.div 
-                    initial={{ opacity: 0, y: 14, scale: 0.95 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true, amount: 0.2 }}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{
-                      type: "spring",
-                      stiffness: 420,
-                      damping: 22,
-                      mass: 0.7,
-                      delay: 0.32,
+                      duration: 0.38,
+                      delay: 0.22,
+                      ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="pt-5 sm:pt-6 flex flex-wrap items-center gap-4 relative z-10 will-change-transform"
+                    className="pt-5 sm:pt-6 flex flex-wrap items-center gap-4 relative z-10"
                   >
                     <a 
                       href="/resume.pdf" 
@@ -242,10 +234,9 @@ function AboutPage() {
                 {/* SISI KANAN (Desktop) / ATAS TEKS (Mobile): PROFILE PORTRAIT */}
                 <motion.div 
                   className="w-full lg:w-5/12 flex justify-center lg:justify-start items-center relative lg:-ml-8 xl:-ml-14 order-1 lg:order-2"
-                  initial={{ opacity: 0, x: 20, scale: 0.96 }}
-                  whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.44, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <ProfilePortrait scrollYProgress={scrollYProgress} enableTilt={isDesktop} />
                 </motion.div>

@@ -145,9 +145,12 @@ function Navbar() {
     return () => cancelAnimationFrame(rafId);
   }, [location]);
 
-  // Tutup menu mobile otomatis saat klik di luar navbar atau menekan Escape
+  // Kunci scroll halaman saat menu fullscreen mobile terbuka & tutup otomatis bila pindah ke desktop
   useEffect(() => {
     if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     const handlePointerDown = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
         setIsOpen(false);
@@ -156,11 +159,18 @@ function Navbar() {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setIsOpen(false);
     };
+    const handleResize = () => {
+      if (window.innerWidth >= 768) setIsOpen(false);
+    };
+
     document.addEventListener('pointerdown', handlePointerDown);
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('resize', handleResize);
     return () => {
+      document.body.style.overflow = prevOverflow;
       document.removeEventListener('pointerdown', handlePointerDown);
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('resize', handleResize);
     };
   }, [isOpen]);
 
@@ -177,156 +187,166 @@ function Navbar() {
   };
 
   return (
-    <motion.nav
-      ref={navRef}
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        scrolled
-          ? 'bg-[#060814]/80 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.5)]'
-          : 'bg-transparent'
-      }`}
-    >
-      {/* Clean Single Border with Soft Golden Horizon Accent - Muncul halus saat di-scroll */}
-      <div
-        className={`absolute bottom-0 left-0 right-0 h-[1px] bg-white/[0.07] pointer-events-none transition-opacity duration-300 ${
-          scrolled ? 'opacity-100' : 'opacity-0'
+    <header ref={navRef} className="fixed top-0 left-0 right-0 z-50">
+      {/* Top Bar: Clean obsidian glass on scroll + seamless merge when fullscreen mobile menu is open */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        className={`relative z-50 transition-colors duration-300 ${
+          scrolled && !isOpen
+            ? 'bg-[#060814]/95 md:bg-[#060814]/80 md:backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.5)] border-b border-white/[0.07]'
+            : 'bg-transparent'
         }`}
-      />
-      <div
-        className={`absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#FFD500]/40 to-transparent pointer-events-none transition-opacity duration-300 ${
-          scrolled ? 'opacity-100' : 'opacity-0'
-        }`}
-      />
+      >
+        <div
+          className={`absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#FFD500]/40 to-transparent pointer-events-none transition-opacity duration-300 ${
+            scrolled && !isOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14 sm:h-16">
-          {/* Logo Brand with LEGO Minifigure Head & Red Space Banner Lockup */}
-          <div className="flex items-center">
-            <Link
-              to="/"
-              onClick={() => handleLinkClick('/')}
-              className="flex items-center group select-none py-1"
-            >
-              {/* LEGO Minifigure Head Icon */}
-              <div className="relative z-10 flex-shrink-0 -mr-2 sm:-mr-2.5">
-                <LegoMinifigIcon />
-              </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            {/* Logo Brand with LEGO Minifigure Head & Red Space Banner Lockup */}
+            <div className="flex items-center">
+              <Link
+                to="/"
+                onClick={() => handleLinkClick('/')}
+                className="flex items-center group select-none py-1"
+              >
+                {/* LEGO Minifigure Head Icon */}
+                <div className="relative z-10 flex-shrink-0 -mr-2 sm:-mr-2.5">
+                  <LegoMinifigIcon />
+                </div>
 
-              {/* Clean Solid LEGO Red Banner */}
-              <div className="h-7 sm:h-[30px] flex items-center pl-3.5 sm:pl-4 pr-3 sm:pr-3.5 rounded-r-md rounded-l-none bg-[#E52521] hover:bg-[#D11013] border-y border-r border-red-400/30 shadow-[0_2px_8px_rgba(229,37,33,0.35)] group-hover:shadow-[0_2px_14px_rgba(229,37,33,0.55)] transition-all duration-200">
-                <span className="font-['Space_Grotesk'] font-bold text-xs sm:text-[13px] text-white tracking-normal whitespace-nowrap select-none">
-                  aprileoerlangga
-                </span>
-              </div>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation - Clean, Minimalist & Kinetic Golden Line Indicator */}
-          <div className="hidden md:flex items-center gap-7 lg:gap-8">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => handleLinkClick(link.path)}
-                  className={`relative py-1 text-sm font-medium transition-colors duration-200 select-none ${
-                    isActive
-                      ? 'text-white font-semibold'
-                      : 'text-zinc-400 hover:text-white'
-                  }`}
-                >
-                  <span>{link.name}</span>
-
-                  {/* Clean, subtle golden indicator underline */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="navbar-active-line"
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#FFD500] rounded-full shadow-[0_0_8px_rgba(255,213,0,0.4)]"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Mobile 3-Line Hamburger Toggle Button */}
-          <motion.button
-            type="button"
-            whileTap={{ scale: 0.92 }}
-            onClick={() => setIsOpen((prev) => !prev)}
-            aria-label="Toggle menu"
-            aria-expanded={isOpen}
-            className="md:hidden relative z-50 w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-200 hover:text-white flex items-center justify-center transition-colors"
-          >
-            <div className="w-[18px] h-4 relative flex flex-col justify-center items-center">
-              <motion.span
-                animate={isOpen ? { rotate: 45, y: 0 } : { rotate: 0, y: -5 }}
-                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute w-[18px] h-[1.5px] rounded-full bg-current"
-              />
-              <motion.span
-                animate={isOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
-                transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute w-[18px] h-[1.5px] rounded-full bg-current"
-              />
-              <motion.span
-                animate={isOpen ? { rotate: -45, y: 0 } : { rotate: 0, y: 5 }}
-                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute w-[18px] h-[1.5px] rounded-full bg-current"
-              />
+                {/* Clean Solid LEGO Red Banner */}
+                <div className="h-7 sm:h-[30px] flex items-center pl-3.5 sm:pl-4 pr-3 sm:pr-3.5 rounded-r-md rounded-l-none bg-[#E52521] hover:bg-[#D11013] border-y border-r border-red-400/30 shadow-[0_2px_8px_rgba(229,37,33,0.35)] group-hover:shadow-[0_2px_14px_rgba(229,37,33,0.55)] transition-all duration-200">
+                  <span className="font-['Space_Grotesk'] font-bold text-xs sm:text-[13px] text-white tracking-normal whitespace-nowrap select-none">
+                    aprileoerlangga
+                  </span>
+                </div>
+              </Link>
             </div>
-          </motion.button>
-        </div>
-      </div>
 
-      {/* Editorial Full-Width Mobile Menu Drawer (Clean Obsidian & Hairline Dividers) */}
+            {/* Desktop Navigation - Clean, Minimalist & Kinetic Golden Line Indicator */}
+            <div className="hidden md:flex items-center gap-7 lg:gap-8">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => handleLinkClick(link.path)}
+                    className={`relative py-1 text-sm font-medium transition-colors duration-200 select-none ${
+                      isActive
+                        ? 'text-white font-semibold'
+                        : 'text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    <span>{link.name}</span>
+
+                    {/* Clean, subtle golden indicator underline */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="navbar-active-line"
+                        className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#FFD500] rounded-full shadow-[0_0_8px_rgba(255,213,0,0.4)]"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Mobile 3-Line Hamburger Toggle Button */}
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.92 }}
+              onClick={() => setIsOpen((prev) => !prev)}
+              aria-label="Toggle menu"
+              aria-expanded={isOpen}
+              className="md:hidden relative z-50 w-9 h-9 rounded-xl bg-transparent hover:bg-white/[0.05] text-zinc-200 hover:text-white flex items-center justify-center transition-colors"
+            >
+              <div className="w-[18px] h-4 relative flex flex-col justify-center items-center">
+                <motion.span
+                  animate={isOpen ? { rotate: 45, y: 0 } : { rotate: 0, y: -5 }}
+                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute w-[18px] h-[1.5px] rounded-full bg-current"
+                />
+                <motion.span
+                  animate={isOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+                  transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute w-[18px] h-[1.5px] rounded-full bg-current"
+                />
+                <motion.span
+                  animate={isOpen ? { rotate: -45, y: 0 } : { rotate: 0, y: 5 }}
+                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute w-[18px] h-[1.5px] rounded-full bg-current"
+                />
+              </div>
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Full-Screen Centered Mobile Navigation Overlay (Borderless Minimalist Obsidian) */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden border-t border-b border-white/[0.08] bg-[#060814]/95 backdrop-blur-2xl shadow-[0_24px_48px_rgba(0,0,0,0.8)]"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setIsOpen(false);
+            }}
+            className="md:hidden fixed inset-0 h-[100dvh] z-40 bg-[#060814]/[0.98] flex flex-col items-center justify-center px-6 select-none"
+            style={{
+              backgroundImage:
+                'radial-gradient(ellipse 75% 50% at 50% 48%, rgba(255,255,255,0.025) 0%, transparent 72%)',
+            }}
           >
-            <div className="flex flex-col px-6 py-2 divide-y divide-white/[0.06]">
+            <nav
+              aria-label="Mobile navigation"
+              className="flex flex-col items-center gap-6"
+            >
               {navLinks.map((link, idx) => {
                 const isActive = location.pathname === link.path;
                 return (
                   <motion.div
                     key={link.path}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
                     transition={{
-                      duration: 0.2,
-                      delay: idx * 0.035,
+                      duration: 0.22,
+                      delay: 0.03 + idx * 0.04,
                       ease: [0.16, 1, 0.3, 1],
                     }}
                   >
                     <Link
                       to={link.path}
                       onClick={() => handleLinkClick(link.path)}
-                      className={`block py-3.5 px-3 -mx-3 rounded-xl text-[15px] font-sans tracking-wide transition-colors duration-150 ${
+                      className={`group relative block py-1.5 px-4 text-center text-2xl xs:text-[28px] font-sans tracking-tight transition-all duration-150 active:scale-[0.97] ${
                         isActive
-                          ? 'bg-white/[0.06] text-white font-semibold'
-                          : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.03] font-normal'
+                          ? 'text-white font-semibold'
+                          : 'text-zinc-500 hover:text-zinc-200 font-normal'
                       }`}
                     >
-                      {link.name}
+                      <span>{link.name}</span>
+                      {isActive && (
+                        <span className="block w-5 h-[1.5px] bg-white/80 rounded-full mx-auto mt-2" />
+                      )}
                     </Link>
                   </motion.div>
                 );
               })}
-            </div>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </header>
   );
 }
 
