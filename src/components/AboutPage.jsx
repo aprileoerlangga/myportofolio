@@ -44,7 +44,7 @@ function ProfilePortrait({ scrollYProgress, enableTilt = true }) {
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       onMouseMove={enableTilt ? handleMouseMove : undefined}
       onMouseLeave={enableTilt ? handleMouseLeave : undefined}
@@ -67,7 +67,7 @@ function ProfilePortrait({ scrollYProgress, enableTilt = true }) {
         className="relative flex items-center justify-center group"
       >
         {/* Soft Ambient Cosmic Backlight Glow (pure multi-stop radial, zero blur-3xl GPU overhead) */}
-        <div 
+        <div
           className="absolute -inset-12 rounded-full pointer-events-none opacity-65 group-hover:opacity-90 transition-opacity duration-700"
           style={{
             background: 'radial-gradient(ellipse 65% 60% at 50% 45%, rgba(56,189,248,0.22) 0%, rgba(255,213,0,0.08) 38%, rgba(0,85,191,0.04) 62%, transparent 76%)',
@@ -75,7 +75,7 @@ function ProfilePortrait({ scrollYProgress, enableTilt = true }) {
         />
 
         {/* Transparent Cutout Container (zero alpha drop-shadow pass on mobile touch screens) */}
-        <div 
+        <div
           className="relative w-[235px] sm:w-[265px] lg:w-[285px] pointer-events-auto md:drop-shadow-[0_20px_35px_rgba(0,0,0,0.95)] transition-transform duration-500"
           style={{
             WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 82%, transparent 100%)',
@@ -130,7 +130,7 @@ function AboutPage() {
 
   return (
     <div className="text-white min-h-screen min-h-[100dvh] relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
-      
+
       {/* ══════════════════════════════════════════════════════════════════════ */}
       {/* UNIFIED CLASSIC SPACE COSMIC BACKGROUND & PARALLAX EXPEDITION         */}
       {/* ══════════════════════════════════════════════════════════════════════ */}
@@ -144,15 +144,15 @@ function AboutPage() {
           {/* ============================================================ */}
           <section id="about" className="bg-transparent text-slate-200 overflow-x-clip relative">
             <div className="min-h-[calc(100vh-4.5rem)] min-h-[calc(100dvh-4.5rem)] flex flex-col justify-center max-w-5xl mx-auto px-6 sm:px-10 lg:px-12 w-full pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20 relative z-20">
-              
+
               {/* Header Title */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: -14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
                 className="flex items-center justify-center mb-10 sm:mb-12 lg:mb-14 text-center select-none"
               >
-                <h2 
+                <h2
                   className="font-pixel font-bold text-3xl sm:text-4xl md:text-5xl tracking-wide text-white uppercase select-none"
                 >
                   ABOUT <span className="text-[#FFD500] drop-shadow-[0_0_25px_rgba(255,213,0,0.5)]">ME</span>
@@ -160,10 +160,10 @@ function AboutPage() {
               </motion.div>
 
               {/* Bio & Profile Photo Grid — Natural Scroll Flow (Mobile: Foto di atas teks, Desktop: Teks di kiri, Foto di kanan) */}
-              <div 
+              <div
                 className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 lg:gap-14 relative z-20"
               >
-                
+
                 {/* SISI KIRI (Desktop) / BAWAH FOTO (Mobile): CLEAN STORYTELLING TYPOGRAPHY */}
                 <div className="w-full lg:w-7/12 flex flex-col justify-center relative order-2 lg:order-1">
                   {/* ══════════════════════════════════════════════════════════════════════════ */}
@@ -172,7 +172,7 @@ function AboutPage() {
                   {/* - `mr-6 sm:mr-8 lg:mr-12 xl:mr-16`: Jarak bebas agar membaca nyaman      */}
                   {/* - `top-1/2 -translate-y-1/2`: Terkunci persis di tengah tinggi bio       */}
                   {/* ══════════════════════════════════════════════════════════════════════════ */}
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 0.72, x: 0 }}
                     transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
@@ -208,7 +208,7 @@ function AboutPage() {
                   </div>
 
                   {/* Actions Row */}
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
@@ -219,7 +219,7 @@ function AboutPage() {
                     className="pt-5 sm:pt-6 flex flex-wrap items-center gap-4 relative z-10"
                   >
                     <a 
-                      href="/resume.pdf" 
+                      href="/resume.pdf?v=20261128" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="group relative inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#FFD500] hover:bg-[#FFE033] text-zinc-950 font-sans font-semibold text-xs sm:text-sm tracking-wide border-t border-white/60 shadow-[0_2px_0_0_#C99700,0_4px_14px_rgba(255,213,0,0.2)] hover:shadow-[0_2px_0_0_#C99700,0_8px_20px_rgba(255,213,0,0.3)] active:translate-y-[2px] active:shadow-none transform hover:-translate-y-0.5 transition-all duration-150 overflow-hidden whitespace-nowrap"
@@ -232,7 +232,7 @@ function AboutPage() {
                 </div>
 
                 {/* SISI KANAN (Desktop) / ATAS TEKS (Mobile): PROFILE PORTRAIT */}
-                <motion.div 
+                <motion.div
                   className="w-full lg:w-5/12 flex justify-center lg:justify-start items-center relative lg:-ml-8 xl:-ml-14 order-1 lg:order-2"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}

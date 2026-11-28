@@ -1966,7 +1966,7 @@ export default function LegoMinifigure({ domTarget, isThrowing = false, onThrowC
   }
 
   return (
-    <div className="w-full h-full relative bg-transparent pointer-events-auto">
+    <div className={`w-full h-full relative bg-transparent ${isHome ? 'pointer-events-auto' : 'pointer-events-none'}`}>
       <CanvasErrorBoundary 
         resetKey={canvasKey}
         fallback={

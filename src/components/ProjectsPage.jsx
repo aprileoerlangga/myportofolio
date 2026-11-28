@@ -23,11 +23,11 @@ import portokuImage from '../assets/web-portfolio-opt.jpg';
 const projectSets = [
   {
     id: 1,
-    title: 'Fish AI Diagnosa',
+    title: 'Fish AI Diagnosis',
     year: '2024',
-    category: 'APLIKASI MOBILE',
+    category: 'MOBILE APPLICATION',
     description:
-      'Aplikasi mobile untuk mendiagnosis penyakit ikan dan udang berdasarkan gejala yang dipilih beserta saran penanganannya.',
+      'Mobile application for diagnosing fish and shrimp diseases from selected symptoms with treatment recommendations.',
     link: 'https://github.com/aprileoerlangga/FishAI.git',
     thumbnail: fishAiShowcase,
     hasStudioRender: true,
@@ -36,11 +36,11 @@ const projectSets = [
   },
   {
     id: 2,
-    title: 'Rosa Store E-Commerce Handphone',
+    title: 'Rosa Store Smartphone E-Commerce',
     year: '2024',
     category: 'WEB E-COMMERCE',
     description:
-      'Website e-commerce penjualan handphone dengan katalog produk, manajemen keranjang belanja, checkout, dan sistem autentikasi pengguna.',
+      'Smartphone e-commerce web platform featuring a product catalog, shopping cart management, checkout flow, and user authentication.',
     link: 'https://github.com/aprileoerlangga/ecommerce-handphone.git',
     thumbnail: rosaStoreShowcase,
     hasStudioRender: true,
@@ -53,7 +53,7 @@ const projectSets = [
     year: '2025',
     category: 'MOBILE E-COMMERCE',
     description:
-      'Aplikasi mobile e-commerce ikan segar yang menghubungkan penjual perikanan langsung dengan pembeli lewat katalog dan pemesanan.',
+      'Fresh fish e-commerce mobile application connecting fisheries sellers directly with buyers through product catalogs and ordering.',
     link: 'https://github.com/aprileoerlangga',
     thumbnail: iwakmartShowcase,
     hasStudioRender: true,
@@ -62,11 +62,11 @@ const projectSets = [
   },
   {
     id: 4,
-    title: 'IoT GPS Tracker Tas',
+    title: 'IoT GPS Bag Tracker',
     year: '2025',
     category: 'IOT HARDWARE & WEB TRACKING',
     description:
-      'Perangkat IoT tracker tas berbasis GPS yang terintegrasi dengan tampilan web untuk memantau dan mengetahui lokasi tas secara real-time.',
+      'GPS-based IoT bag tracking device integrated with a web dashboard for real-time location monitoring.',
     link: 'https://github.com/aprileoerlangga/GPSTrackerBag.git',
     thumbnail: iotImage,
     hasStudioRender: false,
@@ -76,11 +76,11 @@ const projectSets = [
   },
   {
     id: 5,
-    title: 'Portofolio',
+    title: 'Personal Portfolio',
     year: '2026',
-    category: 'WEB PORTOFOLIO',
+    category: 'WEB PORTFOLIO',
     description:
-      'Website portofolio pribadi bertema Classic Space dengan integrasi karakter 3D interaktif untuk menampilkan profil, keahlian, dan proyek.',
+      'Classic Space themed personal portfolio featuring an interactive 3D character to showcase profile, technical skills, and projects.',
     link: 'https://github.com/aprileoerlangga/my-portofolio.git',
     thumbnail: portokuImage,
     hasStudioRender: false,
@@ -173,6 +173,7 @@ function ProjectsPage() {
   const stackedContainerRef = useRef(null);
   const stackedCardRefs = useRef([]);
   const arcActiveRef = useRef(true);
+  const lastCenterSizeRef = useRef({ w: 0, h: 0 });
   const mountStackedRef = useRef(false);
 
   const [mountStacked, setMountStacked] = useState(false);
@@ -213,17 +214,21 @@ function ProjectsPage() {
     offset: ['start start', 'end end'],
   });
 
-  // Dimensions for Arc and Zoom Target - Proportion-locked so center card zooms purely via GPU scale() (zero width/height reflow)
+  // Dimensions for Arc and Zoom Target:
+  // - Desktop keeps the original 382:273 arc ratio + full 820x520 zoom target
+  // - Mobile locks arc ratio to target so center zoom runs purely on GPU scale() with 0 reflow
   const targetWidth = isMobile
     ? Math.min(340, windowDimensions.width - 32)
-    : Math.min(820, Math.max(600, windowDimensions.width * 0.56));
+    : Math.min(820, Math.max(620, windowDimensions.width * 0.56));
   const targetHeight = isMobile
     ? Math.min(300, Math.round(targetWidth * 0.82))
     : Math.min(520, Math.max(340, windowDimensions.height * 0.54));
   const cardWidth = isMobile
     ? Math.min(260, windowDimensions.width * 0.68)
     : Math.min(360, Math.max(280, windowDimensions.width * 0.22));
-  const cardHeight = (cardWidth * targetHeight) / targetWidth;
+  const cardHeight = isMobile
+    ? (cardWidth * targetHeight) / targetWidth
+    : (cardWidth * 273) / 382;
   const centerBaseScale = cardWidth / targetWidth;
   const mobileArcCutoff = isMobile ? 2.35 : wt;
 
@@ -241,7 +246,7 @@ function ProjectsPage() {
     return virtualCards.map((_, x) => {
       const h = ie0[x];
       const y = Math.abs(h);
-      const scalePrefix = x === TARGET_CENTER_INDEX ? ` scale(${centerBaseScale})` : '';
+      const scalePrefix = isMobile && x === TARGET_CENTER_INDEX ? ` scale(${centerBaseScale})` : '';
       if (y > mobileArcCutoff) {
         return { opacity: 0, visibility: 'hidden', zIndex: 0, transform: `translate(-50%, -50%) scale(0)` };
       }
@@ -256,7 +261,7 @@ function ProjectsPage() {
         transform: `translate(-50%, -50%) translate3d(${L}px, ${arcOffsetY}px, 0) perspective(${te0}px) translateZ(${j}px) rotateY(${rotY}deg)${scalePrefix}`,
       };
     });
-  }, [cardWidth, arcOffsetY, centerBaseScale, mobileArcCutoff]);
+  }, [isMobile, cardWidth, arcOffsetY, centerBaseScale, mobileArcCutoff]);
 
   // ════════════════════════════════════════════════════════════════════════════
   // DIRECT HIGH-PERFORMANCE DOM STYLE UPDATES (Locked 60/120 FPS, No React lag)
@@ -320,11 +325,23 @@ function ProjectsPage() {
 
         if (isTargetCenter) {
           const H = vt(Z);
-          const currScale = yt(centerBaseScale, 1, H);
           const currY = arcOffsetY * (1 - H);
           cardEl.style.opacity = String(W);
           cardEl.style.zIndex = '30';
-          cardEl.style.transform = `translate(-50%, -50%) translate3d(${L * (1 - H)}px, ${currY}px, 0) perspective(${te}px) translateZ(${j * (1 - H)}px) rotateY(${rotY * (1 - H)}deg) scale(${currScale})`;
+          if (isMobile) {
+            const currScale = yt(centerBaseScale, 1, H);
+            cardEl.style.transform = `translate(-50%, -50%) translate3d(${L * (1 - H)}px, ${currY}px, 0) perspective(${te}px) translateZ(${j * (1 - H)}px) rotateY(${rotY * (1 - H)}deg) scale(${currScale})`;
+          } else {
+            const currW = Math.round(yt(cardWidth, targetWidth, H) * 10) / 10;
+            const currH = Math.round(yt(cardHeight, targetHeight, H) * 10) / 10;
+            if (lastCenterSizeRef.current.w !== currW || lastCenterSizeRef.current.h !== currH) {
+              lastCenterSizeRef.current.w = currW;
+              lastCenterSizeRef.current.h = currH;
+              cardEl.style.width = `${currW}px`;
+              cardEl.style.height = `${currH}px`;
+            }
+            cardEl.style.transform = `translate(-50%, -50%) translate3d(${L * (1 - H)}px, ${currY}px, 0) perspective(${te}px) translateZ(${j * (1 - H)}px) rotateY(${rotY * (1 - H)}deg)`;
+          }
 
           if (centerTitleRef.current) {
             centerTitleRef.current.style.opacity = String(H);
@@ -449,6 +466,17 @@ function ProjectsPage() {
         el.style.pointerEvents = (i === total - 1 || scrollP < cardStart + slotDuration * 0.6) ? 'auto' : 'none';
         el.style.transform = `translate3d(0, ${yPct}%, 0) scale(${scale}) rotate(${rotDeg}deg)`;
       }
+    } else {
+      // Ensure Phase 2 cards stay completely non-interactive & hidden whenever Phase 1 is active
+      for (let i = 0; i < projectSets.length; i++) {
+        const el = stackedCardRefs.current[i];
+        if (!el) continue;
+        if (el.style.visibility !== 'hidden' || el.style.pointerEvents !== 'none') {
+          el.style.opacity = '0';
+          el.style.visibility = 'hidden';
+          el.style.pointerEvents = 'none';
+        }
+      }
     }
   };
 
@@ -471,9 +499,10 @@ function ProjectsPage() {
   // Re-sync scroll transforms synchronously before paint whenever stacked phase mounts or layout changes
   useLayoutEffect(() => {
     arcActiveRef.current = true;
+    lastCenterSizeRef.current = { w: 0, h: 0 };
     updateVisuals(scrollYProgress.get());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mountStacked, cardWidth, cardHeight, targetWidth, targetHeight, arcOffsetY]);
+  }, [mountStacked, isMobile, cardWidth, cardHeight, targetWidth, targetHeight, arcOffsetY]);
 
   // Keep Lenis scroll bounds synced on viewport dimension changes
   useEffect(() => {
@@ -486,7 +515,7 @@ function ProjectsPage() {
     <div className="text-white min-h-screen min-h-[100dvh] relative bg-[#060814] selection:bg-[#FFD500]/20 selection:text-[#FFD500] overflow-x-clip">
       {/* Unified Classic Space Cosmic Canvas (Opsi 2: Grounded Horizon — Kawah Bulan di Bawah) */}
       <SpaceBackground showCraters={true} />
-      
+
       <div className="relative z-10">
         <main>
           <section id="projects" className="bg-transparent text-white relative">
@@ -500,7 +529,7 @@ function ProjectsPage() {
             >
               {/* Sticky Viewport (100vh / 100dvh - Perfectly centered vertically across iOS & Android) */}
               <div className="sticky top-0 h-screen h-[100dvh] w-full flex items-center justify-center overflow-hidden select-none z-10 px-4">
-                
+
                 {/* ── TOP SECTION: YAAS Headline (Harmonized with About & Tech Stack) ── */}
                 <div
                   ref={headlineRef}
@@ -544,13 +573,13 @@ function ProjectsPage() {
                         key={`${project.id}-${idx}`}
                         ref={(el) => (cardRefs.current[idx] = el)}
                         style={{
-                          width: `${isTargetCard ? targetWidth : cardWidth}px`,
-                          height: `${isTargetCard ? targetHeight : cardHeight}px`,
+                          width: `${isTargetCard && isMobile ? targetWidth : cardWidth}px`,
+                          height: `${isTargetCard && isMobile ? targetHeight : cardHeight}px`,
                           opacity: init.opacity ?? 0,
                           visibility: init.visibility ?? 'hidden',
                           zIndex: init.zIndex ?? 1,
                           transform: init.transform ?? 'translate(-50%, -50%)',
-                          willChange: isTargetCard || isInitiallyVisible ? 'transform, opacity' : undefined,
+                          willChange: !isMobile || isTargetCard || isInitiallyVisible ? 'transform, opacity' : undefined,
                         }}
                         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-default select-none group"
                       >
@@ -642,7 +671,7 @@ function ProjectCardVisual({ project, isMobile = false }) {
 
   if (project.hasStudioRender) {
     return (
-      <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-[#070b16]">
+      <div className="isolate relative z-0 w-full h-full flex items-center justify-center overflow-hidden bg-[#070b16]">
         <div
           className="absolute inset-0 pointer-events-none opacity-30"
           style={{
@@ -679,7 +708,7 @@ function ProjectCardVisual({ project, isMobile = false }) {
   const isTelemetry = project.id === 4;
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-[#070b16]">
+    <div className="isolate relative z-0 w-full h-full flex items-center justify-center overflow-hidden bg-[#070b16]">
       {/* Volumetric Dark Studio Backlight Halo */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -716,11 +745,10 @@ function ProjectCardVisual({ project, isMobile = false }) {
               alt={project.title}
               decoding="async"
               draggable={false}
-              className={`w-full h-full object-cover ${
-                isTelemetry
-                  ? 'object-top brightness-[1.06] contrast-[1.06] saturate-[1.16]'
-                  : 'object-center brightness-[1.08] contrast-[1.05]'
-              }`}
+              className={`w-full h-full object-cover ${isTelemetry
+                ? 'object-top brightness-[1.06] contrast-[1.06] saturate-[1.16]'
+                : 'object-center brightness-[1.08] contrast-[1.05]'
+                }`}
             />
 
             {/* Specular Glass Sheen Across Screen */}
@@ -763,9 +791,8 @@ function ProjectCardVisual({ project, isMobile = false }) {
               alt=""
               decoding="async"
               draggable={false}
-              className={`absolute bottom-0 left-0 w-full h-[357%] object-cover ${
-                isTelemetry ? 'object-top' : 'object-center'
-              }`}
+              className={`absolute bottom-0 left-0 w-full h-[357%] object-cover ${isTelemetry ? 'object-top' : 'object-center'
+                }`}
             />
           </div>
         )}
@@ -820,8 +847,9 @@ function StackedIsoCard({
       ref={cardRef}
       style={{
         zIndex: zIndexVal,
-        opacity: index === 0 ? 1 : 0,
-        visibility: index === 0 ? 'visible' : 'hidden',
+        opacity: 0,
+        visibility: 'hidden',
+        pointerEvents: 'none',
         transform: index === 0 ? 'translate3d(0, 0%, 0) scale(1) rotate(0deg)' : 'translate3d(0, 0%, 0) scale(0.95) rotate(0deg)',
         willChange: 'transform, opacity',
       }}

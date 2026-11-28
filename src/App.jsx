@@ -165,7 +165,7 @@ function App() {
     // Hanya aktifkan Lenis Smooth Wheel di desktop non-touch; mobile memakai native touch scroll 60/120Hz tanpa rAF ekstra
     const isTouchOnly =
       typeof window !== 'undefined' &&
-      (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024);
+      (window.matchMedia('(hover: none) and (pointer: coarse)').matches || window.innerWidth < 1024);
 
     if (isTouchOnly) {
       return;

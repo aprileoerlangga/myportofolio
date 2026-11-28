@@ -149,7 +149,7 @@ function HomePage({ isHome = true }) {
       <div className="container mx-auto px-4 xs:px-6 sm:px-8 lg:px-12 relative z-30 lg:z-10 w-full pointer-events-none min-h-[100dvh] flex flex-col justify-between lg:justify-center pt-[max(4.25rem,calc(env(safe-area-inset-top)+1.75rem))] xs:pt-[max(4.75rem,calc(env(safe-area-inset-top)+2.25rem))] sm:pt-20 lg:pt-0 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] lg:pb-0">
         <div className="flex-1 w-full flex flex-col lg:flex-row items-center justify-between gap-0 lg:gap-16">
           {/* Left: Text content — Instantaneous Real-Time Rendering */}
-          <div className="w-full lg:w-1/2 text-center lg:text-left flex flex-col items-center lg:items-start relative z-30 pointer-events-auto shrink-0">
+          <div className={`w-full lg:w-1/2 text-center lg:text-left flex flex-col items-center lg:items-start relative z-30 shrink-0 ${isHome ? 'pointer-events-auto' : 'pointer-events-none'}`}>
             {/* Modern Pixel Retro Headline — Pixelify Sans with Lego Wave Ripple */}
             <h1 className="font-['Pixelify_Sans',sans-serif] font-bold text-4xl xs:text-5xl sm:text-6xl lg:text-7xl xl:text-8xl mb-2 sm:mb-4 lg:mb-5 leading-[0.98] sm:leading-[1.0] tracking-wide uppercase select-none">
               <LegoWaveWord 
@@ -207,13 +207,13 @@ function HomePage({ isHome = true }) {
                 mass: 0.7,
                 delay: 0.42,
               }}
-              className="w-full flex justify-center lg:justify-start relative z-30 pointer-events-auto mb-3.5 xs:mb-4 lg:mb-0 will-change-transform"
+              className={`w-full flex justify-center lg:justify-start relative z-30 mb-3.5 xs:mb-4 lg:mb-0 will-change-transform ${isHome ? 'pointer-events-auto' : 'pointer-events-none'}`}
             >
               <button
                 type="button"
                 onClick={handleDiscoverMore}
                 disabled={isThrowing}
-                className="group relative z-30 inline-flex items-center justify-center gap-2 sm:gap-2.5 px-4 py-2 sm:px-7 sm:py-3.5 sm:min-h-[48px] rounded-xl bg-[#FFD500] hover:bg-[#FFE033] text-zinc-950 font-sans sm:font-mono font-semibold sm:font-bold text-xs sm:text-sm tracking-wide sm:tracking-wider sm:uppercase border-t border-white/60 shadow-[0_2px_0_0_#C99700,0_4px_14px_rgba(255,213,0,0.2)] sm:shadow-[0_2px_0_0_#C99700,0_8px_20px_rgba(255,213,0,0.25)] hover:shadow-[0_2px_0_0_#C99700,0_8px_20px_rgba(255,213,0,0.3)] sm:hover:shadow-[0_2px_0_0_#C99700,0_12px_26px_rgba(255,213,0,0.35)] active:translate-y-[2px] sm:active:scale-[0.98] active:shadow-none transform hover:-translate-y-0.5 transition-all duration-150 overflow-hidden whitespace-nowrap cursor-pointer pointer-events-auto select-none disabled:opacity-90 disabled:cursor-wait"
+                className={`group relative z-30 inline-flex items-center justify-center gap-2 sm:gap-2.5 px-4 py-2 sm:px-7 sm:py-3.5 sm:min-h-[48px] rounded-xl bg-[#FFD500] hover:bg-[#FFE033] text-zinc-950 font-sans sm:font-mono font-semibold sm:font-bold text-xs sm:text-sm tracking-wide sm:tracking-wider sm:uppercase border-t border-white/60 shadow-[0_2px_0_0_#C99700,0_4px_14px_rgba(255,213,0,0.2)] sm:shadow-[0_2px_0_0_#C99700,0_8px_20px_rgba(255,213,0,0.25)] hover:shadow-[0_2px_0_0_#C99700,0_8px_20px_rgba(255,213,0,0.3)] sm:hover:shadow-[0_2px_0_0_#C99700,0_12px_26px_rgba(255,213,0,0.35)] active:translate-y-[2px] sm:active:scale-[0.98] active:shadow-none transform hover:-translate-y-0.5 transition-all duration-150 overflow-hidden whitespace-nowrap cursor-pointer select-none disabled:opacity-90 disabled:cursor-wait ${isHome ? 'pointer-events-auto' : 'pointer-events-none'}`}
               >
                 <span className="relative z-10 leading-none sm:leading-normal">{isThrowing ? "Here it comes!" : "Discover More"}</span>
                 <svg 
@@ -235,7 +235,7 @@ function HomePage({ isHome = true }) {
             <div 
               ref={orbitTargetRef}
               className={`relative w-60 h-[220px] xs:w-64 xs:h-[245px] sm:w-72 sm:h-[280px] lg:w-[28rem] lg:h-[28rem] flex items-center justify-center select-none touch-none ${
-                isInteractive && !isThrowing ? 'cursor-grab active:cursor-grabbing pointer-events-auto' : 'pointer-events-none cursor-default'
+                isHome && isInteractive && !isThrowing ? 'cursor-grab active:cursor-grabbing pointer-events-auto' : 'pointer-events-none cursor-default'
               }`}
               title={isInteractive && !isThrowing ? "Drag to inspect Lego Minifigure in 3D" : ""}
             />
